@@ -5,10 +5,20 @@ It is designed to support known and user-defined printers, components,
 materials, accessories, and automation without redesigning the core for every
 new device.
 
-The current recovered production baseline contains:
+The current production baseline contains:
 
+- **FAS-001:** Constitutional Governance Foundation
+- **FAS-002:** Stable Kernel Architecture
+- **FAS-003:** Capability Framework
+- **FAS-004:** Mission Framework
+- **FAS-005:** Forge Executive
+- **FAS-006:** Forge Event System
 - **FAS-007:** Decision Ledger and Evidence Architecture
 - **FAS-008:** Policy Decision and Authorization Engine
+
+FAS-001 through FAS-006 were reconstructed from approved project decisions
+and the dependency contracts already published by FAS-007 and FAS-008. Each
+specification identifies its reconstruction status.
 
 FAS-008 includes a deterministic reference evaluator under
 `src/forge/fas/authorization.py`. It is an authorization component, not a
@@ -16,10 +26,18 @@ printer-control service.
 
 ## Validation
 
+Install the optional strict Draft 2020-12 schema validator:
+
+```bash
+python -m pip install -e ".[validation]"
+```
+
+Run the complete FAS test suite:
+
 ```bash
 python -m unittest discover -s tests/fas -p "test_*.py" -v
 ```
 
-Schema tests require the optional `jsonschema` package. All reference evaluator
-behavior tests use only the Python standard library.
-
+The validator is intentionally optional: FORGE runtime components use only the
+Python standard library, while validation and development environments can
+enable strict schema and format checks through the `validation` extra.

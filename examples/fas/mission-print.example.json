@@ -1,0 +1,35 @@
+{
+  "mission_id": "forge-mission:01J00000000000000000000011",
+  "schema_version": "1.0.0",
+  "template_ref": null,
+  "objective": "Print the selected user job after validated preflight.",
+  "state": "created",
+  "requirements": [{"id": "job_available"}],
+  "constraints": [{"id": "user_selected_bed"}],
+  "context": {"job_id": "forge-print:01J00000000000000000000002"},
+  "evidence_refs": [],
+  "dependencies": [],
+  "capability_requirements": [
+    {
+      "capability_id": "user.thermal.zone",
+      "version_constraint": "^1.0.0",
+      "operations": ["user.thermal.set_target"]
+    }
+  ],
+  "plan": [
+    {
+      "step_id": "forge-step:heat-nozzle",
+      "capability_id": "user.thermal.zone",
+      "operation": "user.thermal.set_target",
+      "parameters": {"temperature_c": 240}
+    }
+  ],
+  "risk_assessment": {"state": "pending"},
+  "approval_requirements": [{"type": "forge.approval.user", "minimum_count": 1}],
+  "monitoring_rules": [{"type": "forge.monitor.temperature"}],
+  "recovery_strategy": {"type": "forge.recovery.safe_stop"},
+  "completion_criteria": [{"type": "forge.criteria.job_complete"}],
+  "report_requirements": [{"type": "forge.report.print"}],
+  "correlation_id": "forge-print:01J00000000000000000000002",
+  "revision": 1
+}

@@ -1,0 +1,21 @@
+{
+  "event_id": "forge-event:01J00000000000000000000012",
+  "event_type": "forge.mission.created",
+  "event_version": "1.0.0",
+  "occurred_at": "2026-07-25T16:00:00Z",
+  "published_at": "2026-07-25T16:00:01Z",
+  "source": "forge-service:mission-manager",
+  "subject": "forge-mission:01J00000000000000000000011",
+  "correlation_id": "forge-print:01J00000000000000000000002",
+  "causation_id": null,
+  "classification": "event",
+  "payload": {"state": "created"},
+  "metadata": {
+    "partition": "mission:01J00000000000000000000011",
+    "sequence": 1,
+    "idempotency_key": "mission-created-01J00000000000000000000011",
+    "replay": false,
+    "privacy": "account"
+  },
+  "trace_id": "01J00000000000000000000012"
+}

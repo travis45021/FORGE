@@ -1,0 +1,12 @@
+{
+  "service_id": "user-service:custom-printer-provider",
+  "version": "1.0.0",
+  "contract_version": "1.0.0",
+  "kind": "plugin",
+  "entrypoint": "user_plugin.provider:create",
+  "required_services": ["forge-service:event-bus", "forge-service:capability-registry"],
+  "optional_services": ["forge-service:telemetry"],
+  "provided_capabilities": ["user.thermal.zone"],
+  "permissions": ["forge.hardware.thermal_control"],
+  "configuration_schema": {"type": "object"}
+}

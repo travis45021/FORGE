@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/kernel-service-manifest.schema.json",
+  "title": "Forge Kernel Service Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["service_id", "version", "contract_version", "kind", "entrypoint", "required_services", "optional_services", "provided_capabilities", "permissions", "configuration_schema"],
+  "properties": {
+    "service_id": {"$ref": "#/$defs/id"},
+    "version": {"$ref": "#/$defs/version"},
+    "contract_version": {"$ref": "#/$defs/version"},
+    "kind": {"enum": ["kernel", "service", "plugin", "integration"]},
+    "entrypoint": {"type": "string", "minLength": 1, "maxLength": 500},
+    "required_services": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "optional_services": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "provided_capabilities": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/name"}},
+    "permissions": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/name"}},
+    "configuration_schema": {"type": "object"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$", "maxLength": 200},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*(\\.[a-z0-9_-]+)+$", "maxLength": 200},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$"}
+  }
+}

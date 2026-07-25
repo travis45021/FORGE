@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/event-envelope.schema.json",
+  "title": "Forge Event Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "event_type", "event_version", "occurred_at", "published_at", "source", "subject", "correlation_id", "causation_id", "classification", "payload", "metadata", "trace_id"],
+  "properties": {
+    "event_id": {"$ref": "#/$defs/id"},
+    "event_type": {"$ref": "#/$defs/name"},
+    "event_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "occurred_at": {"$ref": "#/$defs/time"},
+    "published_at": {"$ref": "#/$defs/time"},
+    "source": {"$ref": "#/$defs/id"},
+    "subject": {"$ref": "#/$defs/id"},
+    "correlation_id": {"$ref": "#/$defs/id"},
+    "causation_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+    "classification": {"enum": ["event", "request", "command", "decision", "evidence", "state"]},
+    "payload": {"type": "object"},
+    "metadata": {
+      "type": "object", "additionalProperties": false,
+      "required": ["partition", "sequence", "idempotency_key", "replay", "privacy"],
+      "properties": {
+        "partition": {"type": "string", "minLength": 1, "maxLength": 200},
+        "sequence": {"type": "integer", "minimum": 0},
+        "idempotency_key": {"type": "string", "minLength": 16, "maxLength": 200},
+        "replay": {"type": "boolean"},
+        "privacy": {"enum": ["public", "community", "account", "local_sensitive", "security_restricted"]}
+      }
+    },
+    "trace_id": {"type": "string", "minLength": 16, "maxLength": 200}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$", "maxLength": 200},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*(\\.[a-z0-9_-]+)+$", "maxLength": 200},
+    "time": {"type": "string", "format": "date-time", "pattern": "Z$"}
+  }
+}

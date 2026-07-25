@@ -1,0 +1,25 @@
+{
+  "capability_id": "user.thermal.zone",
+  "version": "1.0.0",
+  "provider_id": "user-device:custom-heater-01",
+  "contract_version": "1.0.0",
+  "operations": [
+    {
+      "name": "user.thermal.set_target",
+      "idempotent": true,
+      "side_effect": "physical",
+      "timeout_ms": 5000,
+      "input_schema": {"type": "object"},
+      "output_schema": {"type": "object"}
+    }
+  ],
+  "states": ["offline", "ready", "heating", "fault"],
+  "initial_state": "offline",
+  "permissions": ["forge.hardware.thermal_control"],
+  "dependencies": [],
+  "health": {"required": true},
+  "safety": {"maximum_temperature_c": 300},
+  "errors": {"fault": "provider_fault"},
+  "configuration_schema": {"type": "object"},
+  "conformance_tests": ["forge.test.thermal_target"]
+}

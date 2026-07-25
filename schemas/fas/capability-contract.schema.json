@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/capability-contract.schema.json",
+  "title": "Forge Capability Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["capability_id", "version", "provider_id", "contract_version", "operations", "states", "initial_state", "permissions", "dependencies", "health", "safety", "errors", "configuration_schema", "conformance_tests"],
+  "properties": {
+    "capability_id": {"$ref": "#/$defs/name"},
+    "version": {"$ref": "#/$defs/version"},
+    "provider_id": {"$ref": "#/$defs/id"},
+    "contract_version": {"$ref": "#/$defs/version"},
+    "operations": {
+      "type": "array", "minItems": 1, "maxItems": 100,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["name", "idempotent", "side_effect", "timeout_ms", "input_schema", "output_schema"],
+        "properties": {
+          "name": {"$ref": "#/$defs/name"},
+          "idempotent": {"type": "boolean"},
+          "side_effect": {"enum": ["none", "reversible", "persistent", "physical"]},
+          "timeout_ms": {"type": "integer", "minimum": 1, "maximum": 3600000},
+          "input_schema": {"type": "object"},
+          "output_schema": {"type": "object"}
+        }
+      }
+    },
+    "states": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"}},
+    "initial_state": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
+    "permissions": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/name"}},
+    "dependencies": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/name"}},
+    "health": {"type": "object"},
+    "safety": {"type": "object"},
+    "errors": {"type": "object"},
+    "configuration_schema": {"type": "object"},
+    "conformance_tests": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/name"}}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$", "maxLength": 200},
+    "name": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*(\\.[a-z0-9_-]+)+$", "maxLength": 200},
+    "version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:[-+][A-Za-z0-9.-]+)?$"}
+  }
+}

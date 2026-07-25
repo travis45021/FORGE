@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forge"
+version = "0.8.0"
+description = "Capability-based 3D-printing control and assurance platform"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+validation = [
+    "jsonschema[format]>=4.23,<5",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
