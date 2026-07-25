@@ -19,6 +19,7 @@ The current production baseline contains:
 - **FAS-010:** Trust Framework, Identity, Signing, and Sentinel
 - **FAS-011:** AI Council Architecture (future-gated)
 - **FAS-012:** User Interaction, Suggestions, and Attention
+- **FAS-013:** Knowledge Core and Operational Memory
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -42,6 +43,10 @@ FAS-012 adds AI-free and suggestion-free defaults, attention budgets,
 deduplication, dismissal, quiet hours, and strict separation between
 interaction preferences and automation authority under
 `src/forge/fas/interactions.py`.
+
+FAS-013 adds evidence-backed local knowledge, explicit uncertainty, user
+correction and supersession, dependency invalidation, advisory shared
+knowledge, and deterministic export under `src/forge/fas/knowledge.py`.
 
 ## Validation
 

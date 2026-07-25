@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "forge"
-version = "0.12.0"
+version = "0.13.0"
 description = "Capability-based 3D-printing control and assurance platform"
 requires-python = ">=3.10"
 dependencies = []

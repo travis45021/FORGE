@@ -57,7 +57,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-010 | Trust Framework, Identity, Signing, and Sentinel | Implemented | Baseline foundation | Historical FAS-008 |
 | FAS-011 | AI Council Architecture | Planned | Future-gated | Historical FAS-010 |
 | FAS-012 | User Interaction, Suggestions, and Attention | Implemented | Baseline | Historical FAS-011 |
-| FAS-013 | Knowledge Core and Operational Memory | Planned | Baseline foundation | Historical FAS-012 |
+| FAS-013 | Knowledge Core and Operational Memory | Implemented | Baseline foundation | Historical FAS-012 |
 | FAS-014 | Plugin SDK and Extension Architecture | Planned | Baseline | Historical FAS-013 |
 | FAS-015 | Mission Scheduling and Priority | Planned | Baseline | Historical FAS-014 |
 | FAS-016 | Distributed FORGE Nodes and Shared Ecosystem | Planned | Future-gated | Historical FAS-015 |
@@ -169,8 +169,8 @@ This reconciliation is complete when:
 3. Current production FAS-001–009 retain their meanings and history.
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
-6. FAS-010 and FAS-012 are implemented; FAS-013 is the next baseline
-   foundation.
+6. FAS-010, FAS-012, and FAS-013 are implemented; FAS-018 is the next
+   dependency-correct assurance specification.
 
 ## Decisions needed
 
