@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/trust-key.schema.json",
+  "title": "FORGE Trust Verification Key",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "key_id",
+    "subject_id",
+    "algorithm",
+    "verification_material",
+    "purposes",
+    "not_before",
+    "not_after",
+    "predecessor_key_id",
+    "status"
+  ],
+  "properties": {
+    "key_id": {"$ref": "#/$defs/namespacedId"},
+    "subject_id": {"$ref": "#/$defs/namespacedId"},
+    "algorithm": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,49}$"
+    },
+    "verification_material": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 8192
+    },
+    "purposes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^forge\\.signature\\.[a-z][a-z0-9_]*$"
+      }
+    },
+    "not_before": {"$ref": "#/$defs/timestamp"},
+    "not_after": {"$ref": "#/$defs/timestamp"},
+    "predecessor_key_id": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/namespacedId"}
+      ]
+    },
+    "status": {"const": "active"}
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "namespacedId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    }
+  }
+}
+

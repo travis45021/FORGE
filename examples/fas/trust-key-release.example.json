@@ -1,0 +1,15 @@
+{
+  "key_id": "forge-key:release-2026-a",
+  "subject_id": "forge-project:official",
+  "algorithm": "hmac-sha256-test",
+  "verification_material": "development-only-secret",
+  "purposes": [
+    "forge.signature.release",
+    "forge.signature.policy_bundle"
+  ],
+  "not_before": "2026-07-25T00:00:00Z",
+  "not_after": "2027-07-25T00:00:00Z",
+  "predecessor_key_id": null,
+  "status": "active"
+}
+

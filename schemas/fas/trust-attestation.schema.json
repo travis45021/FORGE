@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/trust-attestation.schema.json",
+  "title": "FORGE Trust Attestation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "attestation_id",
+    "schema_version",
+    "subject_id",
+    "key_id",
+    "algorithm",
+    "purpose",
+    "payload_digest",
+    "verifier",
+    "evaluated_at",
+    "verified",
+    "reason_codes",
+    "predecessor_key_id",
+    "revocation"
+  ],
+  "properties": {
+    "attestation_id": {"$ref": "#/$defs/namespacedId"},
+    "schema_version": {"const": "1.0.0"},
+    "subject_id": {"$ref": "#/$defs/namespacedId"},
+    "key_id": {"$ref": "#/$defs/namespacedId"},
+    "algorithm": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{2,49}$"
+    },
+    "purpose": {
+      "type": "string",
+      "pattern": "^forge\\.signature\\.[a-z][a-z0-9_]*$"
+    },
+    "payload_digest": {"$ref": "#/$defs/sha256"},
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": {"$ref": "#/$defs/namespacedId"},
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
+    "evaluated_at": {"$ref": "#/$defs/timestamp"},
+    "verified": {"const": true},
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    },
+    "predecessor_key_id": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/namespacedId"}
+      ]
+    },
+    "revocation": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["revoked_at", "reason"],
+          "properties": {
+            "revoked_at": {"$ref": "#/$defs/timestamp"},
+            "reason": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 500
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "namespacedId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}
+
