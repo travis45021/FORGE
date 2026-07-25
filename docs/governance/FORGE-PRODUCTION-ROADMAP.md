@@ -65,7 +65,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-018 | Verification, Validation, and Assurance | Implemented | Baseline | Historical FAS-017 |
 | FAS-019 | Object System and Digital Twin | Implemented | Baseline | Historical FAS-018 |
 | FAS-020 | User Identity, Onboarding, and Experience Selection | Implemented | Baseline | Historical FAS-019 |
-| FAS-021 | Configuration, Profiles, and Change Management | Planned | Baseline | Historical FAS-020 |
+| FAS-021 | Configuration, Profiles, and Change Management | Implemented | Baseline | Historical FAS-020 |
 | FAS-022 | Runtime, Execution Context, and Resources | Planned | Baseline | Historical FAS-021 |
 | FAS-023 | Health, Diagnostics, and Recovery | Planned | Baseline | Historical FAS-022 |
 | FAS-024 | Local Interface, API, and Accessibility | Planned | Baseline | Historical FAS-023 |

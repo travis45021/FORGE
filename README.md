@@ -25,6 +25,7 @@ The current production baseline contains:
 - **FAS-018:** Verification, Validation, and Assurance
 - **FAS-019:** Object System and Digital Twin
 - **FAS-020:** User Identity, Onboarding, and Experience Selection
+- **FAS-021:** Configuration, Profiles, and Change Management
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each

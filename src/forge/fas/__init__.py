@@ -3,6 +3,7 @@
 from .authorization import AuthorizationEngine, EvaluationError
 from .assurance import AssuranceError, AssuranceService, context_fingerprint
 from .capabilities import CapabilityError, CapabilityRegistry
+from .configuration import ConfigurationError, ConfigurationManager
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .interactions import InteractionError, InteractionManager
@@ -27,6 +28,8 @@ __all__ = [
     "AssuranceService",
     "CapabilityError",
     "CapabilityRegistry",
+    "ConfigurationError",
+    "ConfigurationManager",
     "EvaluationError",
     "EventError",
     "ExecutiveError",
