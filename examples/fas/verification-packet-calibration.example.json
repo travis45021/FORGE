@@ -1,0 +1,20 @@
+{
+  "verification_id": "forge-verification:calibration-001",
+  "subject_id": "forge-recommendation:pressure-advance-001",
+  "claim_state": "verified_recommendation",
+  "assurance_class": "A2",
+  "context_fingerprint": "sha256:66bed776794f2889a26fdec407090d904c2745b9a854a0f406d17927e2c7c496",
+  "required_checks": ["source", "timestamp", "context", "applicability", "capability", "compatibility", "evidence_quality", "recovery"],
+  "completed_checks": ["source", "timestamp", "context", "applicability", "capability", "compatibility", "evidence_quality", "recovery"],
+  "failed_checks": [],
+  "waived_checks": [],
+  "evidence_refs": ["forge-evidence:calibration-001"],
+  "assumptions": ["Installed nozzle remains 0.4 mm"],
+  "uncertainties": ["Material moisture was not instrument-measured"],
+  "applicability_limits": ["Current printer and material profile only"],
+  "confidence": 0.82,
+  "verifier_versions": ["forge-verifier:fas018-1.0.0"],
+  "expires_at": "2026-08-25T20:00:00Z",
+  "revalidate_when": ["nozzle_changed", "firmware_updated", "failed_outcome"],
+  "waiver": null
+}

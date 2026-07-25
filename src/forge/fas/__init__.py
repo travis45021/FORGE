@@ -1,6 +1,7 @@
 """FORGE Assurance Services reference components."""
 
 from .authorization import AuthorizationEngine, EvaluationError
+from .assurance import AssuranceError, AssuranceService, context_fingerprint
 from .capabilities import CapabilityError, CapabilityRegistry
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
@@ -18,6 +19,8 @@ from .trust import (
 
 __all__ = [
     "AuthorizationEngine",
+    "AssuranceError",
+    "AssuranceService",
     "CapabilityError",
     "CapabilityRegistry",
     "EvaluationError",
@@ -36,6 +39,7 @@ __all__ = [
     "TrustError",
     "TrustService",
     "content_digest",
+    "context_fingerprint",
     "development_hmac_signature",
     "development_hmac_verifier",
     "payload_digest",

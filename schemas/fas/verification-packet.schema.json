@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/verification-packet.schema.json",
+  "title": "FORGE Verification Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["verification_id", "subject_id", "claim_state", "assurance_class", "context_fingerprint", "required_checks", "completed_checks", "failed_checks", "waived_checks", "evidence_refs", "assumptions", "uncertainties", "applicability_limits", "confidence", "verifier_versions", "expires_at", "revalidate_when", "waiver"],
+  "properties": {
+    "verification_id": {"$ref": "#/$defs/id"},
+    "subject_id": {"$ref": "#/$defs/id"},
+    "claim_state": {"enum": ["observation", "hypothesis", "candidate", "tested", "verified_recommendation", "authorized_action", "measured_outcome"]},
+    "assurance_class": {"enum": ["A0", "A1", "A2", "A3", "A4", "A5"]},
+    "context_fingerprint": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "required_checks": {"$ref": "#/$defs/uniqueStrings"},
+    "completed_checks": {"$ref": "#/$defs/uniqueStrings"},
+    "failed_checks": {"$ref": "#/$defs/uniqueStrings"},
+    "waived_checks": {"$ref": "#/$defs/uniqueStrings"},
+    "evidence_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "assumptions": {"$ref": "#/$defs/uniqueStrings"},
+    "uncertainties": {"$ref": "#/$defs/uniqueStrings"},
+    "applicability_limits": {"$ref": "#/$defs/uniqueStrings"},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "verifier_versions": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "expires_at": {"oneOf": [{"type": "null"}, {"type": "string", "format": "date-time", "pattern": "Z$"}]},
+    "revalidate_when": {"$ref": "#/$defs/uniqueStrings"},
+    "waiver": {"oneOf": [{"type": "null"}, {"type": "object"}]}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"},
+    "uniqueStrings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}

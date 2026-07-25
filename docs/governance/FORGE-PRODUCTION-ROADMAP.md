@@ -62,7 +62,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-015 | Mission Scheduling and Priority | Planned | Baseline | Historical FAS-014 |
 | FAS-016 | Distributed FORGE Nodes and Shared Ecosystem | Planned | Future-gated | Historical FAS-015 |
 | FAS-017 | Shared Evidence Network Governance | Planned | Future-gated | Historical FAS-016 |
-| FAS-018 | Verification, Validation, and Assurance | Planned | Baseline | Historical FAS-017 |
+| FAS-018 | Verification, Validation, and Assurance | Implemented | Baseline | Historical FAS-017 |
 | FAS-019 | Object System and Digital Twin | Planned | Baseline | Historical FAS-018 |
 | FAS-020 | User Identity, Onboarding, and Experience Selection | Planned | Baseline | Historical FAS-019 |
 | FAS-021 | Configuration, Profiles, and Change Management | Planned | Baseline | Historical FAS-020 |
@@ -169,8 +169,8 @@ This reconciliation is complete when:
 3. Current production FAS-001–009 retain their meanings and history.
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
-6. FAS-010, FAS-012, and FAS-013 are implemented; FAS-018 is the next
-   dependency-correct assurance specification.
+6. Phase A is implemented: FAS-010, FAS-012, FAS-013, and FAS-018.
+   FAS-014 is the next local-platform specification.
 
 ## Decisions needed
 
