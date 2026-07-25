@@ -21,6 +21,7 @@ The current production baseline contains:
 - **FAS-012:** User Interaction, Suggestions, and Attention
 - **FAS-013:** Knowledge Core and Operational Memory
 - **FAS-014:** Plugin SDK and Extension Architecture
+- **FAS-015:** Mission Scheduling and Priority
 - **FAS-018:** Verification, Validation, and Assurance
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
@@ -53,6 +54,10 @@ knowledge, and deterministic export under `src/forge/fas/knowledge.py`.
 FAS-014 adds capability-bound plugin manifests, scoped permissions, validation
 and activation gates, quarantine, and a no-code provisional custom-hardware
 path under `src/forge/fas/plugins.py`.
+
+FAS-015 adds deterministic scheduling for authorized Missions, resource and
+condition waits, safe preemption, bounded retries, fairness, and AI-free local
+operation under `src/forge/fas/scheduler.py`.
 
 FAS-018 adds contextual Verification Packets, scaled A0-A4 gates, explicit
 claim states, separate authority verification, measured outcomes, and a

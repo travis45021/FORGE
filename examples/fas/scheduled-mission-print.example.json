@@ -1,0 +1,16 @@
+{
+  "mission_id": "forge-mission:print-001",
+  "priority": "normal",
+  "queued_at": "2026-07-25T20:00:00Z",
+  "deadline": null,
+  "resources": ["community-device:garage-printer"],
+  "dependencies": [],
+  "conditions": ["printer_idle"],
+  "requires_approval": false,
+  "approval_verified": false,
+  "requires_ai": false,
+  "at_safe_pause_point": true,
+  "retry_policy": {"maximum_attempts": 2, "backoff_seconds": 30},
+  "cost_limit": {"currency": "USD", "maximum": 1.0},
+  "offline_capable": true
+}

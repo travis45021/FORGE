@@ -10,6 +10,7 @@ from .knowledge import KnowledgeCore, KnowledgeError
 from .missions import MissionLifecycle, MissionTransitionError
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
+from .scheduler import MissionScheduler, SchedulingError
 from .trust import (
     TrustError,
     TrustService,
@@ -34,11 +35,13 @@ __all__ = [
     "KnowledgeCore",
     "KnowledgeError",
     "MissionLifecycle",
+    "MissionScheduler",
     "MissionTransitionError",
     "PolicyBundleError",
     "PolicyBundleRegistry",
     "PluginError",
     "PluginRegistry",
+    "SchedulingError",
     "TrustError",
     "TrustService",
     "content_digest",

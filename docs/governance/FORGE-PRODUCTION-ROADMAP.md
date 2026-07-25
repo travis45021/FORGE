@@ -59,7 +59,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-012 | User Interaction, Suggestions, and Attention | Implemented | Baseline | Historical FAS-011 |
 | FAS-013 | Knowledge Core and Operational Memory | Implemented | Baseline foundation | Historical FAS-012 |
 | FAS-014 | Plugin SDK and Extension Architecture | Implemented | Baseline | Historical FAS-013 |
-| FAS-015 | Mission Scheduling and Priority | Planned | Baseline | Historical FAS-014 |
+| FAS-015 | Mission Scheduling and Priority | Implemented | Baseline | Historical FAS-014 |
 | FAS-016 | Distributed FORGE Nodes and Shared Ecosystem | Planned | Future-gated | Historical FAS-015 |
 | FAS-017 | Shared Evidence Network Governance | Planned | Future-gated | Historical FAS-016 |
 | FAS-018 | Verification, Validation, and Assurance | Implemented | Baseline | Historical FAS-017 |
@@ -170,7 +170,8 @@ This reconciliation is complete when:
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
 6. Phase A is implemented: FAS-010, FAS-012, FAS-013, and FAS-018.
-   FAS-014 is implemented; FAS-015 is the next local-platform specification.
+   FAS-014 and FAS-015 are implemented; FAS-019 is the next local-platform
+   specification because FAS-016 and FAS-017 remain future-gated.
 
 ## Decisions needed
 

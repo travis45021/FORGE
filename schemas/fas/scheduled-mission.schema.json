@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/scheduled-mission.schema.json",
+  "title": "FORGE Scheduled Mission",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["mission_id", "priority", "queued_at", "deadline", "resources", "dependencies", "conditions", "requires_approval", "approval_verified", "requires_ai", "at_safe_pause_point", "retry_policy", "cost_limit", "offline_capable"],
+  "properties": {
+    "mission_id": {"$ref": "#/$defs/id"},
+    "priority": {"enum": ["background", "low", "normal", "high", "critical", "emergency"]},
+    "queued_at": {"$ref": "#/$defs/time"},
+    "deadline": {"oneOf": [{"type": "null"}, {"$ref": "#/$defs/time"}]},
+    "resources": {"$ref": "#/$defs/ids"},
+    "dependencies": {"$ref": "#/$defs/ids"},
+    "conditions": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "requires_approval": {"type": "boolean"},
+    "approval_verified": {"type": "boolean"},
+    "requires_ai": {"type": "boolean"},
+    "at_safe_pause_point": {"type": "boolean"},
+    "retry_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maximum_attempts", "backoff_seconds"],
+      "properties": {
+        "maximum_attempts": {"type": "integer", "minimum": 0, "maximum": 100},
+        "backoff_seconds": {"type": "integer", "minimum": 0}
+      }
+    },
+    "cost_limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "maximum"],
+      "properties": {
+        "currency": {"type": "string", "minLength": 3, "maxLength": 3},
+        "maximum": {"type": "number", "minimum": 0}
+      }
+    },
+    "offline_capable": {"type": "boolean"}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"},
+    "ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "time": {"type": "string", "format": "date-time", "pattern": "Z$"}
+  }
+}
