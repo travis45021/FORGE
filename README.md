@@ -23,6 +23,7 @@ The current production baseline contains:
 - **FAS-014:** Plugin SDK and Extension Architecture
 - **FAS-015:** Mission Scheduling and Priority
 - **FAS-018:** Verification, Validation, and Assurance
+- **FAS-019:** Object System and Digital Twin
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -62,6 +63,9 @@ operation under `src/forge/fas/scheduler.py`.
 FAS-018 adds contextual Verification Packets, scaled A0-A4 gates, explicit
 claim states, separate authority verification, measured outcomes, and a
 future-gated A5 boundary under `src/forge/fas/assurance.py`.
+
+FAS-019 adds a typed, versioned object graph and the opt-in Digital Twin v0.1
+Operational Twin under `src/forge/fas/objects.py`.
 
 ## Validation
 

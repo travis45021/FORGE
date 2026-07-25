@@ -1,0 +1,21 @@
+{
+  "object_id": "forge-object:custom-extruder-001",
+  "object_type": "hardware.extruder",
+  "display_name": "Custom Extruder",
+  "owner_scope": "installation:local",
+  "lifecycle_state": "provisional",
+  "knowledge_state": "user_declared",
+  "version": 1,
+  "capabilities": ["material.extrusion"],
+  "state": {"operating_state": "idle", "observed_at": "2026-07-25T20:00:00Z"},
+  "health": {"state": "unobserved", "updated_at": "2026-07-25T20:00:00Z"},
+  "limits": {"maximum_temperature_c": 285},
+  "policies": [],
+  "evidence_refs": ["forge-evidence:user-declaration-001"],
+  "metadata": {"manufacturer": null, "model": null},
+  "unknown_fields": ["maximum_flow_mm3_s"],
+  "creation_source": "user_guided_setup",
+  "created_at": "2026-07-25T20:00:00Z",
+  "updated_at": "2026-07-25T20:00:00Z",
+  "reason": "user declared custom component"
+}

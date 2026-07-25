@@ -8,6 +8,7 @@ from .executive import ExecutiveError, ForgeExecutive
 from .interactions import InteractionError, InteractionManager
 from .knowledge import KnowledgeCore, KnowledgeError
 from .missions import MissionLifecycle, MissionTransitionError
+from .objects import ObjectSystem, ObjectSystemError
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .scheduler import MissionScheduler, SchedulingError
@@ -37,6 +38,8 @@ __all__ = [
     "MissionLifecycle",
     "MissionScheduler",
     "MissionTransitionError",
+    "ObjectSystem",
+    "ObjectSystemError",
     "PolicyBundleError",
     "PolicyBundleRegistry",
     "PluginError",
