@@ -1,0 +1,62 @@
+{
+  "evidence_id": "forge-evidence:01J00000000000000000000005",
+  "schema_version": "1.0.0",
+  "captured_at": "2026-07-25T17:00:01Z",
+  "evidence_type": "forge.evidence.user_selection",
+  "content_type": "application/json",
+  "source": {
+    "source_id": "forge-user:local-owner",
+    "source_class": "user",
+    "acquisition_method": "forge.acquisition.dashboard_selection",
+    "version": "1"
+  },
+  "subject_refs": [
+    "forge-print:01J00000000000000000000002",
+    "forge-printer:k1max-primary",
+    "forge-bed:pei-textured"
+  ],
+  "claims": [
+    {
+      "claim_id": "forge-claim:bed-selected",
+      "statement": "The active print bed is textured PEI.",
+      "polarity": "supports"
+    }
+  ],
+  "integrity": {
+    "digest": "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "verified": true,
+    "signature": null
+  },
+  "quality": {
+    "authenticity": 1.0,
+    "freshness": 1.0,
+    "applicability": 1.0,
+    "precision": 0.95,
+    "completeness": 1.0,
+    "independence": 0.8,
+    "reproducibility": 0.9
+  },
+  "limitations": [
+    "The selection records user confirmation; it does not independently identify the physical plate."
+  ],
+  "confidence": 0.98,
+  "privacy": {
+    "classification": "account",
+    "purpose": "forge.purpose.print_authorization",
+    "consent_basis": "forge.consent.user_action",
+    "permitted_uses": [
+      "forge.use.local_decision",
+      "forge.use.audit"
+    ],
+    "redaction_status": "not_required",
+    "training_eligible": false
+  },
+  "retention_class": "forge.retention.print_evidence",
+  "storage": {
+    "mode": "inline",
+    "inline_value": {
+      "bed_profile": "forge-bed:pei-textured"
+    },
+    "size_bytes": 41
+  }
+}

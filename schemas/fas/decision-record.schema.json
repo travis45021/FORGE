@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/decision-record.schema.json",
+  "title": "Forge Decision Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision_id",
+    "schema_version",
+    "recorded_at",
+    "occurred_at",
+    "correlation_id",
+    "causation_event_id",
+    "decision_type",
+    "summary",
+    "disposition",
+    "requested_action",
+    "effective_action",
+    "alternatives",
+    "rationale",
+    "confidence",
+    "proposer",
+    "decider",
+    "authority_basis",
+    "required_approvals",
+    "approvals",
+    "evidence_refs",
+    "policy_refs",
+    "capability_refs",
+    "configuration_refs",
+    "related_decision_ids",
+    "expected_event_types",
+    "previous_record_hash",
+    "record_hash",
+    "signature",
+    "retention_class"
+  ],
+  "properties": {
+    "decision_id": { "$ref": "#/$defs/namespacedId" },
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "recorded_at": { "$ref": "#/$defs/timestamp" },
+    "occurred_at": { "$ref": "#/$defs/timestamp" },
+    "correlation_id": { "$ref": "#/$defs/namespacedId" },
+    "causation_event_id": { "$ref": "#/$defs/namespacedId" },
+    "decision_type": { "$ref": "#/$defs/namespacedName" },
+    "summary": { "type": "string", "minLength": 1, "maxLength": 500 },
+    "disposition": {
+      "enum": [
+        "proposed",
+        "approved",
+        "rejected",
+        "deferred",
+        "blocked",
+        "superseded",
+        "revoked"
+      ]
+    },
+    "requested_action": { "$ref": "#/$defs/action" },
+    "effective_action": {
+      "oneOf": [
+        { "$ref": "#/$defs/action" },
+        { "type": "null" }
+      ]
+    },
+    "alternatives": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["action", "disposition_reason"],
+        "properties": {
+          "action": { "$ref": "#/$defs/action" },
+          "disposition_reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        }
+      }
+    },
+    "rationale": { "type": "string", "minLength": 1, "maxLength": 4000 },
+    "confidence": { "$ref": "#/$defs/confidence" },
+    "proposer": { "$ref": "#/$defs/actor" },
+    "decider": { "$ref": "#/$defs/actor" },
+    "authority_basis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["role", "readiness_level", "policy_grant", "scope"],
+      "properties": {
+        "role": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "readiness_level": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "policy_grant": { "$ref": "#/$defs/versionedRef" },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/namespacedName" }
+        }
+      }
+    },
+    "required_approvals": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "$ref": "#/$defs/approvalRequirement" }
+    },
+    "approvals": {
+      "type": "array",
+      "maxItems": 20,
+      "items": { "$ref": "#/$defs/approval" }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["evidence_id", "relationship", "claim_ids"],
+        "properties": {
+          "evidence_id": { "$ref": "#/$defs/namespacedId" },
+          "relationship": { "enum": ["supports", "opposes", "context"] },
+          "claim_ids": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": { "$ref": "#/$defs/namespacedId" }
+          }
+        }
+      }
+    },
+    "policy_refs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 100,
+      "items": { "$ref": "#/$defs/versionedRef" }
+    },
+    "capability_refs": {
+      "type": "array",
+      "maxItems": 200,
+      "items": { "$ref": "#/$defs/versionedRef" }
+    },
+    "configuration_refs": {
+      "type": "array",
+      "maxItems": 200,
+      "items": { "$ref": "#/$defs/versionedRef" }
+    },
+    "related_decision_ids": {
+      "type": "array",
+      "maxItems": 100,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision_id", "relationship"],
+        "properties": {
+          "decision_id": { "$ref": "#/$defs/namespacedId" },
+          "relationship": {
+            "enum": [
+              "parent",
+              "dependency",
+              "conflicts",
+              "supersedes",
+              "superseded_by",
+              "amends",
+              "amended_by"
+            ]
+          }
+        }
+      }
+    },
+    "expected_event_types": {
+      "type": "array",
+      "maxItems": 100,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/namespacedName" }
+    },
+    "previous_record_hash": {
+      "oneOf": [
+        { "$ref": "#/$defs/sha256" },
+        { "type": "null" }
+      ]
+    },
+    "record_hash": { "$ref": "#/$defs/sha256" },
+    "signature": { "$ref": "#/$defs/signature" },
+    "retention_class": { "$ref": "#/$defs/namespacedName" }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "namespacedId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "namespacedName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*(\\.[a-z0-9_-]+)+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "versionedRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/namespacedId" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "digest": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "actor_type", "version"],
+      "properties": {
+        "actor_id": { "$ref": "#/$defs/namespacedId" },
+        "actor_type": {
+          "enum": [
+            "user",
+            "admin",
+            "architect",
+            "ai_model",
+            "ai_council",
+            "sentinel",
+            "service",
+            "integration"
+          ]
+        },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_type", "target_refs", "parameters"],
+      "properties": {
+        "action_type": { "$ref": "#/$defs/namespacedName" },
+        "target_refs": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 100,
+          "items": { "$ref": "#/$defs/namespacedId" }
+        },
+        "parameters": {
+          "type": "object",
+          "maxProperties": 100,
+          "additionalProperties": true
+        }
+      }
+    },
+    "confidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "score",
+        "method",
+        "calibration_state",
+        "sample_context",
+        "uncertainty"
+      ],
+      "properties": {
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "method": { "$ref": "#/$defs/versionedRef" },
+        "calibration_state": {
+          "enum": ["uncalibrated", "provisional", "calibrated", "degraded"]
+        },
+        "sample_context": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "uncertainty": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "approvalRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["approval_type", "minimum_count"],
+      "properties": {
+        "approval_type": { "$ref": "#/$defs/namespacedName" },
+        "minimum_count": { "type": "integer", "minimum": 1, "maximum": 20 }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "approval_id",
+        "approval_type",
+        "actor",
+        "approved_at",
+        "expires_at",
+        "signature"
+      ],
+      "properties": {
+        "approval_id": { "$ref": "#/$defs/namespacedId" },
+        "approval_type": { "$ref": "#/$defs/namespacedName" },
+        "actor": { "$ref": "#/$defs/actor" },
+        "approved_at": { "$ref": "#/$defs/timestamp" },
+        "expires_at": { "$ref": "#/$defs/timestamp" },
+        "signature": { "$ref": "#/$defs/signature" }
+      }
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "key_id", "signer_id", "value"],
+      "properties": {
+        "algorithm": { "enum": ["ed25519", "ecdsa-p256-sha256"] },
+        "key_id": { "$ref": "#/$defs/namespacedId" },
+        "signer_id": { "$ref": "#/$defs/namespacedId" },
+        "value": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 4096
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "decision_id": "forge-decision:01J00000000000000000000001",
+  "schema_version": "1.0.0",
+  "recorded_at": "2026-07-25T17:00:05Z",
+  "occurred_at": "2026-07-25T17:00:04Z",
+  "correlation_id": "forge-print:01J00000000000000000000002",
+  "causation_event_id": "forge-event:01J00000000000000000000003",
+  "decision_type": "forge.print.start_authorization",
+  "summary": "Print start approved after bed selection and preflight validation.",
+  "disposition": "approved",
+  "requested_action": {
+    "action_type": "forge.print.start",
+    "target_refs": ["forge-printer:k1max-primary"],
+    "parameters": {
+      "job_id": "forge-print:01J00000000000000000000002"
+    }
+  },
+  "effective_action": {
+    "action_type": "forge.print.start",
+    "target_refs": ["forge-printer:k1max-primary"],
+    "parameters": {
+      "job_id": "forge-print:01J00000000000000000000002",
+      "bed_profile": "forge-bed:pei-textured"
+    }
+  },
+  "alternatives": [
+    {
+      "action": {
+        "action_type": "forge.print.defer",
+        "target_refs": ["forge-print:01J00000000000000000000002"],
+        "parameters": {}
+      },
+      "disposition_reason": "Not required because all mandatory preflight checks passed."
+    }
+  ],
+  "rationale": "The user selected the textured PEI bed, the current printer capabilities satisfy the file requirements, and no blocking preflight findings remain.",
+  "confidence": {
+    "score": 0.97,
+    "method": {
+      "id": "forge-confidence:preflight-v1",
+      "version": "1.0.0",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "calibration_state": "provisional",
+    "sample_context": "K1 Max, Unicorn hotend, 0.4 mm hardened steel nozzle, textured PEI",
+    "uncertainty": "Camera evidence is not required for this pre-start authorization."
+  },
+  "proposer": {
+    "actor_id": "forge-service:preflight",
+    "actor_type": "service",
+    "version": "0.1.0"
+  },
+  "decider": {
+    "actor_id": "forge-user:local-owner",
+    "actor_type": "user",
+    "version": "1"
+  },
+  "authority_basis": {
+    "role": "printer_owner",
+    "readiness_level": 1,
+    "policy_grant": {
+      "id": "forge-policy:print-start",
+      "version": "1.0.0",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "scope": ["forge.print.start"]
+  },
+  "required_approvals": [
+    {
+      "approval_type": "forge.approval.user",
+      "minimum_count": 1
+    }
+  ],
+  "approvals": [
+    {
+      "approval_id": "forge-approval:01J00000000000000000000004",
+      "approval_type": "forge.approval.user",
+      "actor": {
+        "actor_id": "forge-user:local-owner",
+        "actor_type": "user",
+        "version": "1"
+      },
+      "approved_at": "2026-07-25T17:00:02Z",
+      "expires_at": "2026-07-25T17:10:02Z",
+      "signature": {
+        "algorithm": "ed25519",
+        "key_id": "forge-key:user-local-owner-1",
+        "signer_id": "forge-user:local-owner",
+        "value": "EXAMPLE_NOT_A_REAL_SIGNATURE"
+      }
+    }
+  ],
+  "evidence_refs": [
+    {
+      "evidence_id": "forge-evidence:01J00000000000000000000005",
+      "relationship": "supports",
+      "claim_ids": ["forge-claim:bed-selected"]
+    }
+  ],
+  "policy_refs": [
+    {
+      "id": "forge-policy:print-start",
+      "version": "1.0.0",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    }
+  ],
+  "capability_refs": [
+    {
+      "id": "forge-capability:heated-bed",
+      "version": "1.0.0",
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    }
+  ],
+  "configuration_refs": [
+    {
+      "id": "forge-config:active-print-profile",
+      "version": "42",
+      "digest": "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+    }
+  ],
+  "related_decision_ids": [],
+  "expected_event_types": [
+    "forge.decision.execution_requested",
+    "forge.print.started",
+    "forge.decision.execution_reconciled"
+  ],
+  "previous_record_hash": null,
+  "record_hash": "sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "signature": {
+    "algorithm": "ed25519",
+    "key_id": "forge-key:ledger-1",
+    "signer_id": "forge-service:decision-ledger",
+    "value": "EXAMPLE_NOT_A_REAL_SIGNATURE"
+  },
+  "retention_class": "forge.retention.print_decision"
+}

@@ -1,0 +1,239 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/evidence-record.schema.json",
+  "title": "Forge Evidence Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evidence_id",
+    "schema_version",
+    "captured_at",
+    "evidence_type",
+    "content_type",
+    "source",
+    "subject_refs",
+    "claims",
+    "integrity",
+    "quality",
+    "limitations",
+    "confidence",
+    "privacy",
+    "retention_class",
+    "storage"
+  ],
+  "properties": {
+    "evidence_id": { "$ref": "#/$defs/namespacedId" },
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "captured_at": { "$ref": "#/$defs/timestamp" },
+    "evidence_type": { "$ref": "#/$defs/namespacedName" },
+    "content_type": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z0-9.+-]+/[a-z0-9.+-]+$"
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "source_class", "acquisition_method", "version"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/namespacedId" },
+        "source_class": {
+          "enum": [
+            "sensor",
+            "camera",
+            "user",
+            "printer",
+            "slicer",
+            "configuration",
+            "model",
+            "service",
+            "integration",
+            "community",
+            "security"
+          ]
+        },
+        "acquisition_method": { "$ref": "#/$defs/namespacedName" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 }
+      }
+    },
+    "subject_refs": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 200,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/namespacedId" }
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 500,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["claim_id", "statement", "polarity"],
+        "properties": {
+          "claim_id": { "$ref": "#/$defs/namespacedId" },
+          "statement": { "type": "string", "minLength": 1, "maxLength": 2000 },
+          "polarity": { "enum": ["supports", "opposes", "context"] }
+        }
+      }
+    },
+    "integrity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["digest", "verified"],
+      "properties": {
+        "digest": { "$ref": "#/$defs/sha256" },
+        "verified": { "type": "boolean" },
+        "signature": {
+          "oneOf": [
+            { "$ref": "#/$defs/signature" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "authenticity",
+        "freshness",
+        "applicability",
+        "precision",
+        "completeness",
+        "independence",
+        "reproducibility"
+      ],
+      "properties": {
+        "authenticity": { "$ref": "#/$defs/qualityScore" },
+        "freshness": { "$ref": "#/$defs/qualityScore" },
+        "applicability": { "$ref": "#/$defs/qualityScore" },
+        "precision": { "$ref": "#/$defs/qualityScore" },
+        "completeness": { "$ref": "#/$defs/qualityScore" },
+        "independence": { "$ref": "#/$defs/qualityScore" },
+        "reproducibility": { "$ref": "#/$defs/qualityScore" }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "maxItems": 100,
+      "items": { "type": "string", "minLength": 1, "maxLength": 1000 }
+    },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "purpose",
+        "consent_basis",
+        "permitted_uses",
+        "redaction_status",
+        "training_eligible"
+      ],
+      "properties": {
+        "classification": {
+          "enum": [
+            "public",
+            "community",
+            "account",
+            "local_sensitive",
+            "security_restricted"
+          ]
+        },
+        "purpose": { "$ref": "#/$defs/namespacedName" },
+        "consent_basis": { "$ref": "#/$defs/namespacedName" },
+        "permitted_uses": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 50,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/namespacedName" }
+        },
+        "redaction_status": {
+          "enum": ["not_required", "pending", "redacted", "blocked"]
+        },
+        "training_eligible": { "type": "boolean" }
+      }
+    },
+    "retention_class": { "$ref": "#/$defs/namespacedName" },
+    "storage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["inline", "content_addressed", "external_reference"] },
+        "uri": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "inline_value": {},
+        "size_bytes": { "type": "integer", "minimum": 0 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "mode": { "const": "inline" } } },
+          "then": {
+            "required": ["inline_value", "size_bytes"],
+            "properties": {
+              "inline_value": {},
+              "size_bytes": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "mode": { "enum": ["content_addressed", "external_reference"] }
+            }
+          },
+          "then": {
+            "required": ["uri", "size_bytes"],
+            "properties": {
+              "uri": { "type": "string", "minLength": 1, "maxLength": 2000 },
+              "size_bytes": { "type": "integer", "minimum": 0 }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "namespacedId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "namespacedName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*(\\.[a-z0-9_-]+)+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "qualityScore": { "type": "number", "minimum": 0, "maximum": 1 },
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "key_id", "signer_id", "value"],
+      "properties": {
+        "algorithm": { "enum": ["ed25519", "ecdsa-p256-sha256"] },
+        "key_id": { "$ref": "#/$defs/namespacedId" },
+        "signer_id": { "$ref": "#/$defs/namespacedId" },
+        "value": {
+          "type": "string",
+          "minLength": 16,
+          "maxLength": 4096
+        }
+      }
+    }
+  }
+}

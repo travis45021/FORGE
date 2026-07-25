@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/authorization-result.schema.json",
+  "title": "Forge Authorization Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "evaluation_id",
+    "schema_version",
+    "request_id",
+    "idempotency_key",
+    "evaluated_at",
+    "engine",
+    "policy_set_digest",
+    "outcome",
+    "reason_codes",
+    "effective_action",
+    "matched_policy_refs",
+    "missing_approvals",
+    "applied_constraints",
+    "obligations"
+  ],
+  "properties": {
+    "evaluation_id": { "$ref": "#/$defs/namespacedId" },
+    "schema_version": { "const": "1.0.0" },
+    "request_id": { "$ref": "#/$defs/namespacedId" },
+    "idempotency_key": { "type": "string", "minLength": 16, "maxLength": 200 },
+    "evaluated_at": { "$ref": "#/$defs/timestamp" },
+    "engine": { "$ref": "#/$defs/versionedRef" },
+    "policy_set_digest": { "$ref": "#/$defs/sha256" },
+    "outcome": { "enum": ["allow", "deny", "challenge"] },
+    "reason_codes": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+    },
+    "effective_action": {
+      "oneOf": [
+        { "$ref": "#/$defs/action" },
+        { "type": "null" }
+      ]
+    },
+    "matched_policy_refs": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/versionedRef" }
+    },
+    "missing_approvals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["approval_type", "minimum_count", "supplied_count"],
+        "properties": {
+          "approval_type": { "$ref": "#/$defs/namespacedName" },
+          "minimum_count": { "type": "integer", "minimum": 1 },
+          "supplied_count": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "applied_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "parameter",
+          "requested_value",
+          "effective_value",
+          "policy_id"
+        ],
+        "properties": {
+          "parameter": { "type": "string", "minLength": 1 },
+          "requested_value": { "type": "number" },
+          "effective_value": { "type": "number" },
+          "policy_id": { "$ref": "#/$defs/namespacedId" }
+        }
+      }
+    },
+    "obligations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/namespacedName" }
+    }
+  },
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "namespacedId": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "namespacedName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200,
+      "pattern": "^[a-z][a-z0-9_.-]*(\\.[a-z0-9_-]+)+$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    },
+    "versionedRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/namespacedId" },
+        "version": { "type": "string", "minLength": 1, "maxLength": 100 }
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_type", "target_refs", "parameters"],
+      "properties": {
+        "action_type": { "$ref": "#/$defs/namespacedName" },
+        "target_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/namespacedId" }
+        },
+        "parameters": { "type": "object", "additionalProperties": true }
+      }
+    }
+  }
+}
+

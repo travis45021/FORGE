@@ -1,0 +1,37 @@
+{
+  "policy_id": "forge-policy:print-start-user-directed",
+  "version": "1.0.0",
+  "description": "Allow an owner-directed print start at ARL 1 after verified user approval.",
+  "enabled": true,
+  "priority": 500,
+  "effect": "allow",
+  "action_patterns": ["forge.print.start"],
+  "actor_types": ["user", "admin"],
+  "roles": ["printer_owner", "forge_admin"],
+  "minimum_readiness_level": 1,
+  "maximum_readiness_level": 1,
+  "required_scopes": ["forge.print.start"],
+  "required_approvals": [
+    {
+      "approval_type": "forge.approval.user",
+      "minimum_count": 1
+    }
+  ],
+  "when_facts": {
+    "preflight_state": "green"
+  },
+  "parameter_constraints": [
+    {
+      "parameter": "nozzle_temperature_c",
+      "required": true,
+      "minimum": 0,
+      "maximum": 300,
+      "on_violation": "reject"
+    }
+  ],
+  "obligations": [
+    "forge.obligation.ledger_append",
+    "forge.obligation.execution_reconcile"
+  ]
+}
+

@@ -1,0 +1,34 @@
+{
+  "evaluation_id": "forge-authorization:1bec8e5b41ce7b1858f1011967948c70",
+  "schema_version": "1.0.0",
+  "request_id": "forge-auth-request:01J00000000000000000000008",
+  "idempotency_key": "print-start-01J00000000000000000000008",
+  "evaluated_at": "2026-07-25T18:00:00Z",
+  "engine": {
+    "id": "forge-service:fas-008-reference-evaluator",
+    "version": "1.0.0"
+  },
+  "policy_set_digest": "sha256:5b71ffbdc8986a549fad5ba7afa865a776aa31c6121038d765e32a696a0503f0",
+  "outcome": "allow",
+  "reason_codes": ["policy_allow"],
+  "effective_action": {
+    "action_type": "forge.print.start",
+    "target_refs": ["forge-printer:k1max-primary"],
+    "parameters": {
+      "job_id": "forge-print:01J00000000000000000000002",
+      "nozzle_temperature_c": 240
+    }
+  },
+  "matched_policy_refs": [
+    {
+      "id": "forge-policy:print-start-user-directed",
+      "version": "1.0.0"
+    }
+  ],
+  "missing_approvals": [],
+  "applied_constraints": [],
+  "obligations": [
+    "forge.obligation.ledger_append",
+    "forge.obligation.execution_reconcile"
+  ]
+}

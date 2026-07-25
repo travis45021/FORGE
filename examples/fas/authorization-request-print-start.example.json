@@ -1,0 +1,45 @@
+{
+  "request_id": "forge-auth-request:01J00000000000000000000008",
+  "idempotency_key": "print-start-01J00000000000000000000008",
+  "evaluated_at": "2026-07-25T18:00:00Z",
+  "authorization_phase": "execution",
+  "actor": {
+    "actor_id": "forge-user:local-owner",
+    "actor_type": "user",
+    "version": "1"
+  },
+  "role": "printer_owner",
+  "readiness_level": 1,
+  "granted_scopes": ["forge.print.start"],
+  "requested_action": {
+    "action_type": "forge.print.start",
+    "target_refs": ["forge-printer:k1max-primary"],
+    "parameters": {
+      "job_id": "forge-print:01J00000000000000000000002",
+      "nozzle_temperature_c": 240
+    }
+  },
+  "approvals": [
+    {
+      "approval_id": "forge-approval:01J00000000000000000000004",
+      "approval_type": "forge.approval.user",
+      "approved_at": "2026-07-25T17:59:00Z",
+      "expires_at": "2026-07-25T18:09:00Z",
+      "verified": true
+    }
+  ],
+  "facts": {
+    "ledger_integrity": "verified",
+    "sentinel_state": "clear",
+    "preflight_state": "green",
+    "restricted_arl_access": false
+  },
+  "decision_state": {
+    "decision_id": "forge-decision:01J00000000000000000000001",
+    "disposition": "approved",
+    "signature_verified": true,
+    "superseded": false,
+    "revoked": false
+  }
+}
+
