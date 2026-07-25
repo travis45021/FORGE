@@ -15,6 +15,7 @@ The current production baseline contains:
 - **FAS-006:** Forge Event System
 - **FAS-007:** Decision Ledger and Evidence Architecture
 - **FAS-008:** Policy Decision and Authorization Engine
+- **FAS-009:** Policy Bundle Governance
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -23,6 +24,10 @@ specification identifies its reconstruction status.
 FAS-008 includes a deterministic reference evaluator under
 `src/forge/fas/authorization.py`. It is an authorization component, not a
 printer-control service.
+
+FAS-009 adds an immutable, content-addressed bundle registry and governed
+activation/rollback reference component under
+`src/forge/fas/policy_bundles.py`.
 
 ## Validation
 
