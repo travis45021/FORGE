@@ -4,6 +4,7 @@ from .authorization import AuthorizationEngine, EvaluationError
 from .capabilities import CapabilityError, CapabilityRegistry
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
+from .interactions import InteractionError, InteractionManager
 from .missions import MissionLifecycle, MissionTransitionError
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .trust import (
@@ -23,6 +24,8 @@ __all__ = [
     "ExecutiveError",
     "ForgeExecutive",
     "IdempotentConsumer",
+    "InteractionError",
+    "InteractionManager",
     "MissionLifecycle",
     "MissionTransitionError",
     "PolicyBundleError",

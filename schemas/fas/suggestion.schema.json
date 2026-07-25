@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/suggestion.schema.json",
+  "title": "FORGE Suggestion Contract",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "suggestion_id",
+    "category",
+    "source_type",
+    "subject_id",
+    "summary",
+    "evidence_refs",
+    "evidence_digest",
+    "expected_benefit",
+    "confidence",
+    "urgency",
+    "interrupt",
+    "deduplication_key",
+    "actions"
+  ],
+  "properties": {
+    "suggestion_id": {"$ref": "#/$defs/id"},
+    "category": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+    "source_type": {
+      "enum": ["deterministic", "ai", "user_rule", "shared_knowledge"]
+    },
+    "subject_id": {"$ref": "#/$defs/id"},
+    "summary": {"type": "string", "minLength": 1, "maxLength": 500},
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "evidence_digest": {"$ref": "#/$defs/sha256"},
+    "expected_benefit": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "urgency": {"enum": ["low", "normal", "high"]},
+    "interrupt": {"const": false},
+    "deduplication_key": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 200
+    },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "review",
+          "schedule",
+          "dismiss",
+          "remind_later",
+          "disable_category"
+        ]
+      }
+    }
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^sha256:[a-f0-9]{64}$"
+    }
+  }
+}

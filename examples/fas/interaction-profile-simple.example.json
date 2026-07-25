@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "interaction_profile": "simple",
+  "ai_enabled": false,
+  "suggestions_enabled": false,
+  "automation_profile": "manual",
+  "maximum_suggestions_per_day": 0,
+  "maximum_suggestions_per_mission": 0,
+  "disabled_categories": [],
+  "quiet_hours": null
+}

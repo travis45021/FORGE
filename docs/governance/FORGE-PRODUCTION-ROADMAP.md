@@ -54,9 +54,9 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-007 | Decision Ledger and Evidence Architecture | Implemented | Baseline | Historical FAS-007 |
 | FAS-008 | Policy Decision and Authorization Engine | Implemented | Baseline | Reconciles historical FAS-009 authority rules |
 | FAS-009 | Policy Bundle Governance | Implemented | Baseline | Extends historical FAS-009 policy governance |
-| FAS-010 | Trust Framework, Identity, Signing, and Sentinel | Next | Baseline foundation | Historical FAS-008 |
+| FAS-010 | Trust Framework, Identity, Signing, and Sentinel | Implemented | Baseline foundation | Historical FAS-008 |
 | FAS-011 | AI Council Architecture | Planned | Future-gated | Historical FAS-010 |
-| FAS-012 | User Interaction, Suggestions, and Attention | Planned | Baseline | Historical FAS-011 |
+| FAS-012 | User Interaction, Suggestions, and Attention | Implemented | Baseline | Historical FAS-011 |
 | FAS-013 | Knowledge Core and Operational Memory | Planned | Baseline foundation | Historical FAS-012 |
 | FAS-014 | Plugin SDK and Extension Architecture | Planned | Baseline | Historical FAS-013 |
 | FAS-015 | Mission Scheduling and Priority | Planned | Baseline | Historical FAS-014 |
@@ -169,10 +169,10 @@ This reconciliation is complete when:
 3. Current production FAS-001–009 retain their meanings and history.
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
-6. FAS-010 is the next new production specification.
+6. FAS-010 and FAS-012 are implemented; FAS-013 is the next baseline
+   foundation.
 
 ## Decisions needed
 
 None. This roadmap preserves previously approved concepts and resolves
 identifier collisions without changing product authority or v1 scope.
-

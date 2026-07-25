@@ -1,0 +1,15 @@
+{
+  "suggestion_id": "forge-suggestion:calibration-001",
+  "category": "calibration",
+  "source_type": "deterministic",
+  "subject_id": "community-device:garage-printer",
+  "summary": "A pressure-advance calibration may improve corner consistency.",
+  "evidence_refs": ["forge-evidence:print-analysis-001"],
+  "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "expected_benefit": "Reduce visible corner bulging.",
+  "confidence": 0.78,
+  "urgency": "low",
+  "interrupt": false,
+  "deduplication_key": "calibration:pressure-advance:garage-printer",
+  "actions": ["review", "schedule", "dismiss", "disable_category"]
+}

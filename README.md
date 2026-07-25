@@ -17,6 +17,8 @@ The current production baseline contains:
 - **FAS-008:** Policy Decision and Authorization Engine
 - **FAS-009:** Policy Bundle Governance
 - **FAS-010:** Trust Framework, Identity, Signing, and Sentinel
+- **FAS-011:** AI Council Architecture (future-gated)
+- **FAS-012:** User Interaction, Suggestions, and Attention
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -33,6 +35,13 @@ activation/rollback reference component under
 FAS-010 adds deterministic trust verification, immutable key lineage,
 revocation, signed approvals, and a non-authoritative Sentinel evidence
 boundary under `src/forge/fas/trust.py`.
+
+FAS-011 is architecturally recognized but deliberately future-gated.
+
+FAS-012 adds AI-free and suggestion-free defaults, attention budgets,
+deduplication, dismissal, quiet hours, and strict separation between
+interaction preferences and automation authority under
+`src/forge/fas/interactions.py`.
 
 ## Validation
 

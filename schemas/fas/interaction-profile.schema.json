@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/interaction-profile.schema.json",
+  "title": "FORGE Interaction Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "interaction_profile",
+    "ai_enabled",
+    "suggestions_enabled",
+    "automation_profile",
+    "maximum_suggestions_per_day",
+    "maximum_suggestions_per_mission",
+    "disabled_categories",
+    "quiet_hours"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "interaction_profile": {
+      "enum": ["quiet", "simple", "guided", "proactive", "managed"]
+    },
+    "ai_enabled": {"type": "boolean"},
+    "suggestions_enabled": {"type": "boolean"},
+    "automation_profile": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100
+    },
+    "maximum_suggestions_per_day": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "maximum_suggestions_per_mission": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "disabled_categories": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      }
+    },
+    "quiet_hours": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["start", "end"],
+          "properties": {
+            "start": {"type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"},
+            "end": {"type": "string", "pattern": "^([01][0-9]|2[0-3]):[0-5][0-9]$"}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -4,7 +4,7 @@
   "baseline_commit": "4966cbc1d84a30707c821b2d559f8f20fb842237",
   "rules": {
     "current_production_range": "FAS-001..FAS-009",
-    "next_canonical_id": "FAS-010",
+    "next_canonical_id": "FAS-013",
     "historical_source_range": "FAS-001..FAS-036"
   },
   "mappings": [
@@ -15,10 +15,10 @@
     {"historical_id": "FAS-005", "canonical_ids": ["FAS-005"], "disposition": "implemented", "title": "Forge Executive"},
     {"historical_id": "FAS-006", "canonical_ids": ["FAS-006"], "disposition": "implemented", "title": "Forge Event System"},
     {"historical_id": "FAS-007", "canonical_ids": ["FAS-007"], "disposition": "implemented", "title": "Decision Ledger and Evidence Architecture"},
-    {"historical_id": "FAS-008", "canonical_ids": ["FAS-010"], "disposition": "renumbered_next", "title": "Trust Framework, Identity, Signing, and Sentinel"},
+    {"historical_id": "FAS-008", "canonical_ids": ["FAS-010"], "disposition": "implemented", "title": "Trust Framework, Identity, Signing, and Sentinel"},
     {"historical_id": "FAS-009", "canonical_ids": ["FAS-008", "FAS-009"], "disposition": "absorbed", "title": "Policy, Authority, and Automation Governance"},
     {"historical_id": "FAS-010", "canonical_ids": ["FAS-011"], "disposition": "renumbered_future_gated", "title": "AI Council Architecture"},
-    {"historical_id": "FAS-011", "canonical_ids": ["FAS-012"], "disposition": "renumbered_baseline", "title": "User Interaction, Suggestions, and Attention"},
+    {"historical_id": "FAS-011", "canonical_ids": ["FAS-012"], "disposition": "implemented", "title": "User Interaction, Suggestions, and Attention"},
     {"historical_id": "FAS-012", "canonical_ids": ["FAS-013"], "disposition": "renumbered_baseline_foundation", "title": "Knowledge Core and Operational Memory"},
     {"historical_id": "FAS-013", "canonical_ids": ["FAS-014"], "disposition": "renumbered_baseline", "title": "Plugin SDK and Extension Architecture"},
     {"historical_id": "FAS-014", "canonical_ids": ["FAS-015"], "disposition": "renumbered_baseline", "title": "Mission Scheduling and Priority"},
