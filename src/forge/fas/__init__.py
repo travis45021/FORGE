@@ -9,6 +9,7 @@ from .interactions import InteractionError, InteractionManager
 from .knowledge import KnowledgeCore, KnowledgeError
 from .missions import MissionLifecycle, MissionTransitionError
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
+from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .trust import (
     TrustError,
     TrustService,
@@ -36,10 +37,13 @@ __all__ = [
     "MissionTransitionError",
     "PolicyBundleError",
     "PolicyBundleRegistry",
+    "PluginError",
+    "PluginRegistry",
     "TrustError",
     "TrustService",
     "content_digest",
     "context_fingerprint",
+    "custom_component_manifest",
     "development_hmac_signature",
     "development_hmac_verifier",
     "payload_digest",

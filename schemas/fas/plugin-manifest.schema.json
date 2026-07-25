@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/plugin-manifest.schema.json",
+  "title": "FORGE Plugin Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "plugin_id", "name", "version", "api_version", "plugin_type", "publisher", "description", "fas_compliance", "capabilities", "permissions", "services", "isolation", "network_scope", "configuration_schema", "validation_tests", "experimental", "execution_mode", "limitations"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "plugin_id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9_]+){2,}$"},
+    "name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "api_version": {"type": "string", "minLength": 1},
+    "plugin_type": {"enum": ["capability_provider", "transport", "ai_provider", "mission", "profile", "interface", "knowledge"]},
+    "publisher": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "fas_compliance": {"$ref": "#/$defs/uniqueStrings"},
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capability_id", "version", "provider_id", "operations", "limitations", "required_permission"],
+        "properties": {
+          "capability_id": {"type": "string", "minLength": 3},
+          "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+          "provider_id": {"type": "string", "minLength": 3},
+          "operations": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["name"], "properties": {"name": {"type": "string", "minLength": 1}}}},
+          "limitations": {"$ref": "#/$defs/uniqueStrings"},
+          "required_permission": {"type": "string", "minLength": 3}
+        }
+      }
+    },
+    "permissions": {"$ref": "#/$defs/uniqueStrings"},
+    "services": {"$ref": "#/$defs/uniqueStrings"},
+    "isolation": {"enum": ["separate_process", "in_process_reduced"]},
+    "network_scope": {"enum": ["none", "local_only", "internet"]},
+    "configuration_schema": {"type": "object"},
+    "validation_tests": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "experimental": {"type": "boolean"},
+    "execution_mode": {"enum": ["normal", "simulation_only", "test_hardware"]},
+    "limitations": {"$ref": "#/$defs/uniqueStrings"}
+  },
+  "$defs": {
+    "uniqueStrings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  }
+}

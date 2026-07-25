@@ -20,6 +20,7 @@ The current production baseline contains:
 - **FAS-011:** AI Council Architecture (future-gated)
 - **FAS-012:** User Interaction, Suggestions, and Attention
 - **FAS-013:** Knowledge Core and Operational Memory
+- **FAS-014:** Plugin SDK and Extension Architecture
 - **FAS-018:** Verification, Validation, and Assurance
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
@@ -48,6 +49,10 @@ interaction preferences and automation authority under
 FAS-013 adds evidence-backed local knowledge, explicit uncertainty, user
 correction and supersession, dependency invalidation, advisory shared
 knowledge, and deterministic export under `src/forge/fas/knowledge.py`.
+
+FAS-014 adds capability-bound plugin manifests, scoped permissions, validation
+and activation gates, quarantine, and a no-code provisional custom-hardware
+path under `src/forge/fas/plugins.py`.
 
 FAS-018 adds contextual Verification Packets, scaled A0-A4 gates, explicit
 claim states, separate authority verification, measured outcomes, and a

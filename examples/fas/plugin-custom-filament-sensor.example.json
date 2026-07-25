@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "plugin_id": "local.custom.filament_sensor",
+  "name": "Custom Filament Sensor",
+  "version": "0.1.0",
+  "api_version": ">=1.0.0 <2.0.0",
+  "plugin_type": "capability_provider",
+  "publisher": "local-user",
+  "description": "Local provisional runout sensor.",
+  "fas_compliance": ["FAS-003", "FAS-010", "FAS-014", "FAS-018"],
+  "capabilities": [{
+    "capability_id": "filament.runout_detection",
+    "version": "1.0.0",
+    "provider_id": "local.custom.filament_sensor.provider",
+    "operations": [{"name": "read_state"}],
+    "limitations": ["requires_manual_test"],
+    "required_permission": "machine.filament.read"
+  }],
+  "permissions": ["machine.filament.read"],
+  "services": ["events", "logging", "capability_registry"],
+  "isolation": "separate_process",
+  "network_scope": "none",
+  "configuration_schema": {"type": "object"},
+  "validation_tests": ["manifest", "configuration", "capability_contract"],
+  "experimental": false,
+  "execution_mode": "normal",
+  "limitations": ["runout_only"]
+}
