@@ -9,7 +9,7 @@ load policy from ambient process state.
 from __future__ import annotations
 
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime
 from fnmatch import fnmatchcase
 import hashlib
 import json
@@ -415,4 +415,3 @@ class AuthorizationEngine:
             "applied_constraints": applied_constraints or [],
             "obligations": obligations or [],
         }
-
