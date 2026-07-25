@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "local_id": "local-user:owner",
+  "display_name": "Workshop Owner",
+  "network_identity": null,
+  "experience_profile": "custom_builder",
+  "settings": {
+    "network_mode": "local",
+    "ai_enabled": false,
+    "suggestions_enabled": false,
+    "hardware_setup": "custom",
+    "interaction_profile": "simple",
+    "operational_twin_enabled": true
+  },
+  "automation_authority": "manual",
+  "sharing_consent": false,
+  "onboarding_complete": true
+}

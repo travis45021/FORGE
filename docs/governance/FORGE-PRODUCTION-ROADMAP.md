@@ -64,7 +64,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-017 | Shared Evidence Network Governance | Planned | Future-gated | Historical FAS-016 |
 | FAS-018 | Verification, Validation, and Assurance | Implemented | Baseline | Historical FAS-017 |
 | FAS-019 | Object System and Digital Twin | Implemented | Baseline | Historical FAS-018 |
-| FAS-020 | User Identity, Onboarding, and Experience Selection | Planned | Baseline | Historical FAS-019 |
+| FAS-020 | User Identity, Onboarding, and Experience Selection | Implemented | Baseline | Historical FAS-019 |
 | FAS-021 | Configuration, Profiles, and Change Management | Planned | Baseline | Historical FAS-020 |
 | FAS-022 | Runtime, Execution Context, and Resources | Planned | Baseline | Historical FAS-021 |
 | FAS-023 | Health, Diagnostics, and Recovery | Planned | Baseline | Historical FAS-022 |
@@ -172,7 +172,7 @@ This reconciliation is complete when:
 6. Phase A is implemented: FAS-010, FAS-012, FAS-013, and FAS-018.
    FAS-014 and FAS-015 are implemented; FAS-019 is the next local-platform
    specification because FAS-016 and FAS-017 remain future-gated. FAS-019 is
-   implemented; FAS-020 is next.
+   implemented; FAS-020 is implemented and FAS-021 is next.
 
 ## Decisions needed
 

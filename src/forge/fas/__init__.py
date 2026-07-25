@@ -9,6 +9,7 @@ from .interactions import InteractionError, InteractionManager
 from .knowledge import KnowledgeCore, KnowledgeError
 from .missions import MissionLifecycle, MissionTransitionError
 from .objects import ObjectSystem, ObjectSystemError
+from .onboarding import OnboardingError, OnboardingService
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .scheduler import MissionScheduler, SchedulingError
@@ -40,6 +41,8 @@ __all__ = [
     "MissionTransitionError",
     "ObjectSystem",
     "ObjectSystemError",
+    "OnboardingError",
+    "OnboardingService",
     "PolicyBundleError",
     "PolicyBundleRegistry",
     "PluginError",

@@ -24,6 +24,7 @@ The current production baseline contains:
 - **FAS-015:** Mission Scheduling and Priority
 - **FAS-018:** Verification, Validation, and Assurance
 - **FAS-019:** Object System and Digital Twin
+- **FAS-020:** User Identity, Onboarding, and Experience Selection
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -66,6 +67,10 @@ future-gated A5 boundary under `src/forge/fas/assurance.py`.
 
 FAS-019 adds a typed, versioned object graph and the opt-in Digital Twin v0.1
 Operational Twin under `src/forge/fas/objects.py`.
+
+FAS-020 adds local identity without an account, conservative v1 experience
+profiles, composable settings, explicit sharing consent, and separate authority
+changes under `src/forge/fas/onboarding.py`.
 
 ## Validation
 

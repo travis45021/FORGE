@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/onboarding-profile.schema.json",
+  "title": "FORGE Local Onboarding Profile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "local_id", "display_name", "network_identity", "experience_profile", "settings", "automation_authority", "sharing_consent", "onboarding_complete"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "local_id": {"type": "string", "pattern": "^local-user:[A-Za-z0-9][A-Za-z0-9_.:-]*$"},
+    "display_name": {"type": "string", "minLength": 1, "maxLength": 200},
+    "network_identity": {"oneOf": [{"type": "null"}, {"type": "string", "minLength": 3}]},
+    "experience_profile": {"enum": ["offline_manual", "simple_local", "custom_builder"]},
+    "settings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["network_mode", "ai_enabled", "suggestions_enabled", "hardware_setup", "interaction_profile", "operational_twin_enabled"],
+      "properties": {
+        "network_mode": {"enum": ["offline", "local", "shared_services"]},
+        "ai_enabled": {"type": "boolean"},
+        "suggestions_enabled": {"type": "boolean"},
+        "hardware_setup": {"enum": ["manual_or_custom", "guided", "custom"]},
+        "interaction_profile": {"enum": ["quiet", "simple", "guided", "proactive", "managed"]},
+        "operational_twin_enabled": {"type": "boolean"}
+      }
+    },
+    "automation_authority": {"const": "manual"},
+    "sharing_consent": {"type": "boolean"},
+    "onboarding_complete": {"const": true}
+  }
+}
