@@ -42,13 +42,13 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
 - All 187 unit, schema, governance, and assurance tests passed at the audited
-  commit; the FAS-026/FAS-027/FAS-028 follow-on validation expanded the suite to 210 passing
+  commit; the FAS-026/FAS-027/FAS-028/FAS-029 follow-on validation expanded the suite to 213 passing
   tests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
-- The reconciliation map now identifies FAS-029 as the next canonical
-  specification after the FAS-028 implementation.
+- The reconciliation map now identifies FAS-030 as the next canonical
+  specification after the FAS-029 implementation.
 - FAS-011, FAS-016, and FAS-017 are intentionally future-gated rather than
   accidentally missing.
 - The optional non-free Bambu networking plugin is excluded from the trusted
@@ -112,10 +112,13 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
    crash recovery, and application integration.
 4. **FAS-028:** reference contract implemented; finish provider adapters and
    physical dispatch integration.
-5. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
+5. **FAS-029:** reference review implemented; finish calibration and
+   hardware-in-the-loop evidence for motion providers.
+6. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
    worker boundary, and specify STEP/3MF, Manufacturing Intent, provenance,
    production/twin, and four-click state contracts.
-6. **FAS-029 through FAS-031:** complete capability design reviews for motion,
+7. **FAS-030 through FAS-031:** complete capability design reviews for thermal
+   behavior and material handling before production dispatch.
    thermal behavior, and material handling before production dispatch.
 7. **FAS-033 and FAS-034 plus Slicer Gates 4 and 5:** implement artifact
    preflight, integrated slicing, the accessible four-click UI, live checks,

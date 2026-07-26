@@ -65,7 +65,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
         implemented_ids = {
             *range(1, 11),
             *range(12, 16),
-            *range(18, 29),
+            *range(18, 30),
         }
         actual_ids = {
             int(path.name[4:7])
@@ -91,13 +91,13 @@ class RepositoryIntegrityTests(unittest.TestCase):
             canonical,
             {f"FAS-{number:03d}" for number in range(1, 38)},
         )
-        self.assertEqual(mapping["rules"]["next_canonical_id"], "FAS-029")
+        self.assertEqual(mapping["rules"]["next_canonical_id"], "FAS-030")
 
         register = (
             ROOT / "docs/governance/FORGE-DECISION-REGISTER.md"
         ).read_text(encoding="utf-8")
         self.assertIn(
-            "The next canonical specification is FAS-029",
+            "The next canonical specification is FAS-030",
             register,
         )
 

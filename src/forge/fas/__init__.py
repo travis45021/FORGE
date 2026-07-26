@@ -4,6 +4,7 @@ from .authorization import AuthorizationEngine, EvaluationError
 from .assurance import AssuranceError, AssuranceService, context_fingerprint
 from .capabilities import CapabilityError, CapabilityRegistry
 from .configuration import ConfigurationError, ConfigurationManager
+from .design_review import DesignReviewError, MotionDesignReview
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .health import HEALTH_STATES, HealthError, HealthService
@@ -43,6 +44,8 @@ __all__ = [
     "CapabilityRegistry",
     "ConfigurationError",
     "ConfigurationManager",
+    "DesignReviewError",
+    "MotionDesignReview",
     "EvaluationError",
     "EventError",
     "ExecutiveError",
