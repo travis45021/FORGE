@@ -1,0 +1,17 @@
+FORGE NOTICE (DRAFT — NOT A RELEASE NOTICE)
+
+FORGE is an open, capability-based manufacturing control and assurance
+platform. This file is a release-artifact draft and does not grant a final
+project-wide license while Gate 1 is open.
+
+Upstream and third-party material must retain its original copyright and
+license notices. The pinned OrcaSlicer v2.3.2 license evidence is retained in
+`docs/compliance/upstream-orcaslicer-v2.3.2-LICENSE.txt`; its source and
+dependency obligations remain under audit.
+
+Historical FORGE material may carry MIT or other notices. Those notices must be
+mapped file-by-file before release and must not be removed or replaced by this
+draft.
+
+Do not treat this draft as proof of licensing compatibility, corresponding
+source availability, trademark permission, or legal approval.

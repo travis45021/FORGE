@@ -1,0 +1,28 @@
+{
+  "format": "FORGE preliminary SBOM baseline",
+  "status": "incomplete",
+  "recorded": "2026-07-26",
+  "upstream": {
+    "name": "OrcaSlicer",
+    "version": "2.3.2",
+    "commit": "c724a3f5f51c52336624b689e846c8fbc943a912",
+    "source_archive_sha256": "2c7eea7b1e3757011f2c9520dc1712d789b9182b5c276aba271bf814172b0a52"
+  },
+  "inventory_counts": {
+    "dependency_roots": 55,
+    "profile_members": 11062,
+    "archive_members": 17637
+  },
+  "representative_components": [
+    {"name": "MCUT", "license_observation": "GPLv3 or commercial option; review required"},
+    {"name": "Eigen", "license_observation": "MPL2 with BSD/LGPL portions; review required"},
+    {"name": "Expat", "license_observation": "Expat permissive license"},
+    {"name": "ImGui", "license_observation": "MIT"}
+  ],
+  "limitations": [
+    "Not a complete SPDX document",
+    "Build and runtime reachability are not resolved",
+    "Bambu networking exclusion is not proven",
+    "No public integrated distribution is authorized"
+  ]
+}
