@@ -30,6 +30,7 @@ from .trust import (
     development_hmac_verifier,
     payload_digest,
 )
+from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 
 __all__ = [
     "AuthorizationEngine",
@@ -72,6 +73,9 @@ __all__ = [
     "RuntimeError",
     "TrustError",
     "TrustService",
+    "TEST_LAYERS",
+    "TestAssuranceError",
+    "TestAssuranceService",
     "content_digest",
     "context_fingerprint",
     "custom_component_manifest",

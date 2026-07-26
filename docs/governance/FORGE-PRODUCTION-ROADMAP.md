@@ -69,7 +69,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-022 | Runtime, Execution Context, and Resources | Implemented | Baseline | Historical FAS-021 |
 | FAS-023 | Health, Diagnostics, and Recovery | Implemented | Baseline | Historical FAS-022 |
 | FAS-024 | Local Interface, API, and Accessibility | Implemented | Baseline | Historical FAS-023 |
-| FAS-025 | Testing, Simulation, and Release Assurance | Planned | Baseline | Historical FAS-024 |
+| FAS-025 | Testing, Simulation, and Release Assurance | Implemented | Baseline | Historical FAS-024 |
 | FAS-026 | Local Data Ownership, Persistence, Backup, and Recovery | Planned | Baseline | Historical FAS-025 |
 | FAS-027 | Executive Lifecycle and Service Management | Planned | Baseline | Historical FAS-026 |
 | FAS-028 | Hardware Interface and Transport | Planned | Baseline | Historical FAS-027 |

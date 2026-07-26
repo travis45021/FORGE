@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/release-assurance.schema.json",
+  "title": "FORGE FAS-025 Release Assurance Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["release_version", "components", "supported_environments", "test_results", "known_limitations", "security_review", "compatibility_review", "migration", "rollback", "documentation_complete", "integrity"],
+  "properties": {
+    "release_version": {"type": "string", "minLength": 1},
+    "components": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "supported_environments": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string"}},
+    "test_results": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["suite", "outcome", "required"],
+        "properties": {
+          "suite": {"type": "string"},
+          "outcome": {"enum": ["passed", "failed", "inconclusive"]},
+          "required": {"type": "boolean"},
+          "security_critical": {"type": "boolean"}
+        }
+      }
+    },
+    "known_limitations": {"type": "array", "items": {"type": "string"}},
+    "security_review": {"enum": ["passed", "failed", "incomplete"]},
+    "compatibility_review": {"enum": ["passed", "failed", "incomplete"]},
+    "migration": {"type": "string"},
+    "rollback": {"type": "string", "minLength": 1},
+    "documentation_complete": {"type": "boolean"},
+    "integrity": {
+      "type": "object",
+      "required": ["algorithm", "digest"],
+      "properties": {
+        "algorithm": {"type": "string"},
+        "digest": {"type": "string"}
+      }
+    }
+  }
+}

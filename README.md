@@ -29,6 +29,7 @@ The current production baseline contains:
 - **FAS-022:** Runtime, Execution Context, and Resources
 - **FAS-023:** Health, Diagnostics, and Recovery
 - **FAS-024:** Local Interface, API, and Accessibility
+- **FAS-025:** Testing, Simulation, and Release Assurance
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -87,6 +88,10 @@ recovery outcomes under `src/forge/fas/health.py`.
 FAS-024 adds a local-first, versioned Interface Gateway, shared Executive request
 path, explainable approvals, structured errors, observational subscriptions,
 and accessibility contracts under `src/forge/fas/interfaces.py`.
+
+FAS-025 adds layered reproducible testing, honestly labeled simulation,
+bounded hardware-in-the-loop validation, and evidence-based release gating
+under `src/forge/fas/testing.py`.
 
 ## Validation
 

@@ -1,0 +1,13 @@
+{
+  "release_version": "0.25.0",
+  "components": ["forge-core"],
+  "supported_environments": ["local-python-3.10"],
+  "test_results": [{"suite": "core", "outcome": "passed", "required": true}],
+  "known_limitations": ["Advanced physics simulation is not supported."],
+  "security_review": "passed",
+  "compatibility_review": "passed",
+  "migration": "No migration is required.",
+  "rollback": "Restore the previous local package.",
+  "documentation_complete": true,
+  "integrity": {"algorithm": "sha256", "digest": "record-at-package-time"}
+}
