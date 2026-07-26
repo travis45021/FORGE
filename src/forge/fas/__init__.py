@@ -14,6 +14,7 @@ from .onboarding import OnboardingError, OnboardingService
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .scheduler import MissionScheduler, SchedulingError
+from .runtime import ForgeRuntime, RuntimeError
 from .trust import (
     TrustError,
     TrustService,
@@ -34,6 +35,7 @@ __all__ = [
     "EventError",
     "ExecutiveError",
     "ForgeExecutive",
+    "ForgeRuntime",
     "IdempotentConsumer",
     "InteractionError",
     "InteractionManager",
@@ -51,6 +53,7 @@ __all__ = [
     "PluginError",
     "PluginRegistry",
     "SchedulingError",
+    "RuntimeError",
     "TrustError",
     "TrustService",
     "content_digest",

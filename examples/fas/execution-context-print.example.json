@@ -1,0 +1,27 @@
+{
+  "context_id": "forge-context:print-001",
+  "mission_id": "forge-mission:print-001",
+  "parent_context_id": null,
+  "authority_reference": "forge-decision:allow-print-001",
+  "authorization_verified": true,
+  "policy_snapshot": "forge-policy-bundle:production-1.0.0",
+  "automation_level": "manual",
+  "target_objects": ["community-device:garage-printer"],
+  "allowed_capabilities": ["manufacturing.print"],
+  "resolved_capabilities": [
+    {
+      "capability_id": "manufacturing.print",
+      "provider_id": "community-provider:garage-printer"
+    }
+  ],
+  "reserved_resources": ["community-device:garage-printer"],
+  "configuration_snapshot": "forge-config-snapshot:print-001",
+  "verification_packet": "forge-verification:print-001",
+  "data_access": ["mission:read", "evidence:write"],
+  "time_limit_seconds": 14400,
+  "cost_limit": {"currency": "USD", "maximum": 10.0},
+  "correlation_id": "forge-correlation:print-001",
+  "started_at": "2026-07-25T20:00:00Z",
+  "state": "created",
+  "reason": "Executive authorized print Mission"
+}

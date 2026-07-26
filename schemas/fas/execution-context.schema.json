@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/execution-context.schema.json",
+  "title": "FORGE Execution Context",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "context_id",
+    "mission_id",
+    "parent_context_id",
+    "authority_reference",
+    "authorization_verified",
+    "policy_snapshot",
+    "automation_level",
+    "target_objects",
+    "allowed_capabilities",
+    "resolved_capabilities",
+    "reserved_resources",
+    "configuration_snapshot",
+    "verification_packet",
+    "data_access",
+    "time_limit_seconds",
+    "cost_limit",
+    "correlation_id",
+    "started_at",
+    "state",
+    "reason"
+  ],
+  "properties": {
+    "context_id": {"$ref": "#/$defs/id"},
+    "mission_id": {"$ref": "#/$defs/id"},
+    "parent_context_id": {
+      "oneOf": [{"type": "null"}, {"$ref": "#/$defs/id"}]
+    },
+    "authority_reference": {"$ref": "#/$defs/id"},
+    "authorization_verified": {"type": "boolean"},
+    "policy_snapshot": {"$ref": "#/$defs/id"},
+    "automation_level": {
+      "enum": ["manual", "assist", "supervised", "mission_autonomy"]
+    },
+    "target_objects": {"$ref": "#/$defs/ids"},
+    "allowed_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 3}
+    },
+    "resolved_capabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["capability_id", "provider_id"],
+        "properties": {
+          "capability_id": {"type": "string", "minLength": 3},
+          "provider_id": {"$ref": "#/$defs/id"}
+        }
+      }
+    },
+    "reserved_resources": {"$ref": "#/$defs/ids"},
+    "configuration_snapshot": {"$ref": "#/$defs/id"},
+    "verification_packet": {"$ref": "#/$defs/id"},
+    "data_access": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 3}
+    },
+    "time_limit_seconds": {"type": "integer", "minimum": 1},
+    "cost_limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["currency", "maximum"],
+      "properties": {
+        "currency": {"type": "string", "minLength": 3, "maxLength": 3},
+        "maximum": {"type": "number", "minimum": 0}
+      }
+    },
+    "correlation_id": {"$ref": "#/$defs/id"},
+    "started_at": {"$ref": "#/$defs/time"},
+    "state": {"const": "created"},
+    "reason": {"type": "string", "minLength": 3}
+  },
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"
+    },
+    "ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/id"}
+    },
+    "time": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    }
+  }
+}

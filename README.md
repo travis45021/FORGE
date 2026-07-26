@@ -26,6 +26,7 @@ The current production baseline contains:
 - **FAS-019:** Object System and Digital Twin
 - **FAS-020:** User Identity, Onboarding, and Experience Selection
 - **FAS-021:** Configuration, Profiles, and Change Management
+- **FAS-022:** Runtime, Execution Context, and Resources
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -72,6 +73,10 @@ Operational Twin under `src/forge/fas/objects.py`.
 FAS-020 adds local identity without an account, conservative v1 experience
 profiles, composable settings, explicit sharing consent, and separate authority
 changes under `src/forge/fas/onboarding.py`.
+
+FAS-022 adds recorded Execution Contexts, expiring resource leases, guarded
+provider dispatch, controlled state transitions, and safe restart assessment
+under `src/forge/fas/runtime.py`.
 
 ## Validation
 

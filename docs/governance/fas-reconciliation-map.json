@@ -4,7 +4,7 @@
   "baseline_commit": "4966cbc1d84a30707c821b2d559f8f20fb842237",
   "rules": {
     "current_production_range": "FAS-001..FAS-009",
-    "next_canonical_id": "FAS-022",
+    "next_canonical_id": "FAS-023",
     "historical_source_range": "FAS-001..FAS-036"
   },
   "mappings": [
@@ -28,7 +28,7 @@
     {"historical_id": "FAS-018", "canonical_ids": ["FAS-019"], "disposition": "implemented", "title": "Object System and Digital Twin"},
     {"historical_id": "FAS-019", "canonical_ids": ["FAS-020"], "disposition": "implemented", "title": "User Identity, Onboarding, and Experience Selection"},
     {"historical_id": "FAS-020", "canonical_ids": ["FAS-021"], "disposition": "implemented", "title": "Configuration, Profiles, and Change Management"},
-    {"historical_id": "FAS-021", "canonical_ids": ["FAS-022"], "disposition": "renumbered_baseline", "title": "Runtime, Execution Context, and Resources"},
+    {"historical_id": "FAS-021", "canonical_ids": ["FAS-022"], "disposition": "implemented", "title": "Runtime, Execution Context, and Resources"},
     {"historical_id": "FAS-022", "canonical_ids": ["FAS-023"], "disposition": "renumbered_baseline", "title": "Health, Diagnostics, and Recovery"},
     {"historical_id": "FAS-023", "canonical_ids": ["FAS-024"], "disposition": "renumbered_baseline", "title": "Local Interface, API, and Accessibility"},
     {"historical_id": "FAS-024", "canonical_ids": ["FAS-025"], "disposition": "renumbered_baseline", "title": "Testing, Simulation, and Release Assurance"},
