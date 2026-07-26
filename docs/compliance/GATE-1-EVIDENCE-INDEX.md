@@ -13,7 +13,7 @@ reviewed. This document does not make a licensing determination.
 | License inventory | file-level headers and SPDX report | Preliminary isolated header-marker scan recorded; classification incomplete |
 | Dependency inventory | libraries, assets, profiles, translations, generated content | Archive member/dependency-tree inventory recorded; audit incomplete |
 | Compatibility | AGPL/GPL/permissive compatibility analysis | Not started |
-| Exclusions | proof Bambu networking is absent from all graphs | Not started |
+| Exclusions | proof Bambu networking is absent from all graphs | Preliminary scan found explicit Bambu networking source; exclusion proof required |
 | FORGE provenance | historical MIT reuse and notices audit | Not started |
 | Project license | final `AGPL-3.0-only` or `AGPL-3.0-or-later` decision | Pending evidence/legal review |
 | Notices | root license, NOTICE, third-party notices | Not started |
