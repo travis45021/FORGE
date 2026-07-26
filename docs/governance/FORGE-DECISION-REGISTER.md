@@ -545,9 +545,8 @@ lock-in boundary.
 Completed in `FORGE-PRODUCTION-ROADMAP.md` and
 `fas-reconciliation-map.json`.
 
-The next canonical specification is FAS-035 — Capability Design Review:
-Environment, Power, and Safety Sensors. The production reference baseline is
-implemented through FAS-034,
+The next canonical specification is FAS-036 — Software Updates, Compatibility,
+and Rollback. The production reference baseline is implemented through FAS-035,
 excluding intentionally future-gated FAS-011,
 FAS-016, and FAS-017. Historical FAS-009 is absorbed by current production
 FAS-008/FAS-009; historical FAS-010–036 map to canonical FAS-011–037.
