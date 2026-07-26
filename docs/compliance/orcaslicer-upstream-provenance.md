@@ -39,6 +39,10 @@ that pinning this version makes imported 3MF content safe.
 
 ## Evidence still required
 
+The controlled status of each item is tracked in
+[`GATE-1-EVIDENCE-INDEX.md`](GATE-1-EVIDENCE-INDEX.md). No item below is
+considered complete merely because the pin is recorded.
+
 - Archive the exact source and license files and record cryptographic digests.
 - Enumerate file-level copyright and license headers.
 - Resolve submodules, vendored libraries, assets, profiles, translations,
