@@ -58,6 +58,7 @@ The current tested reference-contract baseline contains:
 - **FAS-030:** Capability Design Review: Thermal Management
 - **FAS-031:** Capability Design Review: Material Handling and Extrusion
 - **FAS-032:** Capability Design Review: Vision and Observation
+- **FAS-033:** Manufacturing Artifact, G-code, and Preflight
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each

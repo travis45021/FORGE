@@ -25,6 +25,7 @@ from .onboarding import OnboardingError, OnboardingService
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .persistence import DataRecoveryService, PersistenceError
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
+from .preflight import ArtifactPreflight, PreflightError
 from .scheduler import MissionScheduler, SchedulingError
 from .runtime import ForgeRuntime, RuntimeError
 from .trust import (
@@ -84,6 +85,8 @@ __all__ = [
     "PersistenceError",
     "PluginError",
     "PluginRegistry",
+    "ArtifactPreflight",
+    "PreflightError",
     "SchedulingError",
     "RuntimeError",
     "TrustError",
