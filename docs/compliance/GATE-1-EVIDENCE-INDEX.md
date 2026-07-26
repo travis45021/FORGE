@@ -11,7 +11,7 @@ reviewed. This document does not make a licensing determination.
 | --- | --- | --- |
 | Upstream pin | tag, commit, source URL, archive digest | Pin, digest, and isolated archive retention verified |
 | License inventory | file-level headers and SPDX report | Preliminary isolated header-marker scan recorded; classification incomplete |
-| Dependency inventory | libraries, assets, profiles, translations, generated content | Archive member/dependency-tree inventory recorded; audit incomplete |
+| Dependency inventory | libraries, assets, profiles, translations, generated content | 55 dependency roots and profile/asset inventory recorded; classification incomplete |
 | Compatibility | AGPL/GPL/permissive compatibility analysis | Not started |
 | Exclusions | proof Bambu networking is absent from all graphs | Preliminary scan found explicit Bambu networking source; exclusion proof required |
 | FORGE provenance | historical MIT reuse and notices audit | Not started |
