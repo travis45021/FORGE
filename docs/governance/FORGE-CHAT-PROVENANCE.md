@@ -1,7 +1,7 @@
 # FORGE Conversation Provenance Index
 
 Status: Living historical index  
-Last consolidated: 2026-07-25  
+Last consolidated: 2026-07-26
 Repository: `travis45021/FORGE`
 
 ## Purpose
@@ -140,7 +140,18 @@ the repository, Constitution, and approved specifications authoritative.
   - Uploaded FAS-009 without overwriting prior repository history.
   - Verified commit
     `4966cbc1d84a30707c821b2d559f8f20fb842237`.
-  - Initiated this conversation/decision consolidation.
+  - Consolidated conversation provenance and canonical FAS reconciliation.
+  - Implemented the tested reference-contract sequence through FAS-025.
+  - Approved OrcaSlicer as the slicing foundation with one engine in isolated
+    production and twin contexts.
+  - Approved STEP and 3MF as the initial design inputs, with full F3D deferred.
+  - Approved the mandatory four-click v1 path, ending in **Yes, Print** after
+    live printer checks and before controlled upload/start.
+  - Approved GNU AGPL version 3 as the integrated-app licensing direction,
+    subject to the file-level SPDX and compliance audit.
+- Current repository milestone:
+  - `6ef08a1e95aaac73ba9f90da65b0daeda0855ce2` — OrcaSlicer foundation,
+    licensing gates, and governance validation.
 
 ## Excluded or contextual-only conversations
 
@@ -159,4 +170,3 @@ Use the conversation title and exact thread ID, for example:
 Then cite the active repository document or decision-register entry that adopted
 the idea. Conversation provenance explains origin; it should not replace a
 current contract.
-

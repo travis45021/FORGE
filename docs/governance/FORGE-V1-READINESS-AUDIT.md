@@ -1,0 +1,136 @@
+# FORGE v1.0 Repository Readiness Audit
+
+Status: Current verified baseline
+Audit date: 2026-07-26
+Audited commit: `6ef08a1e95aaac73ba9f90da65b0daeda0855ce2`
+
+## Verdict
+
+The repository is a coherent and tested **reference-contract baseline** aligned
+with the FORGE Constitution. It is not yet a complete v1.0 application and must
+not be described as release-ready.
+
+The implemented FAS entries provide executable domain contracts, schemas,
+examples, and tests. They do not yet provide the complete desktop application,
+local persistence, service lifecycle, production hardware provider, integrated
+slicer worker, four-click interface, or controlled print lifecycle required for
+v1.0.
+
+## Sources reviewed
+
+- the root FORGE Constitution and FAS-001;
+- all current files under `docs`, `schemas`, `examples`, `src`, and `tests`;
+- the production decision register, roadmap, reconciliation map, and
+  conversation provenance;
+- the historical FAS007-FAS036 Codex thread;
+- the current Continue uploading fas-009 Codex thread;
+- the approved OrcaSlicer integration and licensing decisions; and
+- the Git history through the audited commit.
+
+Historical architecture informs intent. The current production repository,
+canonical numbering, approved decisions, and Constitution remain authoritative.
+
+## Verified integrity
+
+- Git working state was clean at audit start and matched `origin/main`.
+- `git fsck --full --strict` reported no object corruption.
+- No tracked file was missing and no tracked symbolic link was present.
+- All 187 current unit, schema, governance, and assurance tests passed.
+- Python source and tests compiled successfully.
+- Installed Python dependencies reported no broken requirements.
+- A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
+- The reconciliation map still identifies FAS-026 as the next canonical
+  specification.
+- FAS-011, FAS-016, and FAS-017 are intentionally future-gated rather than
+  accidentally missing.
+- The optional non-free Bambu networking plugin is excluded from the trusted
+  baseline.
+
+## Folder assessment
+
+| Location | Purpose | Audit result |
+| --- | --- | --- |
+| repository root | authority, orientation, packaging, license state | Corrected: Constitution restored; package notes moved out |
+| `.github/workflows` | repeatable repository validation | Added; required before v1 |
+| `docs/architecture` | normative FAS and ADR documents | Correct for current implemented/approved set |
+| `docs/governance` | decisions, history, roadmap, worklists, audits | Correct after stale-next-step correction |
+| `docs/compliance` | upstream and license evidence | Correct but Gate 1 incomplete |
+| `docs/releases` | historical per-FAS implementation notes | Correct home for non-normative package notes |
+| `schemas/fas` | versioned data contracts | Correct for current reference components |
+| `examples/fas` | valid representative contract instances | Correct and test-covered |
+| `src/forge/fas` | reference implementations | Correct; not yet a complete application runtime |
+| `tests/fas` | behavioral, schema, and governance verification | Correct; CI now repeats the documented suite |
+
+## Constitutional alignment
+
+### Confirmed
+
+- **Users decide:** authorization, Mission, Runtime, and interface contracts do
+  not infer authority from confidence, simulation, slicing, or events.
+- **Evidence first:** decision, verification, trust, health, and test contracts
+  preserve evidence and limitations.
+- **Hardware freedom:** capabilities and plugins represent custom, unknown, and
+  off-brand hardware without kernel enumeration.
+- **Local first:** onboarding, knowledge, interface, and future persistence
+  direction do not require cloud or AI.
+- **Explainability:** denials, limitations, unknowns, health, suggestions, and
+  recovery paths carry human-readable reasons.
+- **Safety boundaries:** Executive authorization remains separate from drivers,
+  providers, twin output, and simulation.
+- **Open ecosystem:** OrcaSlicer is a governed capability; the non-free
+  networking plugin is not a trusted dependency.
+
+### Not yet proven for v1
+
+- complete plain-language documentation for every eventual application service;
+- a usable local application and accessible four-click workflow;
+- persistent local data, backup, restore, migration, and recovery;
+- production lifecycle startup, shutdown, crash recovery, and packaging;
+- real provider integration and hardware-in-the-loop evidence;
+- STEP/3MF quarantine and the Orca-derived slicing worker;
+- end-to-end preflight, final **Yes, Print**, upload, start, monitoring, and
+  measured completion;
+- signed releases, SBOM, corresponding source, installer, rollback, and support
+  documentation.
+
+## Blocking sequence to v1.0
+
+1. **Licensing Gate 1:** archive and hash pinned Orca source/license material,
+   complete the file-level inventory, select the exact SPDX expression, and add
+   the final license/notices/SBOM/source-publication package.
+2. **FAS-026:** implement local data ownership, persistence, backup, restore,
+   migration, corruption handling, and replay-safe recovery.
+3. **FAS-027:** implement the real local application/service lifecycle,
+   configuration bootstrap, clean shutdown, crash recovery, and package entry
+   point.
+4. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
+   worker boundary, and specify STEP/3MF, Manufacturing Intent, provenance,
+   production/twin, and four-click state contracts.
+5. **FAS-028:** implement the replaceable hardware transport/provider contract,
+   with Moonraker/Klipper only as the first tested reference.
+6. **FAS-029 through FAS-031:** complete capability design reviews for motion,
+   thermal behavior, and material handling before production dispatch.
+7. **FAS-033 and FAS-034 plus Slicer Gates 4 and 5:** implement artifact
+   preflight, integrated slicing, the accessible four-click UI, live checks,
+   mandatory final confirmation, controlled upload/start, monitoring, and
+   outcome recording.
+8. **FAS-036 and Slicer Gate 6:** implement update/rollback and complete
+   security, reproducibility, fault, accessibility, and hardware-in-the-loop
+   assurance.
+9. **FAS-037:** perform the final constitutional, licensing, safety,
+   documentation, installation, recovery, and release-scope gate.
+
+FAS-032 vision and FAS-035 optional sensor families are not v1 blockers unless
+the release claims their capabilities. AI Council operation, distributed
+nodes, shared evidence, autonomous slicing decisions, AI-generated toolpaths,
+and A5 autonomy remain future-gated.
+
+## Immediate next work
+
+Continue Licensing Gate 1 and FAS-026. Contract-only Slicer Gate 3 work may
+proceed without importing Orca source, but no Orca-derived code or public
+integrated distribution may bypass the licensing gate.
+
+## Decisions or attention
+
+None. This audit preserves the already approved v1 scope and authority model.

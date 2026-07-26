@@ -1,5 +1,9 @@
 # FORGE
 
+[The FORGE Constitution](CONSTITUTION.md) is the highest project authority.
+Every specification, implementation, integration, and release must conform to
+it.
+
 FORGE is an open, capability-based 3D-printing control and assurance platform.
 It is designed to support known and user-defined printers, components,
 materials, accessories, and automation without redesigning the core for every
@@ -22,7 +26,7 @@ See `docs/architecture/ADR-001-orcaslicer-slicing-foundation.md`,
 `docs/governance/FORGE-SLICER-LICENSING-INTEGRATION-TODO.md`, and
 `LICENSE-STATUS.md`.
 
-The current production baseline contains:
+The current tested reference-contract baseline contains:
 
 - **FAS-001:** Constitutional Governance Foundation
 - **FAS-002:** Stable Kernel Architecture
@@ -110,6 +114,10 @@ FAS-025 adds layered reproducible testing, honestly labeled simulation,
 bounded hardware-in-the-loop validation, and evidence-based release gating
 under `src/forge/fas/testing.py`.
 
+This reference baseline is not yet a complete v1 application. The current
+release gaps and dependency-correct path are recorded in
+`docs/governance/FORGE-V1-READINESS-AUDIT.md`.
+
 ## Validation
 
 Install the optional strict Draft 2020-12 schema validator:
@@ -123,6 +131,9 @@ Run the complete FAS test suite:
 ```bash
 python -m unittest discover -s tests/fas -p "test_*.py" -v
 ```
+
+The same suite, compilation check, dependency-health check, and wheel build run
+in `.github/workflows/ci.yml`.
 
 The validator is intentionally optional: FORGE runtime components use only the
 Python standard library, while validation and development environments can

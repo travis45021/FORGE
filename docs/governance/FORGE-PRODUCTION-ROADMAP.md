@@ -32,7 +32,9 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 
 ## 3. Status vocabulary
 
-- **Implemented:** Present in production code/specifications on `main`.
+- **Implemented:** A production specification and tested reference contract are
+  present on `main`. This status does not by itself claim a complete UI,
+  deployable service, hardware integration, or v1 release.
 - **Next:** First dependency-correct specification to implement.
 - **Baseline:** Required for or directly supporting the local v1.0 release.
 - **Baseline foundation:** Architectural contract required before dependent

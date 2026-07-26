@@ -8,8 +8,8 @@ Owner: Forge Assurance Services (FAS)
 ## 1. Purpose
 
 FAS-001 establishes the authority, invariants, and change-governance model for
-FORGE. The Constitution is the highest project authority. The normative order
-is:
+FORGE. The Constitution is the highest project authority. The complete
+normative text is `../../CONSTITUTION.md`. The authority order is:
 
 1. Constitution
 2. FAS specifications

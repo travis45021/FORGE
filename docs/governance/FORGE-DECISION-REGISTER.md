@@ -1,8 +1,8 @@
 # FORGE Production Decision Register
 
 Status: Consolidated baseline  
-Last consolidated: 2026-07-25  
-Repository baseline: `4966cbc1d84a30707c821b2d559f8f20fb842237`
+Last consolidated: 2026-07-26
+Repository baseline: `6ef08a1e95aaac73ba9f90da65b0daeda0855ce2`
 
 ## Interpretation rules
 
@@ -545,6 +545,8 @@ lock-in boundary.
 Completed in `FORGE-PRODUCTION-ROADMAP.md` and
 `fas-reconciliation-map.json`.
 
-The next canonical specification is FAS-010 — Trust Framework, Identity,
-Signing, and Sentinel. Historical FAS-009 is absorbed by current production
+The next canonical specification is FAS-026 — Local Data Ownership,
+Persistence, Backup, and Recovery. The production reference baseline is
+implemented through FAS-025, excluding intentionally future-gated FAS-011,
+FAS-016, and FAS-017. Historical FAS-009 is absorbed by current production
 FAS-008/FAS-009; historical FAS-010–036 map to canonical FAS-011–037.

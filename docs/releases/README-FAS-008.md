@@ -21,4 +21,3 @@ tests use `jsonschema` when it is installed.
 The reference evaluator authorizes only. It does not control a printer or
 replace production identity, signature, persistence, event, or Sentinel
 services.
-
