@@ -1,0 +1,22 @@
+name: Gate 1 compliance baseline
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  contract-baseline:
+    name: Contract-only release safeguards
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run Gate 1 baseline check
+        run: python scripts/check_gate1.py
