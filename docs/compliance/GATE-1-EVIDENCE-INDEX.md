@@ -14,7 +14,7 @@ reviewed. This document does not make a licensing determination.
 | Dependency inventory | libraries, assets, profiles, translations, generated content | 55 dependency roots and profile/asset inventory recorded; classification incomplete |
 | Compatibility | AGPL/GPL/permissive compatibility analysis | Preliminary representative-license notes recorded; full compatibility review open |
 | Exclusions | proof Bambu networking is absent from all graphs | Preliminary scan found explicit Bambu networking source; exclusion proof required |
-| FORGE provenance | historical MIT reuse and notices audit | Not started |
+| FORGE provenance | historical MIT reuse and notices audit | Conversation/decision provenance indexed; file-level MIT reuse audit incomplete |
 | Project license | final `AGPL-3.0-only` or `AGPL-3.0-or-later` decision | Pending evidence/legal review |
 | Notices | root license, NOTICE, third-party notices | Not started |
 | Source offer | corresponding-source and publication instructions | Not started |
