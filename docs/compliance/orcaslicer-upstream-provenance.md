@@ -26,6 +26,14 @@ tag, the abbreviated commit `c724a3f`, and the release's documented 3MF import
 path-traversal security fix. This verifies the release reference only; it is
 not a substitute for archiving the exact source/license bytes and hashing them.
 
+## Archived license evidence
+
+- Archived file: `upstream-orcaslicer-v2.3.2-LICENSE.txt`
+- Source URL: `https://raw.githubusercontent.com/OrcaSlicer/OrcaSlicer/v2.3.2/LICENSE.txt`
+- SHA-256: `57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6`
+- Scope: license-text evidence only; source archive and file-level inventory
+  remain open.
+
 ## Initial upstream declarations
 
 The upstream release describes OrcaSlicer as licensed under GNU Affero General
