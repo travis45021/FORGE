@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/manufacturing-intent.schema.json",
+  "title": "FORGE Manufacturing Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["intent_id", "source_digest", "printer_capabilities", "material", "process", "user_decisions"],
+  "properties": {
+    "intent_id": {"type": "string", "minLength": 1},
+    "source_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "printer_capabilities": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "material": {"type": "object", "required": ["name"], "properties": {"name": {"type": "string", "minLength": 1}}, "additionalProperties": true},
+    "process": {"type": "object", "required": ["profile_digest"], "properties": {"profile_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}}, "additionalProperties": true},
+    "user_decisions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["context_confirmed", "mission_reviewed"],
+      "properties": {
+        "context_confirmed": {"const": true},
+        "mission_reviewed": {"const": true}
+      }
+    }
+  }
+}
