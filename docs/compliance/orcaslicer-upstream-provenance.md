@@ -34,6 +34,15 @@ not a substitute for archiving the exact source/license bytes and hashing them.
 - Scope: license-text evidence only; source archive and file-level inventory
   remain open.
 
+## Source archive digest verification
+
+- Archive URL: `https://github.com/OrcaSlicer/OrcaSlicer/archive/refs/tags/v2.3.2.tar.gz`
+- Retrieved to temporary isolated storage on 2026-07-26 and removed after hashing
+- SHA-256: `2c7eea7b1e3757011f2c9520dc1712d789b9182b5c276aba271bf814172b0a52`
+- Byte length: `118753412`
+- Scope: digest verified; durable archive retention and file-level inventory
+  remain open before Gate 1 closure.
+
 ## Initial upstream declarations
 
 The upstream release describes OrcaSlicer as licensed under GNU Affero General
