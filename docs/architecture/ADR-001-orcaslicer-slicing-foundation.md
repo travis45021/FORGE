@@ -105,7 +105,7 @@ unless the user separately chooses to share them under explicit terms.
   feature surface.
 - Upstream synchronization, reproducible builds, notices, and source
   publication become recurring release responsibilities.
-- FAS-030 is the next canonical specification. This ADR is a cross-cutting
+- FAS-031 is the next canonical specification. This ADR is a cross-cutting
   prerequisite and does not consume or renumber a FAS identifier.
 
 ## Non-goals

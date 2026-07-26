@@ -18,7 +18,8 @@ v1.0.
 
 FAS-026 now adds the tested local data and recovery reference contract. FAS-027
 adds the tested service lifecycle reference contract. FAS-028 adds the tested
-hardware transport reference contract. The
+hardware transport reference contract. FAS-029 and FAS-030 add reviewed
+motion and thermal capability contracts. The
 remaining persistence work is filesystem durability, encryption, crash-atomic
 transactions, and integration with the application lifecycle.
 
@@ -42,13 +43,13 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
 - All 187 unit, schema, governance, and assurance tests passed at the audited
-  commit; the FAS-026/FAS-027/FAS-028/FAS-029 follow-on validation expanded the suite to 213 passing
+  commit; the FAS-026 through FAS-030 follow-on validation expanded the suite to 216 passing
   tests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
-- The reconciliation map now identifies FAS-030 as the next canonical
-  specification after the FAS-029 implementation.
+- The reconciliation map now identifies FAS-031 as the next canonical
+  specification after the FAS-030 implementation.
 - FAS-011, FAS-016, and FAS-017 are intentionally future-gated rather than
   accidentally missing.
 - The optional non-free Bambu networking plugin is excluded from the trusted
@@ -114,11 +115,13 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
    physical dispatch integration.
 5. **FAS-029:** reference review implemented; finish calibration and
    hardware-in-the-loop evidence for motion providers.
-6. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
+6. **FAS-030:** reference review implemented; finish independent thermal
+   cutoffs and runaway testing.
+7. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
    worker boundary, and specify STEP/3MF, Manufacturing Intent, provenance,
    production/twin, and four-click state contracts.
-7. **FAS-030 through FAS-031:** complete capability design reviews for thermal
-   behavior and material handling before production dispatch.
+8. **FAS-031:** complete the material-handling capability design review before
+   production dispatch.
    thermal behavior, and material handling before production dispatch.
 7. **FAS-033 and FAS-034 plus Slicer Gates 4 and 5:** implement artifact
    preflight, integrated slicing, the accessible four-click UI, live checks,

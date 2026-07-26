@@ -33,6 +33,7 @@ from .trust import (
     development_hmac_verifier,
     payload_digest,
 )
+from .thermal_review import ThermalDesignReview, ThermalReviewError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 from .transport import HardwareTransportRegistry, TransportError
 
@@ -83,6 +84,8 @@ __all__ = [
     "RuntimeError",
     "TrustError",
     "TrustService",
+    "ThermalDesignReview",
+    "ThermalReviewError",
     "TEST_LAYERS",
     "TestAssuranceError",
     "TestAssuranceService",
