@@ -1,9 +1,9 @@
 # FORGE Canonical Production Roadmap
 
 Status: Reconciled production baseline  
-Version: 1.0.0  
-Effective date: 2026-07-25  
-Baseline commit: `4966cbc1d84a30707c821b2d559f8f20fb842237`
+Version: 1.1.0
+Effective date: 2026-07-26
+Baseline commit: `42996e15292621e53461e276df88bbf53f41bddb`
 
 ## 1. Purpose
 
@@ -120,6 +120,31 @@ AI-provider-neutral evidence interface without shipping Council operation.
 12. FAS-028 replaceable hardware transport with Moonraker/Klipper as the first
     reference provider.
 
+### Cross-cutting prerequisite — integrated slicing and licensing
+
+ADR-001 approves OrcaSlicer as FORGE's upstream slicing foundation. This does
+not assign a new FAS number or change the canonical ledger. FAS-026 remains the
+next canonical specification.
+
+Before Orca-derived source enters the trusted production tree, FORGE must
+complete the applicable licensing and provenance work in
+`FORGE-SLICER-LICENSING-INTEGRATION-TODO.md`. The prerequisite establishes:
+
+- one maintained Orca-derived engine with isolated production and twin
+  contexts;
+- no slicer authority to command hardware, upload, or start a print;
+- STEP and 3MF as the first integrated design inputs, with full F3D deferred;
+- a mandatory four-click v1 flow whose final **Yes, Print** occurs after live
+  printer checks and before controlled upload/start;
+- GNU AGPL version 3 as the approved licensing direction, with the exact SPDX
+  expression and release package pending a file-level audit; and
+- exclusion of the optional non-free Bambu networking plugin from the trusted
+  baseline.
+
+The user-directed slicing path is baseline product work. It does not enable
+autonomous slicing decisions, file optimization, AI-generated toolpaths,
+autonomous print start, or A5 delegation.
+
 ### Phase C — Review and implement manufacturing capabilities
 
 Review in dependency order before production code:
@@ -140,8 +165,9 @@ Review in dependency order before production code:
 - FAS-016 distributed nodes and shared compute.
 - FAS-017 shared evidence network.
 - Assisted, supervised, and A5 delegated autonomy release surfaces.
-- Advanced simulation, autonomous slicing/file optimization, and AI-generated
-  toolpaths.
+- Advanced simulation, autonomous slicing decisions/file optimization, and
+  AI-generated toolpaths. User-directed STEP/3MF slicing inside the mandatory
+  four-click flow is baseline work and is not included in this future gate.
 
 These remain architecturally recognized but are not required to make the local
 v1.0 product useful.
@@ -169,10 +195,11 @@ This reconciliation is complete when:
 3. Current production FAS-001–009 retain their meanings and history.
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
-6. Phase A is implemented: FAS-010, FAS-012, FAS-013, and FAS-018.
-   FAS-014 and FAS-015 are implemented; FAS-019 is the next local-platform
-   specification because FAS-016 and FAS-017 remain future-gated. FAS-019 is
-   implemented; FAS-020 is implemented and FAS-021 is next.
+6. Phase A and the implemented portion of Phase B through FAS-025 are complete.
+   FAS-026 is the next canonical specification because FAS-016 and FAS-017
+   remain future-gated.
+7. The integrated-slicing Gate 0 decisions are recorded. Gate 1 licensing and
+   provenance work blocks Orca source import and public integrated release.
 
 ## Decisions needed
 

@@ -59,14 +59,14 @@ Core work should be open source whenever practical. Documentation is part of
 the software. Meaningful behavior must be traceable and inspectable. Open
 interfaces are required; closed ecosystems are rejected.
 
-### FORGE-DEC-006 — Licensing remains a release decision
+### FORGE-DEC-006 — Licensing requires an explicit release decision
 
-Status: Historical; Open before public release
+Status: Historical; Superseded by FORGE-DEC-077
 
-AGPLv3 was identified as a strong candidate because network-served
-modifications remain open, but the final license comparison and adoption were
-deferred until public release preparation. Do not claim a final license without
-an explicit repository decision.
+AGPLv3 was originally identified as a strong candidate because network-served
+modifications remain open. The licensing direction has now been approved by
+FORGE-DEC-077, while its exact SPDX expression and compliance packaging remain
+blocked on the recorded provenance audit.
 
 ## B. Architecture and extensibility
 
@@ -463,6 +463,69 @@ Status: Approved user preference
 Major FORGE responses should end with a concise section containing only the
 items that require the user's approval, rejection, modification, or attention.
 
+## I. Integrated slicing and licensing
+
+### FORGE-DEC-073 — OrcaSlicer is the slicing foundation
+
+Status: Approved; Integration gated
+
+FORGE will use OrcaSlicer as its upstream slicing foundation while remaining a
+broader manufacturing control and assurance platform. FORGE continues to own
+Objects, Builder flows, Missions, authority, verification, Runtime, the
+Operational Twin, and learning. The slicer is a governed capability and cannot
+command hardware or authorize physical work.
+
+### FORGE-DEC-074 — One engine runs in production and twin contexts
+
+Status: Approved; Integration gated
+
+FORGE will maintain one Orca-derived engine codebase with isolated production
+and twin execution contexts, not two divergent forks. The production context
+creates a candidate manufacturing artifact. The twin context creates advisory
+toolpath evidence. Only the Executive and Runtime may move an accepted artifact
+into an authorized capability-provider path.
+
+### FORGE-DEC-075 — v1 uses a mandatory four-click print path
+
+Status: Approved
+
+The v1 path is: add the design file, confirm inferred or selected context,
+create the verified Print Mission, then choose **Yes, Print** after live printer
+checks and before controlled upload or start. A future bypass structure may be
+represented, but it is disabled for every v1 user, role, and mode.
+
+### FORGE-DEC-076 — STEP and 3MF are the first design inputs
+
+Status: Approved
+
+Integrated design-file preparation begins with STEP and 3MF. Full F3D project
+architecture is deferred. Imported G-code remains a preflighted manufacturing
+artifact rather than a design source that FORGE must slice.
+
+### FORGE-DEC-077 — GNU AGPL version 3 is the licensing direction
+
+Status: Approved direction; Compliance gate open
+
+The integrated FORGE application adopts GNU AGPL version 3 as its licensing
+direction. A file-level copyright, provenance, and compatibility audit must
+decide the exact `AGPL-3.0-only` versus `AGPL-3.0-or-later` SPDX expression and
+complete notices, corresponding-source, SBOM, and release obligations before a
+public integrated release. Existing upstream notices and the MIT notices on any
+reused historical FORGE bootstrap code must be preserved.
+
+The software license does not transfer ownership of user design files,
+profiles, local knowledge, evidence, or produced artifacts. User data remains
+user-owned unless explicitly shared under separately chosen terms.
+
+### FORGE-DEC-078 — Non-free networking is outside the trusted baseline
+
+Status: Approved
+
+The optional non-free Bambu networking plugin is excluded from the trusted
+FORGE build, packaging graph, and required operating path. Printer connectivity
+uses governed, replaceable capability providers and may not become a vendor
+lock-in boundary.
+
 ## Known reconciliation items
 
 1. Historical FAS-007–036 documents exist in a prior project workspace, while
@@ -473,7 +536,9 @@ items that require the user's approval, rejection, modification, or attention.
 3. Historical FAS-010 AI Council has no current production-number assignment.
 4. The full historical FAS-010–036 set should not be copied into current
    `docs/architecture` without a formal renumbering and reconciliation pass.
-5. AGPLv3 remains a candidate, not a confirmed repository license.
+5. GNU AGPL version 3 is the approved integrated-app licensing direction. The
+   exact SPDX expression and release compliance package remain pending the
+   file-level audit.
 
 ## Reconciliation status
 

@@ -13,6 +13,11 @@ referencable without treating chat text as executable authority.
    order, release relevance, and historical reconciliation.
 4. `fas-reconciliation-map.json` — machine-readable historical-to-production
    identifier mapping.
+5. `FORGE-SLICER-LICENSING-INTEGRATION-TODO.md` — ordered compliance,
+   architecture, integration, interface, and release gates for the approved
+   OrcaSlicer-derived foundation.
+6. `../architecture/ADR-001-orcaslicer-slicing-foundation.md` — binding
+   production/twin, four-click, format, licensing, and authority boundaries.
 
 ## Authority order
 

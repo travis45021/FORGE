@@ -5,6 +5,23 @@ It is designed to support known and user-defined printers, components,
 materials, accessories, and automation without redesigning the core for every
 new device.
 
+## Approved slicer foundation
+
+FORGE will integrate an OrcaSlicer-derived engine as a governed capability, not
+as a separate authority or a replacement for the FORGE platform. One maintained
+engine will run in isolated production and twin contexts. The first design
+inputs are STEP and 3MF; full F3D project support is deferred.
+
+The v1 print path requires four user actions. The final **Yes, Print** occurs
+after live printer checks and before controlled upload or start, and cannot be
+bypassed in v1. GNU AGPL version 3 is the approved licensing direction, but
+Orca source import and public integrated distribution remain blocked until the
+file-level licensing and provenance audit is complete.
+
+See `docs/architecture/ADR-001-orcaslicer-slicing-foundation.md`,
+`docs/governance/FORGE-SLICER-LICENSING-INTEGRATION-TODO.md`, and
+`LICENSE-STATUS.md`.
+
 The current production baseline contains:
 
 - **FAS-001:** Constitutional Governance Foundation
