@@ -9,6 +9,7 @@ from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .health import HEALTH_STATES, HealthError, HealthService
 from .interactions import InteractionError, InteractionManager
+from .job_lifecycle import JobLifecycleError, PrintJobLifecycle
 from .interfaces import (
     CONTENT_KINDS,
     INTERFACE_MODES,
@@ -61,6 +62,8 @@ __all__ = [
     "IdempotentConsumer",
     "InteractionError",
     "InteractionManager",
+    "JobLifecycleError",
+    "PrintJobLifecycle",
     "CONTENT_KINDS",
     "INTERFACE_MODES",
     "LOCAL_API_VERSION",
