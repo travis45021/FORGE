@@ -27,6 +27,7 @@ The current production baseline contains:
 - **FAS-020:** User Identity, Onboarding, and Experience Selection
 - **FAS-021:** Configuration, Profiles, and Change Management
 - **FAS-022:** Runtime, Execution Context, and Resources
+- **FAS-023:** Health, Diagnostics, and Recovery
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -77,6 +78,10 @@ changes under `src/forge/fas/onboarding.py`.
 FAS-022 adds recorded Execution Contexts, expiring resource leases, guarded
 provider dispatch, controlled state transitions, and safe restart assessment
 under `src/forge/fas/runtime.py`.
+
+FAS-023 adds evidence-backed multi-state health, freshness evaluation,
+dependency impact, bounded low-risk recovery, retry suppression, and verified
+recovery outcomes under `src/forge/fas/health.py`.
 
 ## Validation
 

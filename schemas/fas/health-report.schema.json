@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/health-report.schema.json",
+  "title": "FORGE FAS-023 Health Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["object_id", "state", "observed_at", "fresh_for_seconds", "confidence", "check_type", "evidence", "reason_codes"],
+  "properties": {
+    "object_id": {"type": "string", "minLength": 1},
+    "state": {"enum": ["healthy", "unobserved", "stale", "degraded", "unavailable", "failed", "recovering"]},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "fresh_for_seconds": {"type": "integer", "minimum": 0},
+    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "check_type": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "minItems": 1, "items": {"type": "object"}},
+    "reason_codes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "affected_capabilities": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "source": {"type": "string"}
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "object_id": "provider:printer-status",
+  "state": "degraded",
+  "observed_at": "2026-07-25T12:00:00Z",
+  "fresh_for_seconds": 60,
+  "confidence": 0.9,
+  "check_type": "read_only_probe",
+  "evidence": [{"kind": "response", "value": "timeout"}],
+  "reason_codes": ["probe_timeout"],
+  "affected_capabilities": ["printer.status"],
+  "source": "local"
+}
