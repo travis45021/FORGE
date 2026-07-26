@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/backup-manifest.schema.json",
+  "title": "FORGE Backup Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["backup_id", "schema_version", "owner_scope", "created_at", "selected_classes", "included_record_ids", "destination", "encrypted", "includes_secrets", "source_digest", "content_digest", "status", "retention_class", "restore_modes"],
+  "properties": {
+    "backup_id": {"$ref": "#/$defs/id"},
+    "schema_version": {"const": "1.0.0"},
+    "owner_scope": {"$ref": "#/$defs/id"},
+    "created_at": {"$ref": "#/$defs/time"},
+    "selected_classes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["ephemeral", "operational_state", "durable_local", "audit", "evidence", "secret"]}},
+    "included_record_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "destination": {"type": "string", "minLength": 1},
+    "encrypted": {"type": "boolean"},
+    "includes_secrets": {"type": "boolean"},
+    "source_digest": {"$ref": "#/$defs/digest"},
+    "content_digest": {"$ref": "#/$defs/digest"},
+    "status": {"enum": ["created", "verified", "corrupt", "restored"]},
+    "retention_class": {"type": "string", "minLength": 1},
+    "restore_modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["inspect_only", "selected_records", "configuration_and_profiles", "full_workspace", "runtime_recovery_review"]}}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"},
+    "time": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "digest": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+  }
+}

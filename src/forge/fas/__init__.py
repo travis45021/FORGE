@@ -20,6 +20,7 @@ from .missions import MissionLifecycle, MissionTransitionError
 from .objects import ObjectSystem, ObjectSystemError
 from .onboarding import OnboardingError, OnboardingService
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
+from .persistence import DataRecoveryService, PersistenceError
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .scheduler import MissionScheduler, SchedulingError
 from .runtime import ForgeRuntime, RuntimeError
@@ -67,6 +68,8 @@ __all__ = [
     "OnboardingService",
     "PolicyBundleError",
     "PolicyBundleRegistry",
+    "DataRecoveryService",
+    "PersistenceError",
     "PluginError",
     "PluginRegistry",
     "SchedulingError",

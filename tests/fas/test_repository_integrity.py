@@ -31,10 +31,13 @@ class RepositoryIntegrityTests(unittest.TestCase):
             "src",
             "tests",
         }
+        generated_folders = {".ruff_cache", ".pytest_cache", "build", "dist"}
         actual_folders = {
             path.name
             for path in ROOT.iterdir()
-            if path.is_dir() and path.name != ".git"
+            if path.is_dir()
+            and path.name != ".git"
+            and path.name not in generated_folders
         }
         self.assertEqual(actual_folders, expected_folders)
         for required in (
@@ -62,7 +65,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
         implemented_ids = {
             *range(1, 11),
             *range(12, 16),
-            *range(18, 26),
+            *range(18, 27),
         }
         actual_ids = {
             int(path.name[4:7])
@@ -88,13 +91,13 @@ class RepositoryIntegrityTests(unittest.TestCase):
             canonical,
             {f"FAS-{number:03d}" for number in range(1, 38)},
         )
-        self.assertEqual(mapping["rules"]["next_canonical_id"], "FAS-026")
+        self.assertEqual(mapping["rules"]["next_canonical_id"], "FAS-027")
 
         register = (
             ROOT / "docs/governance/FORGE-DECISION-REGISTER.md"
         ).read_text(encoding="utf-8")
         self.assertIn(
-            "The next canonical specification is FAS-026",
+            "The next canonical specification is FAS-027",
             register,
         )
 

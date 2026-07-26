@@ -129,7 +129,8 @@ release is distributed until the applicable items in this gate are complete.
 
 ## Canonical sequencing
 
-FAS-026 remains the next canonical specification. Gate 0 is complete. Gate 1
-starts now and blocks Orca source import and public integrated distribution.
-FAS-026 work may proceed in parallel only where it does not bypass this
-licensing and provenance prerequisite.
+FAS-026 has an implemented reference contract. FAS-027 is now the next
+canonical specification. Gate 0 is complete. Gate 1 remains active and blocks
+Orca source import and public integrated distribution. Filesystem durability,
+encryption, crash-atomic transactions, and application integration remain
+required before the FAS-026 contract is a v1 product capability.

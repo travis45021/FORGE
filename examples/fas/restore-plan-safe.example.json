@@ -1,0 +1,18 @@
+{
+  "restore_id": "forge-restore:local-001",
+  "backup_id": "forge-backup:local-001",
+  "mode": "configuration_and_profiles",
+  "requested_at": "2026-07-26T12:10:00Z",
+  "reason": "user requested local profile recovery",
+  "inspected_record_ids": [
+    "forge-record:profile-default"
+  ],
+  "applied_record_ids": [
+    "forge-record:profile-default"
+  ],
+  "conflicts": [],
+  "hardware_resume_allowed": false,
+  "physical_commands_replayed": false,
+  "requires_live_reverification": true,
+  "requires_user_review": true
+}

@@ -1,0 +1,27 @@
+{
+  "backup_id": "forge-backup:local-001",
+  "schema_version": "1.0.0",
+  "owner_scope": "forge-user:local",
+  "created_at": "2026-07-26T12:05:00Z",
+  "selected_classes": [
+    "durable_local",
+    "audit"
+  ],
+  "included_record_ids": [
+    "forge-record:profile-default"
+  ],
+  "destination": "file:local-backups/forge-backup-local-001",
+  "encrypted": false,
+  "includes_secrets": false,
+  "source_digest": "sha256:c2ce568b1b8b93d063d5fd329e81bc38f5b5a91897a033250326742b58c51523",
+  "content_digest": "sha256:c2ce568b1b8b93d063d5fd329e81bc38f5b5a91897a033250326742b58c51523",
+  "status": "verified",
+  "retention_class": "user-selected",
+  "restore_modes": [
+    "configuration_and_profiles",
+    "full_workspace",
+    "inspect_only",
+    "runtime_recovery_review",
+    "selected_records"
+  ]
+}

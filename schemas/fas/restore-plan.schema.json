@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/restore-plan.schema.json",
+  "title": "FORGE Restore Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["restore_id", "backup_id", "mode", "requested_at", "reason", "inspected_record_ids", "applied_record_ids", "conflicts", "hardware_resume_allowed", "physical_commands_replayed", "requires_live_reverification", "requires_user_review"],
+  "properties": {
+    "restore_id": {"$ref": "#/$defs/id"},
+    "backup_id": {"$ref": "#/$defs/id"},
+    "mode": {"enum": ["inspect_only", "selected_records", "configuration_and_profiles", "full_workspace", "runtime_recovery_review"]},
+    "requested_at": {"$ref": "#/$defs/time"},
+    "reason": {"type": "string", "minLength": 3},
+    "inspected_record_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "applied_record_ids": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "conflicts": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "hardware_resume_allowed": {"const": false},
+    "physical_commands_replayed": {"const": false},
+    "requires_live_reverification": {"const": true},
+    "requires_user_review": {"const": true}
+  },
+  "$defs": {
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]*:[A-Za-z0-9][A-Za-z0-9_.:-]*$"},
+    "time": {"type": "string", "format": "date-time", "pattern": "Z$"}
+  }
+}

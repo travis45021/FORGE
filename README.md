@@ -51,6 +51,7 @@ The current tested reference-contract baseline contains:
 - **FAS-023:** Health, Diagnostics, and Recovery
 - **FAS-024:** Local Interface, API, and Accessibility
 - **FAS-025:** Testing, Simulation, and Release Assurance
+- **FAS-026:** Local Data Ownership, Persistence, Backup, and Recovery
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
@@ -112,7 +113,12 @@ and accessibility contracts under `src/forge/fas/interfaces.py`.
 
 FAS-025 adds layered reproducible testing, honestly labeled simulation,
 bounded hardware-in-the-loop validation, and evidence-based release gating
-under `src/forge/fas/testing.py`.
+under the reference testing service.
+
+FAS-026 adds local ownership, provenance-backed data records, digest-verified
+backup manifests, secret separation, portable export, conflict-preserving
+restore modes, and migration planning under the persistence reference service.
+Restore cannot replay commands or resume physical work.
 
 This reference baseline is not yet a complete v1 application. The current
 release gaps and dependency-correct path are recorded in

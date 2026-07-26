@@ -16,6 +16,10 @@ local persistence, service lifecycle, production hardware provider, integrated
 slicer worker, four-click interface, or controlled print lifecycle required for
 v1.0.
 
+FAS-026 now adds the tested local data and recovery reference contract. The
+remaining persistence work is filesystem durability, encryption, crash-atomic
+transactions, and integration with the application lifecycle.
+
 ## Sources reviewed
 
 - the root FORGE Constitution and FAS-001;
@@ -35,12 +39,14 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - Git working state was clean at audit start and matched `origin/main`.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
-- All 187 current unit, schema, governance, and assurance tests passed.
+- All 187 unit, schema, governance, and assurance tests passed at the audited
+  commit; the FAS-026 follow-on validation expanded the suite to 204 passing
+  tests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
-- The reconciliation map still identifies FAS-026 as the next canonical
-  specification.
+- The reconciliation map now identifies FAS-027 as the next canonical
+  specification after the FAS-026 implementation.
 - FAS-011, FAS-016, and FAS-017 are intentionally future-gated rather than
   accidentally missing.
 - The optional non-free Bambu networking plugin is excluded from the trusted
@@ -98,8 +104,8 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 1. **Licensing Gate 1:** archive and hash pinned Orca source/license material,
    complete the file-level inventory, select the exact SPDX expression, and add
    the final license/notices/SBOM/source-publication package.
-2. **FAS-026:** implement local data ownership, persistence, backup, restore,
-   migration, corruption handling, and replay-safe recovery.
+2. **FAS-026:** reference contract implemented; finish filesystem durability,
+   encryption, crash-atomic transactions, and application integration.
 3. **FAS-027:** implement the real local application/service lifecycle,
    configuration bootstrap, clean shutdown, crash recovery, and package entry
    point.
@@ -127,7 +133,7 @@ and A5 autonomy remain future-gated.
 
 ## Immediate next work
 
-Continue Licensing Gate 1 and FAS-026. Contract-only Slicer Gate 3 work may
+Continue Licensing Gate 1 and FAS-027. Contract-only Slicer Gate 3 work may
 proceed without importing Orca source, but no Orca-derived code or public
 integrated distribution may bypass the licensing gate.
 
