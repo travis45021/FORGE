@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/interface-request.schema.json",
+  "title": "FORGE FAS-024 Interface Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "api_version", "action", "target", "parameters"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1},
+    "api_version": {"const": "v1"},
+    "action": {"type": "string", "minLength": 1},
+    "target": {"type": "string", "minLength": 1},
+    "parameters": {"type": "object"},
+    "client_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {"enum": ["simple", "builder", "advanced", "accessible", "developer"]},
+        "data_behavior": {"enum": ["local_only", "network_requested"]}
+      }
+    }
+  }
+}

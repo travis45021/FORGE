@@ -8,6 +8,13 @@ from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .health import HEALTH_STATES, HealthError, HealthService
 from .interactions import InteractionError, InteractionManager
+from .interfaces import (
+    CONTENT_KINDS,
+    INTERFACE_MODES,
+    LOCAL_API_VERSION,
+    InterfaceError,
+    InterfaceGateway,
+)
 from .knowledge import KnowledgeCore, KnowledgeError
 from .missions import MissionLifecycle, MissionTransitionError
 from .objects import ObjectSystem, ObjectSystemError
@@ -43,6 +50,11 @@ __all__ = [
     "IdempotentConsumer",
     "InteractionError",
     "InteractionManager",
+    "CONTENT_KINDS",
+    "INTERFACE_MODES",
+    "LOCAL_API_VERSION",
+    "InterfaceError",
+    "InterfaceGateway",
     "KnowledgeCore",
     "KnowledgeError",
     "MissionLifecycle",

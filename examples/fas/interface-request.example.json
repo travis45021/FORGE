@@ -1,0 +1,11 @@
+{
+  "request_id": "req-local-001",
+  "api_version": "v1",
+  "action": "mission.start",
+  "target": "mission:demo",
+  "parameters": {},
+  "client_context": {
+    "mode": "simple",
+    "data_behavior": "local_only"
+  }
+}
