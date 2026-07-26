@@ -19,8 +19,8 @@ reviewed. This document does not make a licensing determination.
 | Notices | root license, NOTICE, third-party notices | Gap recorded; artifacts not started |
 | Source offer | corresponding-source and publication instructions | Gap recorded; artifact not started |
 | SBOM | machine-readable release dependency inventory | Gap recorded; artifact not started |
-| Contributor terms | DCO/inbound/trademark rules | Missing artifacts recorded; policy work not started |
-| Privacy | user ownership and opt-in sharing terms | Missing artifacts recorded; policy work not started |
+| Contributor terms | DCO/inbound/trademark rules | Draft CONTRIBUTING.md and TRADEMARKS.md added; legal review/finalization open |
+| Privacy | user ownership and opt-in sharing terms | Draft PRIVACY.md and USER-DATA-TERMS.md added; legal review/finalization open |
 | Legal review | qualified review record | Required before public integrated release |
 | Automation | release checks for notices, source match, exclusions, SBOM | Not started |
 

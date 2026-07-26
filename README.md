@@ -26,6 +26,11 @@ See `docs/architecture/ADR-001-orcaslicer-slicing-foundation.md`,
 `docs/governance/FORGE-SLICER-LICENSING-INTEGRATION-TODO.md`, and
 `LICENSE-STATUS.md`.
 
+Release-facing policy drafts are in `CONTRIBUTING.md`, `TRADEMARKS.md`,
+`PRIVACY.md`, and `USER-DATA-TERMS.md`. They implement the Constitution's
+user-authority and local-first principles but require qualified legal review
+before a public integrated release.
+
 The current tested reference-contract baseline contains:
 
 - **FAS-001:** Constitutional Governance Foundation
