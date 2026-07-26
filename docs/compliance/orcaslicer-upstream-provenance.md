@@ -19,6 +19,13 @@ This pin selects the source to audit and reproduce. It does not approve source
 import, establish the final FORGE SPDX expression, or represent a completed
 compatibility review.
 
+## Release-page verification
+
+On 2026-07-26, the official release page was checked and confirmed the v2.3.2
+tag, the abbreviated commit `c724a3f`, and the release's documented 3MF import
+path-traversal security fix. This verifies the release reference only; it is
+not a substitute for archiving the exact source/license bytes and hashing them.
+
 ## Initial upstream declarations
 
 The upstream release describes OrcaSlicer as licensed under GNU Affero General
