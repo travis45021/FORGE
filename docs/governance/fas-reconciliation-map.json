@@ -4,7 +4,7 @@
   "baseline_commit": "4966cbc1d84a30707c821b2d559f8f20fb842237",
   "rules": {
     "current_production_range": "FAS-001..FAS-009",
-    "next_canonical_id": "FAS-031",
+    "next_canonical_id": "FAS-032",
     "historical_source_range": "FAS-001..FAS-036"
   },
   "mappings": [

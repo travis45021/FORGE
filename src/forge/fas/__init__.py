@@ -19,6 +19,7 @@ from .interfaces import (
 from .knowledge import KnowledgeCore, KnowledgeError
 from .lifecycle import LifecycleError, ServiceLifecycle
 from .missions import MissionLifecycle, MissionTransitionError
+from .material_review import MaterialDesignReview, MaterialReviewError
 from .objects import ObjectSystem, ObjectSystemError
 from .onboarding import OnboardingError, OnboardingService
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
@@ -70,6 +71,8 @@ __all__ = [
     "MissionLifecycle",
     "MissionScheduler",
     "MissionTransitionError",
+    "MaterialDesignReview",
+    "MaterialReviewError",
     "ObjectSystem",
     "ObjectSystemError",
     "OnboardingError",

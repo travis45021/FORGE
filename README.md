@@ -56,6 +56,7 @@ The current tested reference-contract baseline contains:
 - **FAS-028:** Hardware Interface and Transport
 - **FAS-029:** Capability Design Review: Motion and Positioning
 - **FAS-030:** Capability Design Review: Thermal Management
+- **FAS-031:** Capability Design Review: Material Handling and Extrusion
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each
