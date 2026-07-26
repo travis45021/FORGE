@@ -1,0 +1,21 @@
+# FAS-027 - Executive Lifecycle and Service Management
+
+Status: Implemented reference baseline
+Version: 1.0.0
+Historical source: FAS-026
+
+FAS-027 defines the local service lifecycle boundary for FORGE. Services are
+registered with explicit dependencies and provided capabilities, then moved
+through observable states only with a user-scoped authority reference.
+
+The reference implementation in `src/forge/fas/lifecycle.py` provides service
+registration, constrained state transitions, explicit start/stop plans, and a
+local history. Plans do not spawn processes, issue printer commands, resume
+runtime contexts, or grant authority. A production supervisor may add process
+control, dependency resolution, health probes, crash recovery, and durable
+state while preserving those boundaries.
+
+Automatic restart is not an authority source. Any recovery that could affect a
+physical device must remain paused until FAS-007 authorization, FAS-010 trust,
+FAS-023 health, FAS-022 runtime, and the user's final print confirmation are
+freshly satisfied.

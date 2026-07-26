@@ -73,7 +73,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-024 | Local Interface, API, and Accessibility | Implemented | Baseline | Historical FAS-023 |
 | FAS-025 | Testing, Simulation, and Release Assurance | Implemented | Baseline | Historical FAS-024 |
 | FAS-026 | Local Data Ownership, Persistence, Backup, and Recovery | Implemented | Baseline | Historical FAS-025 |
-| FAS-027 | Executive Lifecycle and Service Management | Planned | Baseline | Historical FAS-026 |
+| FAS-027 | Executive Lifecycle and Service Management | Implemented | Baseline | Historical FAS-026 |
 | FAS-028 | Hardware Interface and Transport | Planned | Baseline | Historical FAS-027 |
 | FAS-029 | Capability Design Review: Motion and Positioning | Review later | Baseline review | Historical FAS-028 |
 | FAS-030 | Capability Design Review: Thermal Management | Review later | Baseline review | Historical FAS-029 |
@@ -119,14 +119,15 @@ AI-provider-neutral evidence interface without shipping Council operation.
 9. FAS-025 testing and release assurance.
 10. FAS-026 local persistence, backup, and restore. Implemented reference
     baseline; filesystem durability and application integration remain.
-11. FAS-027 startup, service lifecycle, and shutdown.
+11. FAS-027 startup, service lifecycle, and shutdown. Implemented reference
+    baseline; process supervision and application integration remain.
 12. FAS-028 replaceable hardware transport with Moonraker/Klipper as the first
     reference provider.
 
 ### Cross-cutting prerequisite — integrated slicing and licensing
 
 ADR-001 approves OrcaSlicer as FORGE's upstream slicing foundation. This does
-not assign a new FAS number or change the canonical ledger. FAS-027 is now the
+not assign a new FAS number or change the canonical ledger. FAS-028 is now the
 next canonical specification.
 
 Before Orca-derived source enters the trusted production tree, FORGE must
@@ -199,7 +200,7 @@ This reconciliation is complete when:
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
 6. Phase A and the implemented portion of Phase B through FAS-026 are complete
-   as tested reference contracts. FAS-027 is the next canonical specification
+   as tested reference contracts. FAS-028 is the next canonical specification
    because FAS-016 and FAS-017 remain future-gated.
 7. The integrated-slicing Gate 0 decisions are recorded. Gate 1 licensing and
    provenance work blocks Orca source import and public integrated release.

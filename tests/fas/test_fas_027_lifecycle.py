@@ -1,0 +1,75 @@
+import sys
+import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "src"))
+
+from forge.fas.lifecycle import LifecycleError, ServiceLifecycle
+
+
+class Fas027LifecycleTests(unittest.TestCase):
+    def setUp(self):
+        self.service = ServiceLifecycle()
+        self.manifest = {
+            "service_id": "forge-service:local-api",
+            "version": "1.0.0",
+            "dependencies": [],
+            "provides": ["local-api"],
+            "state": "registered",
+        }
+        self.service.register(self.manifest)
+
+    def test_explicit_start_plan_has_no_physical_authority(self):
+        plan = self.service.plan_start(
+            self.manifest["service_id"],
+            requested_by="forge-user:local",
+            approval_reference="decision:1",
+        )
+        self.assertFalse(plan["physical_commands_allowed"])
+
+    def test_transition_requires_authority_and_dependency_health(self):
+        with self.assertRaises(LifecycleError):
+            self.service.transition(
+                self.manifest["service_id"],
+                "starting",
+                reason="boot",
+                authority_reference="",
+                observed_at="2026-07-26T12:00:00Z",
+            )
+        self.service.transition(
+            self.manifest["service_id"],
+            "starting",
+            reason="boot",
+            authority_reference="decision:1",
+            observed_at="2026-07-26T12:00:00Z",
+        )
+        ready = self.service.transition(
+            self.manifest["service_id"],
+            "ready",
+            reason="healthy",
+            authority_reference="decision:1",
+            observed_at="2026-07-26T12:00:01Z",
+            health="healthy",
+        )
+        self.assertEqual("ready", ready["state"])
+
+    def test_invalid_transition_and_stop_requires_request(self):
+        with self.assertRaises(LifecycleError):
+            self.service.transition(
+                self.manifest["service_id"],
+                "ready",
+                reason="skip",
+                authority_reference="decision:1",
+                observed_at="2026-07-26T12:00:00Z",
+            )
+        with self.assertRaises(LifecycleError):
+            self.service.plan_stop(
+                self.manifest["service_id"],
+                requested_by="",
+                approval_reference="decision:1",
+            )
+
+
+if __name__ == "__main__":
+    unittest.main()

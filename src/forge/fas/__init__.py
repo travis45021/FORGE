@@ -16,6 +16,7 @@ from .interfaces import (
     InterfaceGateway,
 )
 from .knowledge import KnowledgeCore, KnowledgeError
+from .lifecycle import LifecycleError, ServiceLifecycle
 from .missions import MissionLifecycle, MissionTransitionError
 from .objects import ObjectSystem, ObjectSystemError
 from .onboarding import OnboardingError, OnboardingService
@@ -59,6 +60,8 @@ __all__ = [
     "InterfaceGateway",
     "KnowledgeCore",
     "KnowledgeError",
+    "LifecycleError",
+    "ServiceLifecycle",
     "MissionLifecycle",
     "MissionScheduler",
     "MissionTransitionError",
