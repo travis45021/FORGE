@@ -21,8 +21,8 @@ reviewed. This document does not make a licensing determination.
 | SBOM | machine-readable release dependency inventory | Gap recorded; artifact not started |
 | Contributor terms | DCO/inbound/trademark rules | Draft CONTRIBUTING.md and TRADEMARKS.md added; legal review/finalization open |
 | Privacy | user ownership and opt-in sharing terms | Draft PRIVACY.md and USER-DATA-TERMS.md added; legal review/finalization open |
-| Legal review | qualified review record | Required before public integrated release |
-| Automation | release checks for notices, source match, exclusions, SBOM | Not started |
+| Legal review | qualified review record | Open; unsigned record requires completion before v1 public integration |
+| Automation | release checks for notices, source match, exclusions, SBOM | Contract-only baseline check added; full release checks remain open |
 
 The trusted repository remains contract-only until the index's applicable rows
 are complete. Gate 1 cannot be closed by tests that do not inspect the pinned

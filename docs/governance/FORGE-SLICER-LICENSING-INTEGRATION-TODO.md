@@ -49,9 +49,12 @@ release is distributed until the applicable items in this gate are complete.
   release-source publication rules.
 - [ ] Add plain-language privacy and user-data terms confirming user ownership
   and opt-in sharing.
-- [ ] Obtain qualified legal review before the first public integrated release.
+- [ ] Obtain and record qualified legal review before any v1 public integrated
+  distribution, including binaries, hosted service, or Orca-derived source
+  publication (`docs/compliance/LEGAL-REVIEW-RECORD.md`).
 - [ ] Add automated release checks for license texts, notices, source match,
-  excluded components, and SBOM completeness.
+  excluded components, and SBOM completeness. A contract-only baseline check
+  exists at `scripts/check_gate1.py`; it does not close Gate 1.
 
 ## Gate 2 - Upstream engineering spike
 
