@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/import-assessment.schema.json",
+  "title": "FORGE Import Assessment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["assessment_id", "format", "source_digest", "quarantine", "decision", "ambiguities"],
+  "properties": {
+    "assessment_id": {"type": "string", "minLength": 1},
+    "format": {"enum": ["step", "stp", "3mf"]},
+    "source_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "quarantine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["isolated", "hostile_content_checked", "path_traversal_checked"],
+      "properties": {
+        "isolated": {"const": true},
+        "hostile_content_checked": {"type": "boolean"},
+        "path_traversal_checked": {"type": "boolean"}
+      }
+    },
+    "decision": {"enum": ["accepted", "rejected", "needs_user_resolution"]},
+    "ambiguities": {"type": "array", "items": {"type": "string"}},
+    "normalized_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+  }
+}
