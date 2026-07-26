@@ -9,7 +9,7 @@ reviewed. This document does not make a licensing determination.
 
 | Evidence area | Required artifact | Current status |
 | --- | --- | --- |
-| Upstream pin | tag, commit, source URL, archive digest | Pin and digest verified; durable archive retention missing |
+| Upstream pin | tag, commit, source URL, archive digest | Pin, digest, and isolated archive retention verified |
 | License inventory | file-level headers and SPDX report | Not started |
 | Dependency inventory | libraries, assets, profiles, translations, generated content | Not started |
 | Compatibility | AGPL/GPL/permissive compatibility analysis | Not started |
