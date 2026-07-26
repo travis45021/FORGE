@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/slicer-request.schema.json",
+  "title": "FORGE Slicer Request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["request_id", "input", "context", "profile_digest", "authority"],
+  "properties": {
+    "request_id": {"type": "string", "minLength": 1},
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["format", "digest", "path"],
+      "properties": {
+        "format": {"enum": ["step", "stp", "3mf"]},
+        "digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "path": {"type": "string", "minLength": 1}
+      }
+    },
+    "context": {"enum": ["production", "twin"]},
+    "profile_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mission_id", "user_confirmation_stage"],
+      "properties": {
+        "mission_id": {"type": "string", "minLength": 1},
+        "user_confirmation_stage": {"enum": ["created_mission"]}
+      }
+    },
+    "settings": {"type": "object"}
+  }
+}
