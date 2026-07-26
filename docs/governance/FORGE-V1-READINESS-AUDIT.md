@@ -20,7 +20,7 @@ FAS-026 now adds the tested local data and recovery reference contract. FAS-027
 adds the tested service lifecycle reference contract. FAS-028 adds the tested
 hardware transport reference contract. FAS-029 and FAS-030 add reviewed
 motion, thermal, material, optional vision, artifact preflight, and job
-lifecycle and optional safety-sensor contracts. The
+lifecycle, optional safety-sensor, and update/rollback contracts. The
 remaining persistence work is filesystem durability, encryption, crash-atomic
 transactions, and integration with the application lifecycle.
 
@@ -44,13 +44,13 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
 - All 187 unit, schema, governance, and assurance tests passed at the audited
-  commit; the FAS-026 through FAS-035 follow-on validation expanded the suite to 231 passing
+  commit; the FAS-026 through FAS-036 follow-on validation expanded the suite to 234 passing
   tests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
-- The reconciliation map now identifies FAS-036 as the next canonical
-  specification after the FAS-035 implementation.
+- The reconciliation map now identifies FAS-037 as the next canonical
+  specification after the FAS-036 implementation.
 - FAS-011, FAS-016, and FAS-017 are intentionally future-gated rather than
   accidentally missing.
 - The optional non-free Bambu networking plugin is excluded from the trusted
@@ -128,10 +128,12 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
     monitoring integration.
 11. **FAS-035:** optional safety review implemented; keep it non-blocking unless
     the release claims those capabilities.
-12. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
+12. **FAS-036:** reference update and rollback contract implemented; finish
+    packaging and compatibility integration.
+13. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
    worker boundary, and specify STEP/3MF, Manufacturing Intent, provenance,
    production/twin, and four-click state contracts.
-13. **FAS-036:** implement updates, compatibility, and rollback.
+14. **FAS-037:** perform the final v1.0 baseline release-scope gate.
    thermal behavior, and material handling before production dispatch.
 7. **FAS-033 and FAS-034 plus Slicer Gates 4 and 5:** implement artifact
    preflight, integrated slicing, the accessible four-click UI, live checks,

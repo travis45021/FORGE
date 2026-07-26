@@ -37,6 +37,7 @@ from .trust import (
     development_hmac_verifier,
     payload_digest,
 )
+from .updates import UpdateError, UpdateManager
 from .thermal_review import ThermalDesignReview, ThermalReviewError
 from .vision_review import VisionDesignReview, VisionReviewError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
@@ -97,6 +98,8 @@ __all__ = [
     "SafetyReviewError",
     "TrustError",
     "TrustService",
+    "UpdateError",
+    "UpdateManager",
     "ThermalDesignReview",
     "ThermalReviewError",
     "VisionDesignReview",

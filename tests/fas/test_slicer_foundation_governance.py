@@ -69,15 +69,15 @@ class SlicerFoundationGovernanceTests(unittest.TestCase):
         self.assertIn("file-level audit incomplete", provenance)
         self.assertIn("does not approve source import", provenance)
 
-    def test_fas_036_is_next(self):
+    def test_fas_037_is_next(self):
         mapping = json.loads(
             (
                 ROOT / "docs/governance/fas-reconciliation-map.json"
             ).read_text(encoding="utf-8")
         )
-        self.assertEqual(mapping["rules"]["next_canonical_id"], "FAS-036")
+        self.assertEqual(mapping["rules"]["next_canonical_id"], "FAS-037")
         self.assertIn(
-            "FAS-036 is the next canonical specification",
+            "FAS-037 is the next canonical specification",
             compact(ROADMAP.read_text(encoding="utf-8")),
         )
 
