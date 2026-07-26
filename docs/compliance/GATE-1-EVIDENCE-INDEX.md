@@ -16,9 +16,9 @@ reviewed. This document does not make a licensing determination.
 | Exclusions | proof Bambu networking is absent from all graphs | Preliminary scan found explicit Bambu networking source; exclusion proof required |
 | FORGE provenance | historical MIT reuse and notices audit | Conversation/decision provenance indexed; file-level MIT reuse audit incomplete |
 | Project license | final `AGPL-3.0-only` or `AGPL-3.0-or-later` decision | Pending evidence/legal review |
-| Notices | root license, NOTICE, third-party notices | Not started |
-| Source offer | corresponding-source and publication instructions | Not started |
-| SBOM | machine-readable release dependency inventory | Not started |
+| Notices | root license, NOTICE, third-party notices | Gap recorded; artifacts not started |
+| Source offer | corresponding-source and publication instructions | Gap recorded; artifact not started |
+| SBOM | machine-readable release dependency inventory | Gap recorded; artifact not started |
 | Contributor terms | DCO/inbound/trademark rules | Not started |
 | Privacy | user ownership and opt-in sharing terms | Not started |
 | Legal review | qualified review record | Required before public integrated release |
