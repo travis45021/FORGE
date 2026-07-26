@@ -62,6 +62,7 @@ The current tested reference-contract baseline contains:
 - **FAS-034:** Print Execution and Job Lifecycle
 - **FAS-035:** Environment, Power, and Safety Sensors
 - **FAS-036:** Software Updates, Compatibility, and Rollback
+- **FAS-037:** FORGE v1.0 Baseline Release Scope
 
 FAS-001 through FAS-006 were reconstructed from approved project decisions
 and the dependency contracts already published by FAS-007 and FAS-008. Each

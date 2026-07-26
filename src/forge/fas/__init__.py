@@ -29,6 +29,7 @@ from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .preflight import ArtifactPreflight, PreflightError
 from .scheduler import MissionScheduler, SchedulingError
 from .runtime import ForgeRuntime, RuntimeError
+from .release_gate import REQUIRED_GATES, ReleaseGate, ReleaseGateError
 from .safety_review import SafetyDesignReview, SafetyReviewError
 from .trust import (
     TrustError,
@@ -94,6 +95,9 @@ __all__ = [
     "PreflightError",
     "SchedulingError",
     "RuntimeError",
+    "REQUIRED_GATES",
+    "ReleaseGate",
+    "ReleaseGateError",
     "SafetyDesignReview",
     "SafetyReviewError",
     "TrustError",

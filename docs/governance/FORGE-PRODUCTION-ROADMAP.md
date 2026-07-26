@@ -83,7 +83,7 @@ The machine-readable companion is `fas-reconciliation-map.json`.
 | FAS-034 | Print Execution and Job Lifecycle | Implemented | Baseline | Historical FAS-033 |
 | FAS-035 | Capability Design Review: Environment, Power, and Safety Sensors | Implemented | Optional baseline | Historical FAS-034 |
 | FAS-036 | Software Updates, Compatibility, and Rollback | Implemented | Baseline | Historical FAS-035 |
-| FAS-037 | FORGE v1.0 Baseline Release Scope | Review later | Release gate | Historical FAS-036 |
+| FAS-037 | FORGE v1.0 Baseline Release Scope | Implemented | Release gate | Historical FAS-036 |
 
 ## 5. Dependency-correct delivery sequence
 
@@ -140,11 +140,13 @@ AI-provider-neutral evidence interface without shipping Council operation.
     baseline; independent hardware evidence remains.
 20. FAS-036 software updates, compatibility, and rollback. Implemented
     reference baseline; production packaging integration remains.
+21. FAS-037 v1.0 baseline release-scope gate. Implemented reference baseline;
+    final human release decision remains required.
 
 ### Cross-cutting prerequisite — integrated slicing and licensing
 
 ADR-001 approves OrcaSlicer as FORGE's upstream slicing foundation. This does
-not assign a new FAS number or change the canonical ledger. FAS-037 is now the
+not assign a new FAS number or change the canonical ledger. The next step is
 next canonical specification.
 
 Before Orca-derived source enters the trusted production tree, FORGE must
@@ -217,7 +219,8 @@ This reconciliation is complete when:
 4. No historical draft is copied into production under a conflicting number.
 5. Future work uses canonical identifiers only.
 6. Phase A and the implemented portion of Phase B through FAS-026 are complete
-   as tested reference contracts. FAS-037 is the next canonical specification
+   as tested reference contracts. FAS-037 is now implemented; the remaining
+   work is the final human release gate.
    because FAS-016 and FAS-017 remain future-gated.
 7. The integrated-slicing Gate 0 decisions are recorded. Gate 1 licensing and
    provenance work blocks Orca source import and public integrated release.
