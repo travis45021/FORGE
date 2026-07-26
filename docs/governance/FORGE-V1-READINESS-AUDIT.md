@@ -17,7 +17,8 @@ slicer worker, four-click interface, or controlled print lifecycle required for
 v1.0.
 
 FAS-026 now adds the tested local data and recovery reference contract. FAS-027
-adds the tested service lifecycle reference contract. The
+adds the tested service lifecycle reference contract. FAS-028 adds the tested
+hardware transport reference contract. The
 remaining persistence work is filesystem durability, encryption, crash-atomic
 transactions, and integration with the application lifecycle.
 
@@ -41,13 +42,13 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
 - All 187 unit, schema, governance, and assurance tests passed at the audited
-  commit; the FAS-026/FAS-027 follow-on validation expanded the suite to 207 passing
+  commit; the FAS-026/FAS-027/FAS-028 follow-on validation expanded the suite to 210 passing
   tests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
-- The reconciliation map now identifies FAS-028 as the next canonical
-  specification after the FAS-027 implementation.
+- The reconciliation map now identifies FAS-029 as the next canonical
+  specification after the FAS-028 implementation.
 - FAS-011, FAS-016, and FAS-017 are intentionally future-gated rather than
   accidentally missing.
 - The optional non-free Bambu networking plugin is excluded from the trusted
@@ -109,11 +110,11 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
    encryption, crash-atomic transactions, and application integration.
 3. **FAS-027:** reference contract implemented; finish process supervision,
    crash recovery, and application integration.
-4. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
+4. **FAS-028:** reference contract implemented; finish provider adapters and
+   physical dispatch integration.
+5. **Slicer Gates 2 and 3:** reproduce the pinned upstream build, prove the
    worker boundary, and specify STEP/3MF, Manufacturing Intent, provenance,
    production/twin, and four-click state contracts.
-5. **FAS-028:** implement the replaceable hardware transport/provider contract,
-   with Moonraker/Klipper only as the first tested reference.
 6. **FAS-029 through FAS-031:** complete capability design reviews for motion,
    thermal behavior, and material handling before production dispatch.
 7. **FAS-033 and FAS-034 plus Slicer Gates 4 and 5:** implement artifact

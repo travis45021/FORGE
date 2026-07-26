@@ -33,6 +33,7 @@ from .trust import (
     payload_digest,
 )
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
+from .transport import HardwareTransportRegistry, TransportError
 
 __all__ = [
     "AuthorizationEngine",
@@ -82,6 +83,8 @@ __all__ = [
     "TEST_LAYERS",
     "TestAssuranceError",
     "TestAssuranceService",
+    "HardwareTransportRegistry",
+    "TransportError",
     "content_digest",
     "context_fingerprint",
     "custom_component_manifest",
