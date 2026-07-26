@@ -1,0 +1,10 @@
+# FAS-032 - Vision and Observation Capability Design Review
+
+Status: Implemented reference baseline
+Version: 1.0.0
+Historical source: FAS-031
+
+FAS-032 reviews observation sensors for modality, resolution, rate, privacy
+mode, and failure behavior. It is optional for v1 unless FORGE explicitly
+claims vision capabilities. A review never grants camera access, authority, or
+physical execution.

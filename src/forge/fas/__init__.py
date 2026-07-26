@@ -35,6 +35,7 @@ from .trust import (
     payload_digest,
 )
 from .thermal_review import ThermalDesignReview, ThermalReviewError
+from .vision_review import VisionDesignReview, VisionReviewError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 from .transport import HardwareTransportRegistry, TransportError
 
@@ -89,6 +90,8 @@ __all__ = [
     "TrustService",
     "ThermalDesignReview",
     "ThermalReviewError",
+    "VisionDesignReview",
+    "VisionReviewError",
     "TEST_LAYERS",
     "TestAssuranceError",
     "TestAssuranceService",
