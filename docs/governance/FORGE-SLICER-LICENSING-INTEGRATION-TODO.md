@@ -85,7 +85,7 @@ release is distributed until the applicable items in this gate are complete.
   2. confirm context;
   3. create verified Print Mission;
   4. after live printer checks and before upload, require **Yes, Print**.
-- [ ] Represent the final-confirmation bypass capability as disabled for every
+- [x] Represent the final-confirmation bypass capability as disabled for every
   v1 role and mode.
 - [x] Prove no slicing result or simulation/twin result can grant Mission
   authority.

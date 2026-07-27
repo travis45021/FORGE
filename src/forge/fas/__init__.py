@@ -7,6 +7,12 @@ from .configuration import ConfigurationError, ConfigurationManager
 from .design_review import DesignReviewError, MotionDesignReview
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
+from .final_confirmation_policy import (
+    V1_EXPERIENCE_MODES,
+    V1_GOVERNANCE_ROLES,
+    FinalConfirmationPolicy,
+    FinalConfirmationPolicyError,
+)
 from .health import HEALTH_STATES, HealthError, HealthService
 from .imports import ImportAssessmentError, ImportQuarantine
 from .interactions import InteractionError, InteractionManager
@@ -59,6 +65,8 @@ __all__ = [
     "LOCAL_API_VERSION",
     "REQUIRED_GATES",
     "TEST_LAYERS",
+    "V1_EXPERIENCE_MODES",
+    "V1_GOVERNANCE_ROLES",
     "ArtifactPreflight",
     "AssuranceError",
     "AssuranceService",
@@ -72,6 +80,8 @@ __all__ = [
     "EvaluationError",
     "EventError",
     "ExecutiveError",
+    "FinalConfirmationPolicy",
+    "FinalConfirmationPolicyError",
     "ForgeExecutive",
     "ForgeRuntime",
     "HardwareTransportRegistry",
