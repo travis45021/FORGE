@@ -1,0 +1,23 @@
+{
+  "evidence": {
+    "artifact_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "comparison_evidence_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "comparison_id": "comparison:print",
+    "comparison_reviewed_at": "2026-07-25T20:50:00Z",
+    "comparison_reviewed_by": "reviewer-1",
+    "confirmation_expires_at": "2026-07-25T21:05:00Z",
+    "confirmation_token": "confirmation-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "engine_build_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+    "engine_source_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "final_confirmed_at": "2026-07-25T20:57:00Z",
+    "final_confirmed_by": "user-1",
+    "input_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "job_id": "job:print",
+    "live_checks_checked_at": "2026-07-25T20:56:00Z",
+    "live_checks_evidence_digest": "9999999999999999999999999999999999999999999999999999999999999999",
+    "live_checks_expires_at": "2026-07-25T21:01:00Z",
+    "profile_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "provider_id": "provider:custom"
+  },
+  "evidence_digest": "5f399da70025566b3d0aa6744819ccc9bfe1a5599bc8000698a31ab7765b3f61"
+}

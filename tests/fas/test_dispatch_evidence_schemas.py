@@ -10,14 +10,26 @@ from forge.fas.job_lifecycle import (
     final_confirmation_evidence,
     final_confirmation_evidence_digest,
 )
-from forge.fas.live_printer_checks import REQUIRED_CHECKS, LivePrinterCheckService
-from forge.fas.provider_dispatch import ProviderDispatchCheckService
+from forge.fas.live_printer_checks import (
+    REQUIRED_CHECKS,
+    LivePrinterCheckService,
+    live_check_evidence_digest,
+)
+from forge.fas.provider_dispatch import (
+    ProviderDispatchCheckService,
+    provider_dispatch_evidence_digest,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
+EXAMPLE_DIR = ROOT / "examples" / "fas"
 
 
 def schema(name: str) -> dict:
     return json.loads((ROOT / "schemas" / "fas" / name).read_text(encoding="utf-8"))
+
+
+def example(name: str) -> dict:
+    return json.loads((EXAMPLE_DIR / name).read_text(encoding="utf-8"))
 
 
 def live_evidence() -> dict:
@@ -99,3 +111,46 @@ def test_schema_rejects_physical_authority(schema_name: str, factory) -> None:
 
     with pytest.raises(ValidationError):
         Draft202012Validator(schema(schema_name)).validate(evidence)
+
+
+@pytest.mark.parametrize(
+    ("schema_name", "example_name"),
+    [
+        (
+            "live-printer-check-evidence.schema.json",
+            "live-printer-check-evidence.example.json",
+        ),
+        (
+            "provider-dispatch-evidence.schema.json",
+            "provider-dispatch-evidence.example.json",
+        ),
+        (
+            "final-confirmation-evidence.schema.json",
+            "final-confirmation-evidence.example.json",
+        ),
+    ],
+)
+def test_published_examples_match_schema(schema_name: str, example_name: str) -> None:
+    Draft202012Validator(schema(schema_name)).validate(example(example_name))
+
+
+@pytest.mark.parametrize(
+    ("example_name", "digest"),
+    [
+        ("live-printer-check-evidence.example.json", live_check_evidence_digest),
+        (
+            "provider-dispatch-evidence.example.json",
+            provider_dispatch_evidence_digest,
+        ),
+    ],
+)
+def test_published_evidence_digest_is_valid(example_name: str, digest) -> None:
+    value = example(example_name)
+    assert value["evidence_digest"] == digest(value)
+
+
+def test_published_confirmation_digest_is_valid() -> None:
+    value = example("final-confirmation-evidence.example.json")
+    assert value["evidence_digest"] == final_confirmation_evidence_digest(
+        value["evidence"]
+    )

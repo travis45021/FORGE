@@ -1,0 +1,16 @@
+{
+  "can_start_print": false,
+  "can_upload": false,
+  "capability_id": "artifact.upload",
+  "checked_at": "2026-07-25T20:59:50Z",
+  "checks": {
+    "capability_available": true,
+    "current_state_allows": true,
+    "provider_healthy": true
+  },
+  "context_id": "context:print",
+  "evidence_digest": "e5d1c3baeac1143ee9d4abc60eff66508b8234a6af7f7886c16a4dda1c5a2ea1",
+  "expires_at": "2026-07-25T21:00:20Z",
+  "passed": true,
+  "provider_id": "provider:custom"
+}

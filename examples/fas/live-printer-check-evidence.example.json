@@ -1,0 +1,20 @@
+{
+  "artifact_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "can_start_print": false,
+  "can_upload": false,
+  "checked_at": "2026-07-25T20:56:00Z",
+  "checks": {
+    "artifact_current": true,
+    "capabilities_match": true,
+    "connected": true,
+    "idle": true,
+    "material_available": true,
+    "safety_state_clear": true
+  },
+  "evidence_digest": "c0b2d9629def7f77a981b273f356df4ad005e8019bb82ce02227a1abaac0f3c7",
+  "expires_at": "2026-07-25T21:01:00Z",
+  "failed_checks": [],
+  "final_confirmation_required": true,
+  "passed": true,
+  "provider_id": "provider:custom"
+}
