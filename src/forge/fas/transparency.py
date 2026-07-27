@@ -61,6 +61,20 @@ _RESOURCES = (
         "status": "baseline_incomplete",
         "legal_review_required": False,
     },
+    {
+        "id": "security_threat_model",
+        "label": "Security threat model",
+        "path": "docs/security/V1-THREAT-MODEL.md",
+        "status": "incomplete",
+        "legal_review_required": False,
+    },
+    {
+        "id": "security_threat_register",
+        "label": "Machine-readable security threat register",
+        "path": "docs/security/v1-threat-register.json",
+        "status": "incomplete",
+        "legal_review_required": False,
+    },
 )
 
 
@@ -85,7 +99,7 @@ class TransparencyCatalog:
                 "grants_physical_authority": False,
             },
             "accessible_label": (
-                "Licensing, source, notices, privacy, user data, and export"
+                "Licensing, source, notices, privacy, user data, security, and export"
             ),
             "non_color_cue": "information",
         }

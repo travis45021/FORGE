@@ -22,3 +22,7 @@ The register is fail-closed:
 
 Future reviews must add new boundaries and threats rather than deleting open
 risk without replacement evidence and a review record.
+
+Both this explanation and the machine-readable register are exposed through
+the local transparency catalog so users and release reviewers do not need a
+cloud account or a hidden administrative path to inspect security status.

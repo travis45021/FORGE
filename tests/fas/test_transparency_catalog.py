@@ -19,6 +19,8 @@ def test_catalog_exposes_required_product_resources() -> None:
         "user_data_terms",
         "trademarks",
         "sbom",
+        "security_threat_model",
+        "security_threat_register",
     } <= resource_ids
     assert catalog["data_export"]["action"] == "local.export_user_data"
     assert catalog["data_export"]["destination_selected_by_user"] is True
@@ -39,5 +41,5 @@ def test_every_catalog_resource_exists_in_repository() -> None:
     result = TransparencyCatalog().validate_repository(ROOT)
 
     assert result["status"] == "available_with_disclosures"
-    assert result["resource_count"] == 7
+    assert result["resource_count"] == 9
     assert result["public_distribution_cleared"] is False
