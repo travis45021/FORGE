@@ -32,6 +32,7 @@
       "type": "array",
       "contains": {"const": "printer_control"},
       "items": {"type": "string"}
-    }
+    },
+    "can_control_hardware": {"const": false}
   }
 }
