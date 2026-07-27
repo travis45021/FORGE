@@ -103,8 +103,9 @@ release is distributed until the applicable items in this gate are complete.
   outputs, logs, resource limits, and cancellation. Manifest isolation and
   resource validation are implemented; real worker execution remains open.
 - [ ] Add deterministic artifact preflight and production/twin comparison.
-  Comparison and acceptance reference services are implemented; real engine
-  artifact evidence remains open.
+  Byte-to-result digest, request, context, provenance, comparison, and
+  acceptance reference services are implemented; real engine artifact
+  evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.
