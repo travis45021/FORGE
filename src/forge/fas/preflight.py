@@ -114,3 +114,76 @@ class ArtifactPreflight:
             "can_upload": False,
             "can_start_print": False,
         }
+
+    def inspect_worker_pair_outputs(
+        self,
+        pair_outcome: Mapping[str, Any],
+        *,
+        production_path: str | Path,
+        production_result: Mapping[str, Any],
+        twin_path: str | Path,
+        twin_result: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Preflight both outputs only when their coordinated pair succeeded."""
+        pair = deepcopy(dict(pair_outcome))
+        if (
+            pair.get("status") != "ready_for_preflight"
+            or pair.get("artifacts_eligible_for_preflight") is not True
+            or pair.get("can_compare") is not True
+            or pair.get("can_upload") is not False
+            or pair.get("can_start_print") is not False
+            or pair.get("can_control_hardware") is not False
+        ):
+            raise PreflightError("worker pair is not eligible for preflight")
+
+        evidence: dict[str, dict[str, Any]] = {}
+        for context, path, result in (
+            ("production", production_path, production_result),
+            ("twin", twin_path, twin_result),
+        ):
+            outcome = pair.get(context)
+            if (
+                not isinstance(outcome, Mapping)
+                or outcome.get("status") != "succeeded"
+                or not outcome.get("request_id")
+            ):
+                raise PreflightError(f"{context} worker outcome is not trusted")
+            checked = self.inspect_slicer_output(
+                path,
+                result,
+                expected_request_id=str(outcome["request_id"]),
+                expected_context=context,
+            )
+            if checked["artifact_digest"] != outcome.get("artifact_digest"):
+                raise PreflightError(
+                    f"{context} output does not match the successful worker outcome"
+                )
+            self._same_engine(checked["engine"], pair.get("engine"), context)
+            evidence[context] = checked
+
+        return {
+            "schema_version": "1.0.0",
+            "status": "ready_for_comparison",
+            "engine": deepcopy(pair["engine"]),
+            "input_digest": pair.get("input_digest"),
+            "profile_digest": pair.get("profile_digest"),
+            "production": evidence["production"],
+            "twin": evidence["twin"],
+            "pair_outcome_validated": True,
+            "both_output_digests_verified": True,
+            "can_upload": False,
+            "can_start_print": False,
+            "can_authorize_production": False,
+        }
+
+    @staticmethod
+    def _same_engine(result_engine: Any, pair_engine: Any, context: str) -> None:
+        if not isinstance(result_engine, Mapping) or not isinstance(
+            pair_engine, Mapping
+        ):
+            raise PreflightError(f"{context} engine provenance is invalid")
+        fields = ("name", "version", "source_digest")
+        if any(result_engine.get(field) != pair_engine.get(field) for field in fields):
+            raise PreflightError(
+                f"{context} output came from a different reviewed engine"
+            )

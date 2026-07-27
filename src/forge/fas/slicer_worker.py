@@ -316,6 +316,8 @@ class SlicerWorkerSupervisor:
             or item.get("status") not in {"succeeded", "failed_closed"}
         ):
             raise SlicerWorkerError(f"{context} worker outcome is invalid")
+        item["request_id"] = assigned.get("request_id")
+        item["profile_digest"] = assigned.get("profile_digest")
         return item
 
     @staticmethod

@@ -113,11 +113,13 @@ release is distributed until the applicable items in this gate are complete.
   execution remains open.
 - [ ] Add deterministic artifact preflight and production/twin comparison.
   Byte-to-result digest, request, context, provenance, comparison, and
-  acceptance reference services are implemented. Comparison now requires
-  measured preflight evidence; acceptance, fourth-click, and Executive
-  boundaries reject raw evidence. Confirmed jobs, transport handoffs, and
-  Runtime dispatch preserve and recheck preflight. Real engine artifact
-  evidence remains open.
+  acceptance reference services are implemented. Paired preflight now requires
+  a successful coordinated worker-pair outcome, verifies both output byte
+  digests against that outcome, and binds both results to the same reviewed
+  engine before comparison. Comparison requires measured preflight evidence;
+  acceptance, fourth-click, and Executive boundaries reject raw evidence.
+  Confirmed jobs, transport handoffs, and Runtime dispatch preserve and recheck
+  preflight. Real engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.
