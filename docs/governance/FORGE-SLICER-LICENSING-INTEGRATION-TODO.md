@@ -73,8 +73,9 @@ release is distributed until the applicable items in this gate are complete.
 ## Gate 3 - FORGE contracts and state machine
 
 - [ ] Specify STEP and 3MF quarantine, parsing, normalization, and validation.
-  Quarantine assessment, structural checks, digesting, and 3MF path-traversal
-  rejection are implemented; full normalization/parsing remains open.
+  Quarantine assessment, bounded structural parsing, deterministic normalized
+  digests, XML protections, and 3MF path-traversal rejection are implemented;
+  engine-backed geometry normalization remains open.
 - [x] Define the Manufacturing Intent object and loss/ambiguity reporting.
 - [x] Define versioned slicer request, result, warning, and failure contracts.
 - [x] Record source digest, engine build, derived profile digest, context,

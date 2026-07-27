@@ -23,7 +23,10 @@ class FourClickContractFlowTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             source = Path(directory) / "part.3mf"
             with ZipFile(source, "w") as archive:
-                archive.writestr("3D/3dmodel.model", "<model />")
+                archive.writestr(
+                    "3D/3dmodel.model",
+                    "<model><resources/><build/></model>",
+                )
             assessment = ImportQuarantine().assess(source)
 
         intent = {
