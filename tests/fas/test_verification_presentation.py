@@ -2,6 +2,7 @@
 
 import pytest
 
+from forge.fas.twin_comparison import comparison_evidence_digest
 from forge.fas.verification_presentation import (
     VerificationPresentationError,
     VerificationPresenter,
@@ -20,7 +21,7 @@ def result(context: str, *, artifact: str = "a") -> dict:
 
 @pytest.fixture
 def comparison() -> dict:
-    return {
+    value = {
         "comparison_id": "comparison:1",
         "production": result("production"),
         "twin": result("twin"),
@@ -28,10 +29,13 @@ def comparison() -> dict:
         "acceptance": {"status": "matching", "reviewed_by_user": False},
         "can_authorize_production": False,
     }
+    value["evidence_digest"] = comparison_evidence_digest(value)
+    return value
 
 
 def test_shows_matching_evidence_warnings_and_limitations(comparison: dict) -> None:
     comparison["production"]["warnings"] = ["A support may be difficult to remove."]
+    comparison["evidence_digest"] = comparison_evidence_digest(comparison)
     shown = VerificationPresenter().present(
         comparison, limitations=["Estimate excludes printer warm-up time."]
     )
@@ -48,10 +52,13 @@ def test_records_third_click_without_physical_authority(comparison: dict) -> Non
         comparison,
         limitations=[],
         actor="user-1",
+        reviewed_at="2026-07-26T12:00:00Z",
         confirmation=True,
     )
 
     assert result["click_number"] == 3
+    assert result["reviewed_at"] == "2026-07-26T12:00:00Z"
+    assert result["comparison_evidence_digest"] == comparison["evidence_digest"]
     assert result["twin_authority_granted"] is False
     assert result["can_start_print"] is False
 
@@ -59,6 +66,7 @@ def test_records_third_click_without_physical_authority(comparison: dict) -> Non
 def test_difference_removes_create_mission_action(comparison: dict) -> None:
     comparison["differences"] = ["artifact_digest"]
     comparison["acceptance"]["status"] = "different"
+    comparison["evidence_digest"] = comparison_evidence_digest(comparison)
     shown = VerificationPresenter().present(comparison, limitations=[])
 
     assert shown["can_create_mission"] is False
@@ -68,6 +76,7 @@ def test_difference_removes_create_mission_action(comparison: dict) -> None:
             comparison,
             limitations=[],
             actor="user-1",
+            reviewed_at="2026-07-26T12:00:00Z",
             confirmation=True,
         )
 

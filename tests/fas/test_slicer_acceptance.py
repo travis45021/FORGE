@@ -45,7 +45,7 @@ def comparison() -> dict:
         },
         "acceptance": {
             "status": "matching",
-            "reviewed_by_user": True,
+            "reviewed_by_user": False,
             "preflight_evidence_required": True,
             "pair_preflight_required": True,
         },
@@ -60,8 +60,22 @@ class SlicerAcceptanceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.service = SlicerArtifactAcceptance()
 
+    def accept(self, value: dict, *, reviewed_by: str = "user-1") -> dict:
+        return self.service.accept(
+            value,
+            review={
+                "comparison_id": value["comparison_id"],
+                "comparison_evidence_digest": value["evidence_digest"],
+                "reviewed_by": reviewed_by,
+                "reviewed_at": "2026-07-26T12:00:00Z",
+                "click_number": 3,
+                "can_upload": False,
+                "can_start_print": False,
+            },
+        )
+
     def test_matching_reviewed_evidence_requires_final_confirmation(self) -> None:
-        result = self.service.accept(comparison())
+        result = self.accept(comparison())
         self.assertTrue(result["ready_for_live_checks"])
         self.assertTrue(result["final_confirmation_required"])
         self.assertEqual(result["input_digest"], "a" * 64)
@@ -77,22 +91,21 @@ class SlicerAcceptanceTests(unittest.TestCase):
 
     def test_rejects_unreviewed_evidence(self) -> None:
         value = comparison()
-        value["acceptance"]["reviewed_by_user"] = False
         with self.assertRaises(SlicerAcceptanceError):
-            self.service.accept(value)
+            self.accept(value, reviewed_by="")
 
     def test_rejects_different_results(self) -> None:
         value = comparison()
         value["acceptance"]["status"] = "different"
         with self.assertRaises(SlicerAcceptanceError):
-            self.service.accept(value)
+            self.accept(value)
 
     def test_rejects_raw_comparison_without_preflight(self) -> None:
         value = comparison()
         value["production"]["preflight_verified"] = False
         value["acceptance"]["preflight_evidence_required"] = False
         with self.assertRaises(SlicerAcceptanceError):
-            self.service.accept(value)
+            self.accept(value)
 
     def test_rejects_individually_preflighted_but_unpaired_results(self) -> None:
         value = comparison()
@@ -101,27 +114,27 @@ class SlicerAcceptanceTests(unittest.TestCase):
         with self.assertRaisesRegex(
             SlicerAcceptanceError, "coordinated production and twin"
         ):
-            self.service.accept(value)
+            self.accept(value)
 
     def test_rejects_missing_input_or_profile_lineage(self) -> None:
         value = comparison()
         value.pop("profile_digest")
         value["evidence_digest"] = comparison_evidence_digest(value)
         with self.assertRaisesRegex(SlicerAcceptanceError, "input and profile"):
-            self.service.accept(value)
+            self.accept(value)
 
     def test_rejects_missing_exact_engine_build_provenance(self) -> None:
         value = comparison()
         value["production"]["engine"].pop("build_digest")
         value["evidence_digest"] = comparison_evidence_digest(value)
         with self.assertRaisesRegex(SlicerAcceptanceError, "exact engine"):
-            self.service.accept(value)
+            self.accept(value)
 
     def test_rejects_comparison_changed_after_review(self) -> None:
         value = comparison()
         value["production"]["artifact_digest"] = "e" * 64
         with self.assertRaisesRegex(SlicerAcceptanceError, "changed"):
-            self.service.accept(value)
+            self.accept(value)
 
 
 if __name__ == "__main__":

@@ -128,6 +128,10 @@ class TwinComparisonService:
         reviewed_by_user: bool = False,
     ) -> dict[str, Any]:
         """Compare only evidence emitted by coordinated paired preflight."""
+        if reviewed_by_user is True:
+            raise TwinComparisonError(
+                "user review must be recorded by the click-three presentation"
+            )
         pair = dict(paired_preflight)
         if (
             pair.get("status") != "ready_for_comparison"

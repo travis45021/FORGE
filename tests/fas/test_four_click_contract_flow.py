@@ -17,6 +17,7 @@ from forge.fas.slicer_preparation import SlicerMissionPreparation
 from forge.fas.slicer_profile import SlicerProfileAdapter
 from forge.fas.transport import HardwareTransportRegistry
 from forge.fas.twin_comparison import TwinComparisonService
+from forge.fas.verification_presentation import VerificationPresenter
 
 
 class FourClickContractFlowTests(unittest.TestCase):
@@ -134,9 +135,15 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "can_upload": False,
                 "can_start_print": False,
             },
-            reviewed_by_user=True,
         )
-        acceptance = SlicerArtifactAcceptance().accept(comparison)
+        review = VerificationPresenter().confirm_mission_creation(
+            comparison,
+            limitations=[],
+            actor="user-1",
+            reviewed_at="2026-07-26T12:00:00Z",
+            confirmation=True,
+        )
+        acceptance = SlicerArtifactAcceptance().accept(comparison, review=review)
         live = LivePrinterCheckService().evaluate(
             provider_id="provider:custom",
             artifact_digest=artifact_digest,

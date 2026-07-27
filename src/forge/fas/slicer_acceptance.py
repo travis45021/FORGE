@@ -16,7 +16,12 @@ class SlicerAcceptanceError(ValueError):
 class SlicerArtifactAcceptance:
     """Turn reviewed comparison evidence into non-authoritative readiness."""
 
-    def accept(self, comparison: Mapping[str, Any]) -> dict[str, Any]:
+    def accept(
+        self,
+        comparison: Mapping[str, Any],
+        *,
+        review: Mapping[str, Any],
+    ) -> dict[str, Any]:
         item = deepcopy(dict(comparison))
         evidence_digest = item.get("evidence_digest")
         if (
@@ -79,11 +84,24 @@ class SlicerArtifactAcceptance:
             raise SlicerAcceptanceError(
                 "both production and twin artifacts require verified preflight"
             )
-        if acceptance.get("reviewed_by_user") is not True:
-            raise SlicerAcceptanceError("user review is required")
+        review_item = deepcopy(dict(review))
+        if (
+            review_item.get("comparison_id") != item.get("comparison_id")
+            or review_item.get("comparison_evidence_digest") != evidence_digest
+            or review_item.get("click_number") != 3
+            or not review_item.get("reviewed_by")
+            or not review_item.get("reviewed_at")
+            or review_item.get("can_upload") is not False
+            or review_item.get("can_start_print") is not False
+        ):
+            raise SlicerAcceptanceError(
+                "acceptance requires a named click-three review receipt"
+            )
         return {
             "comparison_id": item.get("comparison_id"),
             "comparison_evidence_digest": evidence_digest,
+            "reviewed_by": review_item["reviewed_by"],
+            "reviewed_at": review_item["reviewed_at"],
             "artifact_digest": artifact_digest,
             "input_digest": input_digest,
             "profile_digest": profile_digest,

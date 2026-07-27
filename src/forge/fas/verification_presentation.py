@@ -6,6 +6,8 @@ from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any
 
+from .twin_comparison import comparison_evidence_digest
+
 
 class VerificationPresentationError(ValueError):
     """Raised when verification evidence is unsafe or incomplete."""
@@ -21,6 +23,14 @@ class VerificationPresenter:
         limitations: list[str],
     ) -> dict[str, Any]:
         item = deepcopy(dict(comparison))
+        evidence_digest = item.get("evidence_digest")
+        if (
+            not isinstance(evidence_digest, str)
+            or comparison_evidence_digest(item) != evidence_digest
+        ):
+            raise VerificationPresentationError(
+                "comparison evidence changed before user review"
+            )
         if item.get("can_authorize_production") is not False:
             raise VerificationPresentationError(
                 "comparison evidence must remain non-authoritative"
@@ -111,11 +121,12 @@ class VerificationPresenter:
         *,
         limitations: list[str],
         actor: str,
+        reviewed_at: str,
         confirmation: bool,
     ) -> dict[str, Any]:
         """Record click three only for matching, user-reviewed evidence."""
         presentation = self.present(comparison, limitations=limitations)
-        if not actor.strip() or confirmation is not True:
+        if not actor.strip() or not reviewed_at.strip() or confirmation is not True:
             raise VerificationPresentationError("named user review is required")
         if presentation["can_create_mission"] is not True:
             raise VerificationPresentationError(
@@ -127,6 +138,8 @@ class VerificationPresenter:
             "artifact_digest": presentation["verification"]["artifact_digest"],
             "stage": "print_mission_creation_requested",
             "reviewed_by": actor.strip(),
+            "reviewed_at": reviewed_at.strip(),
+            "comparison_evidence_digest": comparison["evidence_digest"],
             "click_number": 3,
             "twin_authority_granted": False,
             "can_upload": False,

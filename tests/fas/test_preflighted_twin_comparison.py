@@ -94,7 +94,6 @@ def test_paired_preflight_proof_is_carried_into_comparison() -> None:
     result = TwinComparisonService().compare_paired_preflight(
         comparison_id="comparison:paired",
         paired_preflight=paired_preflight(),
-        reviewed_by_user=True,
     )
 
     assert result["pair_preflight_verified"] is True
@@ -102,6 +101,15 @@ def test_paired_preflight_proof_is_carried_into_comparison() -> None:
     assert result["profile_digest"] == "e" * 64
     assert len(result["evidence_digest"]) == 64
     assert result["can_authorize_production"] is False
+
+
+def test_rejects_boolean_user_review_shortcut() -> None:
+    with pytest.raises(TwinComparisonError, match="click-three presentation"):
+        TwinComparisonService().compare_paired_preflight(
+            comparison_id="comparison:paired",
+            paired_preflight=paired_preflight(),
+            reviewed_by_user=True,
+        )
 
 
 @pytest.mark.parametrize(
