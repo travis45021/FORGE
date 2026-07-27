@@ -35,6 +35,7 @@ class LivePrinterCheckTests(unittest.TestCase):
         self.assertFalse(result["can_upload"])
         self.assertFalse(result["can_start_print"])
         self.assertEqual(result["checked_at"], "2026-07-26T12:04:00Z")
+        self.assertEqual(len(result["evidence_digest"]), 64)
 
     def test_reports_failed_capability_check(self) -> None:
         self.checks["capabilities_match"] = False

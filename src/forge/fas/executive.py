@@ -134,6 +134,7 @@ class ForgeExecutive:
             or not job.get("confirmation_expires_at")
             or not job.get("live_checks_checked_at")
             or not job.get("live_checks_expires_at")
+            or not self._digest(job.get("live_checks_evidence_digest"))
             or not isinstance(token, str)
             or len(token) < 32
         ):
@@ -174,6 +175,7 @@ class ForgeExecutive:
                 "confirmation_expires_at": job["confirmation_expires_at"],
                 "live_checks_checked_at": job["live_checks_checked_at"],
                 "live_checks_expires_at": job["live_checks_expires_at"],
+                "live_checks_evidence_digest": job["live_checks_evidence_digest"],
                 "artifact_preflight_verified": True,
                 "artifact_pair_preflight_verified": True,
                 "physical_dispatch_allowed": False,

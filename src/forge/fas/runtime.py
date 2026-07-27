@@ -307,6 +307,7 @@ class ForgeRuntime:
             raise RuntimeError("upload artifact digest must be lowercase SHA-256")
         for field in (
             "comparison_evidence_digest",
+            "live_checks_evidence_digest",
             "input_digest",
             "profile_digest",
             "engine_source_digest",
@@ -354,6 +355,7 @@ class ForgeRuntime:
                 "confirmation_expires_at": handoff.get("confirmation_expires_at"),
                 "live_checks_checked_at": handoff.get("live_checks_checked_at"),
                 "live_checks_expires_at": handoff.get("live_checks_expires_at"),
+                "live_checks_evidence_digest": handoff["live_checks_evidence_digest"],
             }
         )
         return result

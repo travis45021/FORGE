@@ -200,6 +200,7 @@ class HardwareTransportRegistry:
             raise TransportError("job artifact digest must be lowercase SHA-256")
         for field in (
             "comparison_evidence_digest",
+            "live_checks_evidence_digest",
             "input_digest",
             "profile_digest",
             "engine_source_digest",
@@ -233,6 +234,7 @@ class HardwareTransportRegistry:
             "confirmation_expires_at": item["confirmation_expires_at"],
             "live_checks_checked_at": item["live_checks_checked_at"],
             "live_checks_expires_at": item["live_checks_expires_at"],
+            "live_checks_evidence_digest": item["live_checks_evidence_digest"],
             "confirmation_token": confirmation_token,
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,

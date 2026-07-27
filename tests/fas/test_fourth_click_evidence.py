@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from forge.fas.job_lifecycle import JobLifecycleError, PrintJobLifecycle
+from forge.fas.live_printer_checks import live_check_evidence_digest
 
 
 class FourthClickEvidenceTests(unittest.TestCase):
@@ -65,6 +66,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "can_upload": False,
             "can_start_print": False,
         }
+        self.live["evidence_digest"] = live_check_evidence_digest(self.live)
 
     def confirm(self) -> dict:
         return self.lifecycle.final_confirm_with_evidence(
@@ -131,7 +133,13 @@ class FourthClickEvidenceTests(unittest.TestCase):
 
     def test_rejects_live_checks_expired_before_confirmation(self) -> None:
         self.live["expires_at"] = "2026-07-26T12:05:00Z"
+        self.live["evidence_digest"] = live_check_evidence_digest(self.live)
         with self.assertRaisesRegex(JobLifecycleError, "expired"):
+            self.confirm()
+
+    def test_rejects_live_checks_changed_after_collection(self) -> None:
+        self.live["checks"] = {"connected": False}
+        with self.assertRaisesRegex(JobLifecycleError, "evidence changed"):
             self.confirm()
 
 

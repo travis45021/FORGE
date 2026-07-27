@@ -61,6 +61,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "confirmation_expires_at": "2026-07-25T21:05:00Z",
             "live_checks_checked_at": "2026-07-25T20:54:00Z",
             "live_checks_expires_at": "2026-07-25T21:03:00Z",
+            "live_checks_evidence_digest": "9" * 64,
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
@@ -95,6 +96,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["confirmed_at"], "2026-07-25T20:55:00Z")
         self.assertEqual(result["confirmation_expires_at"], "2026-07-25T21:05:00Z")
         self.assertEqual(result["live_checks_expires_at"], "2026-07-25T21:03:00Z")
+        self.assertEqual(result["live_checks_evidence_digest"], "9" * 64)
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False

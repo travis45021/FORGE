@@ -32,6 +32,7 @@ class ControlledUploadTests(unittest.TestCase):
             "confirmation_expires_at": "2026-07-26T12:10:00Z",
             "live_checks_checked_at": "2026-07-26T12:04:00Z",
             "live_checks_expires_at": "2026-07-26T12:09:00Z",
+            "live_checks_evidence_digest": "9" * 64,
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_digest": "a" * 64,
             "input_digest": "b" * 64,
@@ -66,6 +67,7 @@ class ControlledUploadTests(unittest.TestCase):
         self.assertEqual(result["confirmed_at"], "2026-07-26T12:05:00Z")
         self.assertEqual(result["confirmation_expires_at"], "2026-07-26T12:10:00Z")
         self.assertEqual(result["live_checks_expires_at"], "2026-07-26T12:09:00Z")
+        self.assertEqual(result["live_checks_evidence_digest"], "9" * 64)
         self.assertFalse(result["physical_dispatch_allowed"])
 
     def test_rejects_job_before_final_confirmation(self) -> None:

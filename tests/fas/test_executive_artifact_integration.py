@@ -53,6 +53,7 @@ def inputs() -> dict[str, dict]:
             "confirmation_expires_at": "2026-07-26T12:10:00Z",
             "live_checks_checked_at": "2026-07-26T12:04:00Z",
             "live_checks_expires_at": "2026-07-26T12:09:00Z",
+            "live_checks_evidence_digest": "9" * 64,
             "confirmation_token": "confirmation-" + ("x" * 32),
         },
         "acceptance": {
@@ -119,6 +120,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
         ("job", "final_confirmed_at", ""),
         ("job", "confirmation_expires_at", ""),
         ("job", "live_checks_expires_at", ""),
+        ("job", "live_checks_evidence_digest", "invalid"),
         ("acceptance", "can_upload", True),
         ("acceptance", "preflight_verified", False),
         ("acceptance", "pair_preflight_verified", False),

@@ -8,6 +8,8 @@ from datetime import datetime
 from secrets import token_urlsafe
 from typing import Any
 
+from .live_printer_checks import live_check_evidence_digest
+
 
 class JobLifecycleError(ValueError):
     """Raised when a print job transition violates user-control boundaries."""
@@ -200,6 +202,12 @@ class PrintJobLifecycle:
             raise JobLifecycleError("live checks do not match the accepted artifact")
         if live_checks.get("passed") is not True:
             raise JobLifecycleError("all live printer checks must pass")
+        live_evidence_digest = live_checks.get("evidence_digest")
+        if (
+            not self._digest(live_evidence_digest)
+            or live_check_evidence_digest(live_checks) != live_evidence_digest
+        ):
+            raise JobLifecycleError("live printer check evidence changed")
         checked_at = _utc(live_checks.get("checked_at"))
         live_checks_expires_at = _utc(live_checks.get("expires_at"))
         confirmed_time = _utc(confirmed_at)
@@ -227,6 +235,7 @@ class PrintJobLifecycle:
         job["comparison_reviewed_at"] = acceptance["reviewed_at"]
         job["live_checks_checked_at"] = live_checks["checked_at"]
         job["live_checks_expires_at"] = live_checks["expires_at"]
+        job["live_checks_evidence_digest"] = live_evidence_digest
         return deepcopy(job)
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:

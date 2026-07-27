@@ -136,7 +136,9 @@ release is distributed until the applicable items in this gate are complete.
   fourth-click token has an explicit short-lived validity window and cannot
   dispatch at or after expiry. Live printer checks also have their own
   timestamps and expiry, must precede confirmation, and must remain fresh
-  through Runtime dispatch. Real engine artifact evidence remains open.
+  through Runtime dispatch. The complete provider-neutral live-check record is
+  canonically hashed and that digest is preserved through dispatch, preventing
+  silent mutation after collection. Real engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

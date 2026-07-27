@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
+from hashlib import sha256
 from typing import Any
 
 
@@ -20,6 +22,19 @@ REQUIRED_CHECKS = {
     "safety_state_clear",
     "artifact_current",
 }
+
+
+def live_check_evidence_digest(value: Mapping[str, Any]) -> str:
+    """Hash complete live-check evidence so it cannot change after review."""
+    item = deepcopy(dict(value))
+    item.pop("evidence_digest", None)
+    canonical = json.dumps(
+        item,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return sha256(canonical).hexdigest()
 
 
 class LivePrinterCheckService:
@@ -46,7 +61,7 @@ class LivePrinterCheckService:
         if missing:
             raise LivePrinterCheckError(f"live checks missing: {', '.join(missing)}")
         invalid = sorted(name for name in REQUIRED_CHECKS if evidence[name] is not True)
-        return {
+        result = {
             "provider_id": provider_id,
             "artifact_digest": artifact_digest,
             "checks": evidence,
@@ -58,6 +73,8 @@ class LivePrinterCheckService:
             "can_upload": False,
             "can_start_print": False,
         }
+        result["evidence_digest"] = live_check_evidence_digest(result)
+        return result
 
     @staticmethod
     def _digest(value: Any) -> None:
