@@ -90,6 +90,20 @@ class Fas034JobLifecycleTests(unittest.TestCase):
                 authorization_verified=True,
             )
 
+    def test_final_confirmation_window_cannot_exceed_ten_minutes(self):
+        for action in ("configure", "review", "upload"):
+            self.service.click("job:001", action=action, actor="forge-user:local")
+        with self.assertRaisesRegex(JobLifecycleError, "ten minutes"):
+            self.service.final_confirm(
+                "job:001",
+                actor="forge-user:local",
+                confirmed_at="2026-07-26T12:05:00Z",
+                confirmation_expires_at="2026-07-26T12:15:01Z",
+                confirmation=True,
+                live_checks_passed=True,
+                authorization_verified=True,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

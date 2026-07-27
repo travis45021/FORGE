@@ -61,10 +61,10 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "comparison_reviewed_by": "reviewer-1",
             "comparison_reviewed_at": "2026-07-25T20:50:00Z",
             "confirmed_by": "user-1",
-            "confirmed_at": "2026-07-25T20:55:00Z",
+            "confirmed_at": "2026-07-25T20:57:00Z",
             "confirmation_expires_at": "2026-07-25T21:05:00Z",
-            "live_checks_checked_at": "2026-07-25T20:54:00Z",
-            "live_checks_expires_at": "2026-07-25T21:03:00Z",
+            "live_checks_checked_at": "2026-07-25T20:56:00Z",
+            "live_checks_expires_at": "2026-07-25T21:01:00Z",
             "live_checks_evidence_digest": "9" * 64,
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
@@ -121,9 +121,9 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["engine_build_digest"], "e" * 64)
         self.assertEqual(result["comparison_evidence_digest"], "f" * 64)
         self.assertEqual(result["comparison_reviewed_by"], "reviewer-1")
-        self.assertEqual(result["confirmed_at"], "2026-07-25T20:55:00Z")
+        self.assertEqual(result["confirmed_at"], "2026-07-25T20:57:00Z")
         self.assertEqual(result["confirmation_expires_at"], "2026-07-25T21:05:00Z")
-        self.assertEqual(result["live_checks_expires_at"], "2026-07-25T21:03:00Z")
+        self.assertEqual(result["live_checks_expires_at"], "2026-07-25T21:01:00Z")
         self.assertEqual(result["live_checks_evidence_digest"], "9" * 64)
         self.assertEqual(len(result["final_confirmation_evidence_digest"]), 64)
 
@@ -144,7 +144,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             self.dispatch()
 
     def test_rejects_review_after_fourth_click(self) -> None:
-        self.handoff["comparison_reviewed_at"] = "2026-07-25T20:56:00Z"
+        self.handoff["comparison_reviewed_at"] = "2026-07-25T20:58:00Z"
         with self.assertRaisesRegex(RuntimeError, "after final confirmation"):
             self.dispatch()
 
@@ -156,7 +156,20 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
 
     def test_rejects_expired_live_printer_checks(self) -> None:
         self.handoff["live_checks_expires_at"] = "2026-07-25T21:00:00Z"
+        self.rebind()
         with self.assertRaisesRegex(RuntimeError, "live printer checks expired"):
+            self.dispatch()
+
+    def test_rejects_forged_overlong_confirmation_window(self) -> None:
+        self.handoff["confirmation_expires_at"] = "2026-07-25T21:07:01Z"
+        self.rebind()
+        with self.assertRaisesRegex(RuntimeError, "ten minutes"):
+            self.dispatch()
+
+    def test_rejects_forged_overlong_live_check_window(self) -> None:
+        self.handoff["live_checks_checked_at"] = "2026-07-25T20:55:59Z"
+        self.rebind()
+        with self.assertRaisesRegex(RuntimeError, "five minutes"):
             self.dispatch()
 
     def test_rejects_transplanted_confirmation_token(self) -> None:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 from typing import Any
 
@@ -22,6 +22,7 @@ REQUIRED_CHECKS = {
     "safety_state_clear",
     "artifact_current",
 }
+MAX_LIVE_CHECK_AGE = timedelta(minutes=5)
 
 
 def live_check_evidence_digest(value: Mapping[str, Any]) -> str:
@@ -56,6 +57,10 @@ class LivePrinterCheckService:
         expiry = self._utc(expires_at)
         if expiry <= checked:
             raise LivePrinterCheckError("live check expiry must follow the check time")
+        if expiry - checked > MAX_LIVE_CHECK_AGE:
+            raise LivePrinterCheckError(
+                "live check validity cannot exceed five minutes"
+            )
         evidence = deepcopy(dict(checks))
         missing = sorted(REQUIRED_CHECKS - evidence.keys())
         if missing:

@@ -58,6 +58,16 @@ class LivePrinterCheckTests(unittest.TestCase):
                 expires_at="2026-07-26T12:04:00Z",
             )
 
+    def test_rejects_live_check_window_over_five_minutes(self) -> None:
+        with self.assertRaisesRegex(LivePrinterCheckError, "five minutes"):
+            self.service.evaluate(
+                provider_id="provider:custom-printer",
+                artifact_digest="a" * 64,
+                checks=self.checks,
+                checked_at="2026-07-26T12:04:00Z",
+                expires_at="2026-07-26T12:09:01Z",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -7,7 +7,11 @@ from copy import deepcopy
 from datetime import datetime
 from typing import Any
 
-from .job_lifecycle import final_confirmation_evidence_digest
+from .job_lifecycle import (
+    MAX_FINAL_CONFIRMATION_AGE,
+    final_confirmation_evidence_digest,
+)
+from .live_printer_checks import MAX_LIVE_CHECK_AGE
 
 
 class RuntimeError(ValueError):
@@ -294,6 +298,10 @@ class ForgeRuntime:
             != handoff.get("comparison_evidence_digest")
             or receipt.get("live_checks_evidence_digest")
             != handoff.get("live_checks_evidence_digest")
+            or receipt.get("live_checks_checked_at")
+            != handoff.get("live_checks_checked_at")
+            or receipt.get("live_checks_expires_at")
+            != handoff.get("live_checks_expires_at")
         ):
             raise RuntimeError("final-confirmation evidence binding is invalid")
         reviewed_at = _utc(handoff["comparison_reviewed_at"])
@@ -308,10 +316,14 @@ class ForgeRuntime:
             raise RuntimeError("final confirmation cannot be in the dispatch future")
         if confirmation_expires_at <= confirmed_at:
             raise RuntimeError("final confirmation expiry is invalid")
+        if confirmation_expires_at - confirmed_at > MAX_FINAL_CONFIRMATION_AGE:
+            raise RuntimeError("final confirmation validity exceeds ten minutes")
         if dispatch_at >= confirmation_expires_at:
             raise RuntimeError("final confirmation expired before dispatch")
         if live_checks_checked_at > confirmed_at:
             raise RuntimeError("live printer checks occurred after final confirmation")
+        if live_checks_expires_at - live_checks_checked_at > MAX_LIVE_CHECK_AGE:
+            raise RuntimeError("live printer check validity exceeds five minutes")
         if dispatch_at >= live_checks_expires_at:
             raise RuntimeError("live printer checks expired before dispatch")
         confirmation_token = handoff.get("confirmation_token")

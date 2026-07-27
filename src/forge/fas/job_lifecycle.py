@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from collections.abc import Mapping
 from copy import deepcopy
-from datetime import datetime
+from datetime import datetime, timedelta
 from hashlib import sha256
 from secrets import token_urlsafe
 from typing import Any
@@ -46,6 +46,7 @@ FINAL_CONFIRMATION_FIELDS = (
     "confirmation_expires_at",
     "confirmation_token",
 )
+MAX_FINAL_CONFIRMATION_AGE = timedelta(minutes=10)
 
 
 def final_confirmation_evidence(value: Mapping[str, Any]) -> dict[str, Any]:
@@ -153,6 +154,10 @@ class PrintJobLifecycle:
         if expiry_time <= confirmed_time:
             raise JobLifecycleError(
                 "final confirmation expiry must follow confirmation time"
+            )
+        if expiry_time - confirmed_time > MAX_FINAL_CONFIRMATION_AGE:
+            raise JobLifecycleError(
+                "final confirmation validity cannot exceed ten minutes"
             )
         if job["state"] != "final_confirmation_required" or job["click_count"] != 3:
             raise JobLifecycleError(
