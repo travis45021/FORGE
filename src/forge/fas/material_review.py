@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any, ClassVar
 
 
@@ -42,7 +43,20 @@ class MaterialDesignReview:
         ids: set[str] = set()
         if not isinstance(item["materials"], list) or not item["materials"]:
             findings.append("at least one material profile is required")
+        if not isinstance(item["provider_id"], str) or not item["provider_id"].strip():
+            raise MaterialReviewError("material contract provider identity is invalid")
+        if not isinstance(reviewer, str) or not reviewer.strip():
+            raise MaterialReviewError("material review requires a reviewer")
+        if not isinstance(reviewed_at, str) or not reviewed_at.endswith("Z"):
+            raise MaterialReviewError("material review time must be UTC")
+        try:
+            datetime.fromisoformat(reviewed_at[:-1] + "+00:00")
+        except ValueError as exc:
+            raise MaterialReviewError("material review time must be valid UTC") from exc
         for material in item.get("materials", []):
+            if not isinstance(material, Mapping):
+                findings.append("material profile entry must be an object")
+                continue
             missing_material = sorted(self.REQUIRED_FIELDS - material.keys())
             if missing_material:
                 findings.append(
