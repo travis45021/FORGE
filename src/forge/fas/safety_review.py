@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any, ClassVar
 
 
@@ -37,7 +38,20 @@ class SafetyDesignReview:
         ids: set[str] = set()
         if not isinstance(item["sensors"], list) or not item["sensors"]:
             findings.append("at least one safety sensor is required")
+        if not isinstance(item["provider_id"], str) or not item["provider_id"].strip():
+            raise SafetyReviewError("safety contract provider identity is invalid")
+        if not isinstance(reviewer, str) or not reviewer.strip():
+            raise SafetyReviewError("safety review requires a reviewer")
+        if not isinstance(reviewed_at, str) or not reviewed_at.endswith("Z"):
+            raise SafetyReviewError("safety review time must be UTC")
+        try:
+            datetime.fromisoformat(reviewed_at[:-1] + "+00:00")
+        except ValueError as exc:
+            raise SafetyReviewError("safety review time must be valid UTC") from exc
         for sensor in item.get("sensors", []):
+            if not isinstance(sensor, Mapping):
+                findings.append("safety sensor entry must be an object")
+                continue
             missing_sensor = sorted(self.REQUIRED_FIELDS - sensor.keys())
             if missing_sensor:
                 findings.append(
