@@ -114,6 +114,7 @@
         "specified worker boundary",
         "canonical relative workspace paths",
         "request input bound to assigned workspace",
+        "preflight output bound to assigned workspace",
         "supervisor fault-injection contracts",
         "digest-bound result contract"
       ],

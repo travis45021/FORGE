@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from copy import deepcopy
 from hashlib import sha256
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .slicing import SlicerContractBoundary, SlicerContractError
@@ -123,6 +123,7 @@ class ArtifactPreflight:
         production_result: Mapping[str, Any],
         twin_path: str | Path,
         twin_result: Mapping[str, Any],
+        workspace_root: str | Path,
     ) -> dict[str, Any]:
         """Preflight both outputs only when their coordinated pair succeeded."""
         pair = deepcopy(dict(pair_outcome))
@@ -135,6 +136,10 @@ class ArtifactPreflight:
             or pair.get("can_control_hardware") is not False
         ):
             raise PreflightError("worker pair is not eligible for preflight")
+        root = Path(workspace_root)
+        if not root.is_dir() or root.is_symlink():
+            raise PreflightError("worker execution root must be a real directory")
+        root = root.resolve()
 
         evidence: dict[str, dict[str, Any]] = {}
         for context, path, result in (
@@ -148,6 +153,12 @@ class ArtifactPreflight:
                 or not outcome.get("request_id")
             ):
                 raise PreflightError(f"{context} worker outcome is not trusted")
+            self._output_inside_workspace(
+                root,
+                path,
+                outcome.get("workspace"),
+                context,
+            )
             checked = self.inspect_slicer_output(
                 path,
                 result,
@@ -175,6 +186,45 @@ class ArtifactPreflight:
             "can_start_print": False,
             "can_authorize_production": False,
         }
+
+    @staticmethod
+    def _output_inside_workspace(
+        root: Path,
+        output_path: str | Path,
+        workspace: Any,
+        context: str,
+    ) -> None:
+        if not isinstance(workspace, Mapping):
+            raise PreflightError(f"{context} worker workspace is missing")
+        relative_value = workspace.get("output")
+        if not isinstance(relative_value, str):
+            raise PreflightError(f"{context} output workspace is invalid")
+        parts = relative_value.split("/")
+        if (
+            relative_value.startswith("/")
+            or "\\" in relative_value
+            or ":" in relative_value
+            or any(part in {"", ".", ".."} for part in parts)
+            or PurePosixPath(relative_value).name != "output"
+        ):
+            raise PreflightError(f"{context} output workspace is invalid")
+
+        expected = root
+        for part in parts:
+            expected /= part
+            if expected.is_symlink():
+                raise PreflightError(
+                    f"{context} output workspace cannot contain symlinks"
+                )
+        if not expected.is_dir():
+            raise PreflightError(f"{context} output workspace is missing")
+        candidate = Path(output_path)
+        try:
+            candidate.resolve().relative_to(expected.resolve())
+        except ValueError as exc:
+            raise PreflightError(
+                f"{context} output is outside its assigned workspace"
+            ) from exc
 
     @staticmethod
     def _same_engine(result_engine: Any, pair_engine: Any, context: str) -> None:

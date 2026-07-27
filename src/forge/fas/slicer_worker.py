@@ -362,6 +362,7 @@ class SlicerWorkerSupervisor:
             raise SlicerWorkerError(f"{context} worker outcome is invalid")
         item["request_id"] = assigned.get("request_id")
         item["profile_digest"] = assigned.get("profile_digest")
+        item["workspace"] = deepcopy(assigned.get("workspace"))
         return item
 
     @staticmethod

@@ -39,6 +39,11 @@ def pair(production_digest: str, twin_digest: str) -> dict:
             "context": context,
             "status": "succeeded",
             "artifact_digest": digest,
+            "workspace": {
+                "input": f"work/{context}/input",
+                "output": f"work/{context}/output",
+                "logs": f"work/{context}/logs",
+            },
         }
     return {
         "status": "ready_for_preflight",
@@ -61,13 +66,20 @@ def pair(production_digest: str, twin_digest: str) -> dict:
 
 
 def output(path: Path, content: bytes) -> str:
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_bytes(content)
     return sha256(content).hexdigest()
 
 
+def output_paths(root: Path) -> tuple[Path, Path]:
+    return (
+        root / "work/production/output/production.gcode",
+        root / "work/twin/output/twin.gcode",
+    )
+
+
 def test_successful_pair_advances_only_to_comparison(tmp_path: Path) -> None:
-    production_path = tmp_path / "production.gcode"
-    twin_path = tmp_path / "twin.gcode"
+    production_path, twin_path = output_paths(tmp_path)
     production_digest = output(production_path, b"G28\nM84\n")
     twin_digest = output(twin_path, b"G28\nM84\n")
 
@@ -77,6 +89,7 @@ def test_successful_pair_advances_only_to_comparison(tmp_path: Path) -> None:
         production_result=result("production", production_digest),
         twin_path=twin_path,
         twin_result=result("twin", twin_digest),
+        workspace_root=tmp_path,
     )
 
     assert evidence["status"] == "ready_for_comparison"
@@ -99,12 +112,12 @@ def test_rejects_failed_pair_before_reading_outputs(tmp_path: Path) -> None:
             production_result={},
             twin_path=tmp_path / "missing-twin",
             twin_result={},
+            workspace_root=tmp_path,
         )
 
 
 def test_rejects_digest_not_recorded_by_pair(tmp_path: Path) -> None:
-    production_path = tmp_path / "production.gcode"
-    twin_path = tmp_path / "twin.gcode"
+    production_path, twin_path = output_paths(tmp_path)
     production_digest = output(production_path, b"G28\n")
     twin_digest = output(twin_path, b"M84\n")
     mismatched = pair("f" * 64, twin_digest)
@@ -116,12 +129,12 @@ def test_rejects_digest_not_recorded_by_pair(tmp_path: Path) -> None:
             production_result=result("production", production_digest),
             twin_path=twin_path,
             twin_result=result("twin", twin_digest),
+            workspace_root=tmp_path,
         )
 
 
 def test_rejects_output_from_different_engine(tmp_path: Path) -> None:
-    production_path = tmp_path / "production.gcode"
-    twin_path = tmp_path / "twin.gcode"
+    production_path, twin_path = output_paths(tmp_path)
     production_digest = output(production_path, b"G28\n")
     twin_digest = output(twin_path, b"M84\n")
     production_result = result("production", production_digest)
@@ -134,12 +147,12 @@ def test_rejects_output_from_different_engine(tmp_path: Path) -> None:
             production_result=production_result,
             twin_path=twin_path,
             twin_result=result("twin", twin_digest),
+            workspace_root=tmp_path,
         )
 
 
 def test_rejects_output_from_different_engine_build(tmp_path: Path) -> None:
-    production_path = tmp_path / "production.gcode"
-    twin_path = tmp_path / "twin.gcode"
+    production_path, twin_path = output_paths(tmp_path)
     production_digest = output(production_path, b"G28\n")
     twin_digest = output(twin_path, b"M84\n")
     production_result = result("production", production_digest)
@@ -152,6 +165,7 @@ def test_rejects_output_from_different_engine_build(tmp_path: Path) -> None:
             production_result=production_result,
             twin_path=twin_path,
             twin_result=result("twin", twin_digest),
+            workspace_root=tmp_path,
         )
 
 
@@ -166,4 +180,23 @@ def test_pair_record_cannot_claim_upload_authority(tmp_path: Path) -> None:
             production_result={},
             twin_path=tmp_path / "missing-twin",
             twin_result={},
+            workspace_root=tmp_path,
+        )
+
+
+def test_rejects_output_outside_assigned_workspace(tmp_path: Path) -> None:
+    production_path, twin_path = output_paths(tmp_path)
+    outside_path = tmp_path / "outside" / "production.gcode"
+    production_digest = output(outside_path, b"G28\n")
+    twin_digest = output(twin_path, b"M84\n")
+    output(production_path, b"unused\n")
+
+    with pytest.raises(PreflightError, match="outside its assigned workspace"):
+        ArtifactPreflight().inspect_worker_pair_outputs(
+            pair(production_digest, twin_digest),
+            production_path=outside_path,
+            production_result=result("production", production_digest),
+            twin_path=twin_path,
+            twin_result=result("twin", twin_digest),
+            workspace_root=tmp_path,
         )

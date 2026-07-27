@@ -9,6 +9,9 @@ Workspace paths are canonical relative POSIX paths under one dedicated worker
 root. Absolute paths, drive paths, backslashes, empty components, `.`/`..`
 aliases, nested production/twin roots, and request inputs outside the assigned
 input directory are rejected before assignment.
+Successful pair outcomes preserve their assigned workspaces. Preflight resolves
+each output beneath a caller-supplied, non-symlinked execution root and rejects
+artifacts outside the assigned output directory before reading their bytes.
 
 The worker must declare `printer_control` among its forbidden capabilities.
 Printer discovery, cloud access, upload, update, telemetry, and print-start
