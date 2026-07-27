@@ -26,6 +26,8 @@ class ImportQuarantine:
 
     def assess(self, source: str | Path) -> dict[str, Any]:
         path = Path(source)
+        if path.is_symlink():
+            raise ImportAssessmentError("input symbolic links are not accepted")
         if not path.is_file():
             raise ImportAssessmentError("input file does not exist")
         format_name = path.suffix.lower().lstrip(".")

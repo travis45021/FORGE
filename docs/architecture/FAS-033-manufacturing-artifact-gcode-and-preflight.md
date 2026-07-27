@@ -10,5 +10,5 @@ formats; STL remains accepted input. G-code may be inspected but is never
 trusted as authority. F3D architecture is explicitly deferred.
 
 The reference service verifies basic identity and digest shape, records caller-
-provided validation checks, and always requires user review. It does not slice,
-upload, start, or authorize physical work.
+provided validation checks, rejects symbolic-link inputs, and always requires
+user review. It does not slice, upload, start, or authorize physical work.

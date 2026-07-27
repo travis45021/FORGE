@@ -94,6 +94,18 @@ class ImportQuarantineTests(unittest.TestCase):
             with self.assertRaises(ImportAssessmentError):
                 self.quarantine.assess(path)
 
+    def test_rejects_symbolic_link_input(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory) / "part.step"
+            target.write_text("ISO-10303-21;\n", encoding="ascii")
+            link = Path(directory) / "linked.step"
+            try:
+                link.symlink_to(target)
+            except (OSError, NotImplementedError):
+                self.skipTest("symbolic links unavailable")
+            with self.assertRaisesRegex(ImportAssessmentError, "symbolic"):
+                self.quarantine.assess(link)
+
 
 if __name__ == "__main__":
     unittest.main()
