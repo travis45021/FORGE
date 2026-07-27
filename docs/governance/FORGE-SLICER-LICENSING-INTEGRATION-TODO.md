@@ -133,7 +133,9 @@ release is distributed until the applicable items in this gate are complete.
   non-color cues, and actionable structured errors are implemented as
   contracts; application conformance remains open.
 - [ ] Provide license, source, notices, privacy, and data-export access inside
-  the product.
+  the product. A local transparency catalog exposes each resource, its draft
+  or audit status, and user-directed export without implying legal clearance;
+  application rendering remains open.
 
 ## Gate 6 - Assurance and release
 

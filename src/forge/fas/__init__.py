@@ -53,6 +53,7 @@ from .slicer_worker import SlicerWorkerBoundary, SlicerWorkerError
 from .slicing import SlicerContractBoundary, SlicerContractError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 from .thermal_review import ThermalDesignReview, ThermalReviewError
+from .transparency import TransparencyCatalog, TransparencyError
 from .transport import (
     HardwareTransportRegistry,
     TransportError,
@@ -161,6 +162,8 @@ __all__ = [
     "TestAssuranceService",
     "ThermalDesignReview",
     "ThermalReviewError",
+    "TransparencyCatalog",
+    "TransparencyError",
     "TransportError",
     "TrustError",
     "TrustService",
