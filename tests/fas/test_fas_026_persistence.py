@@ -8,7 +8,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.persistence import DataRecoveryService, PersistenceError
+from forge.fas.persistence import (
+    AtomicSnapshotStore,
+    DataRecoveryService,
+    PersistenceError,
+)
 
 
 def digest(value):
@@ -197,6 +201,32 @@ class Fas026PersistenceTests(unittest.TestCase):
             Draft202012Validator(schema, format_checker=FormatChecker()).validate(
                 example
             )
+
+    def test_filesystem_snapshot_is_atomic_and_integrity_checked(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "state" / "forge.json"
+            snapshot = self.service.export(owner_scope="forge-user:local")
+            store = AtomicSnapshotStore()
+            store.write(path, snapshot)
+            self.assertEqual(snapshot, store.read(path))
+            path.write_text(
+                path.read_text(encoding="utf-8").replace("profile", "tampered"),
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(PersistenceError, "integrity"):
+                store.read(path)
+
+    def test_filesystem_snapshot_rejects_secret_export(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot = self.service.export(
+                owner_scope="forge-user:local", include_secrets=True
+            )
+            with self.assertRaisesRegex(PersistenceError, "secrets"):
+                AtomicSnapshotStore().write(Path(directory) / "state.json", snapshot)
 
 
 if __name__ == "__main__":

@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 
 
@@ -48,6 +51,54 @@ def _digest(value: Any) -> str:
     except (TypeError, ValueError) as exc:
         raise PersistenceError("persisted values must be JSON-compatible") from exc
     return "sha256:" + hashlib.sha256(encoded).hexdigest()
+
+
+class AtomicSnapshotStore:
+    """Crash-atomic JSON snapshot store for non-secret local records."""
+
+    def write(self, path: str | Path, snapshot: Mapping[str, Any]) -> dict[str, Any]:
+        item = deepcopy(dict(snapshot))
+        if item.get("secrets_included") is True:
+            raise PersistenceError("filesystem snapshots cannot contain secrets")
+        if item.get("export_digest") != _digest(item.get("records")):
+            raise PersistenceError("snapshot digest does not match records")
+        target = Path(path)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        encoded = json.dumps(
+            item, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+        temporary: str | None = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="wb", dir=target.parent, prefix=f".{target.name}.", delete=False
+            ) as handle:
+                temporary = handle.name
+                handle.write(encoded)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary, target)
+            temporary = None
+        finally:
+            if temporary is not None:
+                try:
+                    os.unlink(temporary)
+                except FileNotFoundError:
+                    pass
+        return deepcopy(item)
+
+    def read(self, path: str | Path) -> dict[str, Any]:
+        try:
+            item = json.loads(Path(path).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            raise PersistenceError("snapshot cannot be read") from exc
+        if not isinstance(item, dict) or item.get("secrets_included") is True:
+            raise PersistenceError("snapshot is invalid or contains secrets")
+        records = item.get("records")
+        if not isinstance(records, list) or item.get("export_digest") != _digest(
+            records
+        ):
+            raise PersistenceError("snapshot integrity verification failed")
+        return deepcopy(item)
 
 
 class DataRecoveryService:

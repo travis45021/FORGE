@@ -27,8 +27,10 @@ FAS-026 defines:
 - audit events for storage, backup, integrity, verification, and restore.
 
 The reference implementation is in
-src/forge/fas/persistence.py. It is an in-memory contract implementation,
-not the final filesystem database or encryption provider.
+src/forge/fas/persistence.py. The reference service remains in-memory for
+record operations, and `AtomicSnapshotStore` provides crash-atomic,
+integrity-checked JSON snapshots for non-secret local exports. It is not an
+encryption provider or a complete filesystem database.
 
 ## Authority boundaries
 
@@ -113,9 +115,12 @@ organization retention policy remain future work.
 - [x] Physical replay and blind resume prohibited by contract.
 - [x] Migration planning requires a backup and user approval.
 - [x] Schemas, examples, and behavior tests added.
+- [x] Crash-atomic, non-secret filesystem snapshot contract added.
 
-The filesystem-backed store, encryption adapter, crash-atomic transaction
-engine, and migration executor remain FAS-027/application integration work.
+Encryption adapters, a complete filesystem database, transaction orchestration,
+and migration execution remain application-integration work. Snapshot writes
+use a same-directory temporary file, flush and file synchronization, then an
+atomic replace; they never persist secrets.
 
 ## Decisions needed
 
