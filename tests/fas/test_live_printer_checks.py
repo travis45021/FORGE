@@ -24,6 +24,8 @@ class LivePrinterCheckTests(unittest.TestCase):
             provider_id="provider:custom-printer",
             artifact_digest="a" * 64,
             checks=self.checks,
+            checked_at="2026-07-26T12:04:00Z",
+            expires_at="2026-07-26T12:09:00Z",
         )
 
     def test_pass_still_requires_final_confirmation(self) -> None:
@@ -32,6 +34,7 @@ class LivePrinterCheckTests(unittest.TestCase):
         self.assertTrue(result["final_confirmation_required"])
         self.assertFalse(result["can_upload"])
         self.assertFalse(result["can_start_print"])
+        self.assertEqual(result["checked_at"], "2026-07-26T12:04:00Z")
 
     def test_reports_failed_capability_check(self) -> None:
         self.checks["capabilities_match"] = False
@@ -43,6 +46,16 @@ class LivePrinterCheckTests(unittest.TestCase):
         self.checks.pop("connected")
         with self.assertRaises(LivePrinterCheckError):
             self.evaluate()
+
+    def test_rejects_invalid_freshness_window(self) -> None:
+        with self.assertRaisesRegex(LivePrinterCheckError, "expiry"):
+            self.service.evaluate(
+                provider_id="provider:custom-printer",
+                artifact_digest="a" * 64,
+                checks=self.checks,
+                checked_at="2026-07-26T12:04:00Z",
+                expires_at="2026-07-26T12:04:00Z",
+            )
 
 
 if __name__ == "__main__":

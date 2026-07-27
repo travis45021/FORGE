@@ -200,6 +200,13 @@ class PrintJobLifecycle:
             raise JobLifecycleError("live checks do not match the accepted artifact")
         if live_checks.get("passed") is not True:
             raise JobLifecycleError("all live printer checks must pass")
+        checked_at = _utc(live_checks.get("checked_at"))
+        live_checks_expires_at = _utc(live_checks.get("expires_at"))
+        confirmed_time = _utc(confirmed_at)
+        if checked_at > confirmed_time:
+            raise JobLifecycleError("live printer checks occurred after confirmation")
+        if confirmed_time >= live_checks_expires_at:
+            raise JobLifecycleError("live printer checks expired before confirmation")
         if (
             live_checks.get("can_upload") is not False
             or live_checks.get("can_start_print") is not False
@@ -218,6 +225,8 @@ class PrintJobLifecycle:
         job["artifact_pair_preflight_verified"] = True
         job["comparison_reviewed_by"] = acceptance["reviewed_by"]
         job["comparison_reviewed_at"] = acceptance["reviewed_at"]
+        job["live_checks_checked_at"] = live_checks["checked_at"]
+        job["live_checks_expires_at"] = live_checks["expires_at"]
         return deepcopy(job)
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:

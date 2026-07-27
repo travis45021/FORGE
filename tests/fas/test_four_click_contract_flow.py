@@ -148,6 +148,8 @@ class FourClickContractFlowTests(unittest.TestCase):
             provider_id="provider:custom",
             artifact_digest=artifact_digest,
             checks={name: True for name in REQUIRED_CHECKS},
+            checked_at="2026-07-26T12:04:00Z",
+            expires_at="2026-07-26T12:09:00Z",
         )
 
         lifecycle = PrintJobLifecycle()

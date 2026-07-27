@@ -60,6 +60,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "provider_id": "provider-1",
             "artifact_digest": self.digest,
             "passed": True,
+            "checked_at": "2026-07-26T12:04:00Z",
+            "expires_at": "2026-07-26T12:09:00Z",
             "can_upload": False,
             "can_start_print": False,
         }
@@ -125,6 +127,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
     def test_rejects_review_timestamp_after_final_confirmation(self) -> None:
         self.acceptance["reviewed_at"] = "2026-07-26T12:06:00Z"
         with self.assertRaisesRegex(JobLifecycleError, "after final confirmation"):
+            self.confirm()
+
+    def test_rejects_live_checks_expired_before_confirmation(self) -> None:
+        self.live["expires_at"] = "2026-07-26T12:05:00Z"
+        with self.assertRaisesRegex(JobLifecycleError, "expired"):
             self.confirm()
 
 

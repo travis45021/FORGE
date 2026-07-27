@@ -174,6 +174,8 @@ class HardwareTransportRegistry:
             or not item.get("final_confirmed_by")
             or not item.get("final_confirmed_at")
             or not item.get("confirmation_expires_at")
+            or not item.get("live_checks_checked_at")
+            or not item.get("live_checks_expires_at")
         ):
             raise TransportError("evidence-backed fourth click is required")
         if item.get("artifact_preflight_verified") is not True:
@@ -229,6 +231,8 @@ class HardwareTransportRegistry:
             "confirmed_by": item["final_confirmed_by"],
             "confirmed_at": item["final_confirmed_at"],
             "confirmation_expires_at": item["confirmation_expires_at"],
+            "live_checks_checked_at": item["live_checks_checked_at"],
+            "live_checks_expires_at": item["live_checks_expires_at"],
             "confirmation_token": confirmation_token,
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,

@@ -134,7 +134,9 @@ release is distributed until the applicable items in this gate are complete.
   confirmation timestamp. Both timestamps must be valid UTC, click three must
   precede click four, and Runtime rejects future confirmation evidence. The
   fourth-click token has an explicit short-lived validity window and cannot
-  dispatch at or after expiry. Real engine artifact evidence remains open.
+  dispatch at or after expiry. Live printer checks also have their own
+  timestamps and expiry, must precede confirmation, and must remain fresh
+  through Runtime dispatch. Real engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

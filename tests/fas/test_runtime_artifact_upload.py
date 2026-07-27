@@ -59,6 +59,8 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "confirmed_by": "user-1",
             "confirmed_at": "2026-07-25T20:55:00Z",
             "confirmation_expires_at": "2026-07-25T21:05:00Z",
+            "live_checks_checked_at": "2026-07-25T20:54:00Z",
+            "live_checks_expires_at": "2026-07-25T21:03:00Z",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
@@ -92,6 +94,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["comparison_reviewed_by"], "reviewer-1")
         self.assertEqual(result["confirmed_at"], "2026-07-25T20:55:00Z")
         self.assertEqual(result["confirmation_expires_at"], "2026-07-25T21:05:00Z")
+        self.assertEqual(result["live_checks_expires_at"], "2026-07-25T21:03:00Z")
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
@@ -116,6 +119,11 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
     def test_rejects_expired_final_confirmation(self) -> None:
         self.handoff["confirmation_expires_at"] = "2026-07-25T21:00:00Z"
         with self.assertRaisesRegex(RuntimeError, "expired"):
+            self.dispatch()
+
+    def test_rejects_expired_live_printer_checks(self) -> None:
+        self.handoff["live_checks_expires_at"] = "2026-07-25T21:00:00Z"
+        with self.assertRaisesRegex(RuntimeError, "live printer checks expired"):
             self.dispatch()
 
     def test_rejects_duplicate_live_handoff(self) -> None:

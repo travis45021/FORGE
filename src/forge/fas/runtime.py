@@ -278,6 +278,8 @@ class ForgeRuntime:
         reviewed_at = _utc(handoff["comparison_reviewed_at"])
         confirmed_at = _utc(handoff["confirmed_at"])
         confirmation_expires_at = _utc(handoff.get("confirmation_expires_at"))
+        live_checks_checked_at = _utc(handoff.get("live_checks_checked_at"))
+        live_checks_expires_at = _utc(handoff.get("live_checks_expires_at"))
         dispatch_at = _utc(evaluated_at)
         if reviewed_at > confirmed_at:
             raise RuntimeError("click-three review occurred after final confirmation")
@@ -287,6 +289,10 @@ class ForgeRuntime:
             raise RuntimeError("final confirmation expiry is invalid")
         if dispatch_at >= confirmation_expires_at:
             raise RuntimeError("final confirmation expired before dispatch")
+        if live_checks_checked_at > confirmed_at:
+            raise RuntimeError("live printer checks occurred after final confirmation")
+        if dispatch_at >= live_checks_expires_at:
+            raise RuntimeError("live printer checks expired before dispatch")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")
@@ -346,6 +352,8 @@ class ForgeRuntime:
                 "confirmed_by": handoff.get("confirmed_by"),
                 "confirmed_at": handoff.get("confirmed_at"),
                 "confirmation_expires_at": handoff.get("confirmation_expires_at"),
+                "live_checks_checked_at": handoff.get("live_checks_checked_at"),
+                "live_checks_expires_at": handoff.get("live_checks_expires_at"),
             }
         )
         return result

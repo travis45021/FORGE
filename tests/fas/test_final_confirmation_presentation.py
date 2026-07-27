@@ -17,6 +17,8 @@ def evidence(*, failed: str | None = None) -> dict:
         provider_id="provider:user-built",
         artifact_digest="a" * 64,
         checks=checks,
+        checked_at="2026-07-26T12:04:00Z",
+        expires_at="2026-07-26T12:09:00Z",
     )
 
 
