@@ -1,7 +1,7 @@
 # FORGE Licensing Outreach Packet for the FSF
 
 Prepared: 2026-07-27  
-Repository evidence commit: `283724f`  
+Repository evidence commit: `283724f`
 Purpose: request educational licensing/compliance guidance from the Free
 Software Foundation Licensing and Compliance Lab
 
