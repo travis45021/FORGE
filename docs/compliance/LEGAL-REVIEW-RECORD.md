@@ -7,6 +7,10 @@ This record is intentionally unsigned. It is a release blocker until a
 qualified legal reviewer examines the complete evidence package and records a
 decision here.
 
+The decision-ready evidence and question set is maintained in
+`docs/compliance/GATE-1-LICENSING-DECISION-PACKET.md`. The packet is not legal
+advice and does not authorize source import or public distribution.
+
 ## Required review scope
 
 - final FORGE SPDX expression and relationship to OrcaSlicer AGPLv3;

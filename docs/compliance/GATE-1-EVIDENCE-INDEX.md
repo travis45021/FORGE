@@ -3,6 +3,11 @@
 Status: Active; no Orca source imported
 Owner: FORGE release maintainer
 
+The decision-ready owner and counsel packet is
+[`GATE-1-LICENSING-DECISION-PACKET.md`](GATE-1-LICENSING-DECISION-PACKET.md).
+It records conservative recommendations, unresolved questions, required legal
+deliverables, and closure criteria without making a legal determination.
+
 This index is the controlled checklist for the first open release gate. A row
 may move to **complete** only when the linked artifact is present, hashed, and
 reviewed. This document does not make a licensing determination.

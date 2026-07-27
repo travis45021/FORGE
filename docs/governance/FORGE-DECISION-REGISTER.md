@@ -517,6 +517,11 @@ The software license does not transfer ownership of user design files,
 profiles, local knowledge, evidence, or produced artifacts. User data remains
 user-owned unless explicitly shared under separately chosen terms.
 
+The owner decision bundle and qualified-review questions are tracked in
+`docs/compliance/GATE-1-LICENSING-DECISION-PACKET.md`. The exact SPDX
+expression and compliance package remain open until the provenance audit and
+qualified legal review are complete.
+
 ### FORGE-DEC-078 — Non-free networking is outside the trusted baseline
 
 Status: Approved
