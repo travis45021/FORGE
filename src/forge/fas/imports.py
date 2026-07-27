@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import stat
 from hashlib import sha256
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -19,6 +20,7 @@ class ImportQuarantine:
     MAX_ARCHIVE_MEMBERS = 10_000
     MAX_MEMBER_BYTES = 128 * 1024 * 1024
     MAX_TOTAL_BYTES = 512 * 1024 * 1024
+    MAX_COMPRESSION_RATIO = 200
 
     def assess(self, source: str | Path) -> dict[str, Any]:
         path = Path(source)
@@ -55,6 +57,12 @@ class ImportQuarantine:
                             "encrypted 3MF members are not accepted"
                         )
                     if any(
+                        stat.S_ISLNK(member.external_attr >> 16) for member in members
+                    ):
+                        raise ImportAssessmentError(
+                            "3MF archive contains symbolic links"
+                        )
+                    if any(
                         member.file_size > self.MAX_MEMBER_BYTES for member in members
                     ):
                         raise ImportAssessmentError("3MF member exceeds size limit")
@@ -63,6 +71,15 @@ class ImportQuarantine:
                         > self.MAX_TOTAL_BYTES
                     ):
                         raise ImportAssessmentError("3MF archive exceeds size limit")
+                    if any(
+                        member.file_size > 1_000_000
+                        and member.file_size
+                        > max(member.compress_size, 1) * self.MAX_COMPRESSION_RATIO
+                        for member in members
+                    ):
+                        raise ImportAssessmentError(
+                            "3MF archive has an unsafe compression ratio"
+                        )
                     if "3D/3dmodel.model" not in names:
                         ambiguities.append("standard 3MF model part is missing")
                         decision = "needs_user_resolution"

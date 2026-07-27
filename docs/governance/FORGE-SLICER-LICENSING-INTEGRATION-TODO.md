@@ -141,9 +141,10 @@ release is distributed until the applicable items in this gate are complete.
 
 - [ ] Add unit, contract, schema, scenario, fault-injection, security,
   accessibility, reproducibility, and hardware-in-the-loop coverage.
-- [ ] Test hostile and malformed STEP/3MF content in isolation. Initial 3MF
-  path-traversal and malformed-structure tests are implemented; fixture suite
-  remains incomplete.
+- [ ] Test hostile and malformed STEP/3MF content in isolation. 3MF path
+  traversal, absolute/drive paths, symbolic links, compression bombs, XML
+  entities/DOCTYPE, duplicate members, and malformed structures are covered;
+  engine-backed geometry fixture coverage remains open.
 - [ ] Test worker crashes, timeouts, resource exhaustion, cancellation, and
   stale context. Deterministic supervisor fault-injection contracts cover each
   failure and deny artifact/physical authority; real worker-process tests
