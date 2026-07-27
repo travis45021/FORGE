@@ -31,6 +31,13 @@ Release-facing policy drafts are in `CONTRIBUTING.md`, `TRADEMARKS.md`,
 user-authority and local-first principles but require qualified legal review
 before a public integrated release.
 
+The dependency-free local bootstrap smoke check is:
+
+    python -m forge --once
+
+It validates the contract-only entry point and explicitly leaves physical
+dispatch disabled.
+
 The current tested reference-contract baseline contains:
 
 - **FAS-001:** Constitutional Governance Foundation
