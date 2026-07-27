@@ -14,6 +14,7 @@ from .final_confirmation_policy import (
     FinalConfirmationPolicyError,
 )
 from .health import HEALTH_STATES, HealthError, HealthService
+from .import_presentation import ImportPresentationError, ImportStatusPresenter
 from .imports import ImportAssessmentError, ImportQuarantine
 from .interactions import InteractionError, InteractionManager
 from .interfaces import (
@@ -94,7 +95,9 @@ __all__ = [
     "HealthService",
     "IdempotentConsumer",
     "ImportAssessmentError",
+    "ImportPresentationError",
     "ImportQuarantine",
+    "ImportStatusPresenter",
     "InteractionError",
     "InteractionManager",
     "InterfaceError",

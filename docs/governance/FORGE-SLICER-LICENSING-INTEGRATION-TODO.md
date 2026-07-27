@@ -114,6 +114,8 @@ release is distributed until the applicable items in this gate are complete.
 
 - [ ] Implement one FORGE interface rather than exposing a second slicer app.
 - [ ] Provide plain-language STEP/3MF import status and ambiguity resolution.
+  A presentation-neutral, accessible status and user-resolution contract is
+  implemented; application rendering remains open.
 - [ ] Show inferred printer, material, process, and safety context before click
   two.
 - [ ] Show verification, twin comparison, warnings, and limitations before
