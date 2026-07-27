@@ -21,6 +21,8 @@ class ImportQuarantine:
     MAX_MEMBER_BYTES = 128 * 1024 * 1024
     MAX_TOTAL_BYTES = 512 * 1024 * 1024
     MAX_COMPRESSION_RATIO = 200
+    MAX_STEP_BYTES = 64 * 1024 * 1024
+    MAX_STEP_LINE_BYTES = 1024 * 1024
 
     def assess(self, source: str | Path) -> dict[str, Any]:
         path = Path(source)
@@ -95,6 +97,8 @@ class ImportQuarantine:
                 raise ImportAssessmentError("3MF input is not a valid archive") from exc
         else:
             hostile_checked = True
+            if path.stat().st_size > self.MAX_STEP_BYTES:
+                raise ImportAssessmentError("STEP input exceeds size limit")
             raw = path.read_bytes()
             header = raw[:4096].upper()
             if b"ISO-10303-21" not in header:
@@ -132,6 +136,13 @@ class ImportQuarantine:
 
     @staticmethod
     def _normalize_step(raw: bytes) -> tuple[str, list[str]]:
+        if b"\x00" in raw:
+            raise ImportAssessmentError("STEP input contains binary NUL data")
+        if any(
+            len(line) > ImportQuarantine.MAX_STEP_LINE_BYTES
+            for line in raw.splitlines()
+        ):
+            raise ImportAssessmentError("STEP input contains an oversized line")
         try:
             text = raw.decode("utf-8-sig")
         except UnicodeDecodeError as exc:
