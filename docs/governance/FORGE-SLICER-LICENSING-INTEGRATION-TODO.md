@@ -106,8 +106,9 @@ release is distributed until the applicable items in this gate are complete.
 - [ ] Run the production and twin contexts with separate workspaces, inputs,
   outputs, logs, resource limits, and cancellation. Manifest isolation and
   resource validation are implemented. Single-use assignments now bind each
-  context to its exact request and ephemeral profile while denying hardware
-  authority; real worker execution remains open.
+  context to its exact request and ephemeral profile. Paired assignments
+  require one reviewed engine build, identical input/profile digests, separate
+  workspaces, and no hardware authority; real worker execution remains open.
 - [ ] Add deterministic artifact preflight and production/twin comparison.
   Byte-to-result digest, request, context, provenance, comparison, and
   acceptance reference services are implemented. Comparison now requires

@@ -130,6 +130,65 @@ class SlicerWorkerBoundary:
             "can_start_print": False,
         }
 
+    def assign_pair(
+        self,
+        *,
+        production_manifest: Mapping[str, Any],
+        twin_manifest: Mapping[str, Any],
+        production_request: Mapping[str, Any],
+        twin_request: Mapping[str, Any],
+        profile: Mapping[str, Any],
+        engine: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Bind isolated contexts to one engine, input, and derived profile."""
+        production_worker, twin_worker = self.validate_pair(
+            production_manifest, twin_manifest
+        )
+        production = self.assign(production_worker, production_request, profile)
+        twin = self.assign(twin_worker, twin_request, profile)
+        production_input = production_request.get("input")
+        twin_input = twin_request.get("input")
+        if not isinstance(production_input, Mapping) or not isinstance(
+            twin_input, Mapping
+        ):
+            raise SlicerWorkerError("worker pair inputs are required")
+        if production_input.get("digest") != twin_input.get("digest"):
+            raise SlicerWorkerError("production and twin input digests must match")
+        if production["profile_digest"] != twin["profile_digest"]:
+            raise SlicerWorkerError("production and twin profile digests must match")
+
+        engine_item = deepcopy(dict(engine))
+        required_engine = {"name", "version", "source_digest", "build_digest"}
+        missing = sorted(required_engine - engine_item.keys())
+        if missing:
+            raise SlicerWorkerError(f"reviewed engine missing: {', '.join(missing)}")
+        for field in ("source_digest", "build_digest"):
+            self._digest(engine_item[field], f"engine {field}")
+        return {
+            "schema_version": "1.0.0",
+            "engine": engine_item,
+            "input_digest": production_input["digest"],
+            "profile_digest": production["profile_digest"],
+            "production": production,
+            "twin": twin,
+            "workspaces_isolated": True,
+            "same_engine_build": True,
+            "same_input": True,
+            "same_profile": True,
+            "can_control_hardware": False,
+            "can_upload": False,
+            "can_start_print": False,
+        }
+
+    @staticmethod
+    def _digest(value: Any, label: str) -> None:
+        if (
+            not isinstance(value, str)
+            or len(value) != 64
+            or any(character not in "0123456789abcdef" for character in value)
+        ):
+            raise SlicerWorkerError(f"{label} must be lowercase SHA-256")
+
 
 class SlicerWorkerSupervisor:
     """Convert worker outcomes into deterministic, non-authoritative evidence."""
