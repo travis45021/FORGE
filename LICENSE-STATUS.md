@@ -1,15 +1,15 @@
 # License Status
 
-Status: Licensing direction approved; final repository grant pending audit  
-Effective date: 2026-07-26
+Status: `AGPL-3.0-only` owner-confirmed; final repository grant pending audit
+Effective date: 2026-07-27
 
 FORGE has approved GNU AGPL version 3 as the licensing direction for the
 integrated application described by
 `docs/architecture/ADR-001-orcaslicer-slicing-foundation.md`.
 
-The repository does not yet make a final project-wide license grant. The exact
-SPDX expression and file-level treatment must follow the copyright,
-provenance, and compatibility audit in
+The owner has confirmed the exact SPDX expression as `AGPL-3.0-only`. The
+repository does not yet make a final project-wide license grant; file-level
+treatment must follow the copyright, provenance, and compatibility audit in
 `docs/governance/FORGE-SLICER-LICENSING-INTEGRATION-TODO.md`. Existing notices
 continue to apply to code and materials that already carry them.
 

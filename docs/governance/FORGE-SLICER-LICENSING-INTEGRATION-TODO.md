@@ -41,8 +41,9 @@ release is distributed until the applicable items in this gate are complete.
   are absent from the trusted build and packaging graph.
 - [ ] Audit historical FORGE MIT code that will be reused and preserve its
   notices.
-- [ ] Decide the exact FORGE SPDX expression, including `AGPL-3.0-only` versus
-  `AGPL-3.0-or-later`, from the audit evidence.
+- [x] Owner confirmed the exact FORGE SPDX expression as `AGPL-3.0-only` on
+  2026-07-27; file-level compatibility audit and qualified legal confirmation
+  remain required before Gate 1 closure.
 - [ ] Add the final root license text and per-file SPDX/copyright headers.
 - [ ] Add `NOTICE`, third-party notices, source-offer/corresponding-source
   instructions, and an SBOM.

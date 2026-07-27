@@ -504,23 +504,22 @@ artifact rather than a design source that FORGE must slice.
 
 ### FORGE-DEC-077 — GNU AGPL version 3 is the licensing direction
 
-Status: Approved direction; Compliance gate open
+Status: Approved; exact expression owner-confirmed; compliance gate open
 
 The integrated FORGE application adopts GNU AGPL version 3 as its licensing
-direction. A file-level copyright, provenance, and compatibility audit must
-decide the exact `AGPL-3.0-only` versus `AGPL-3.0-or-later` SPDX expression and
-complete notices, corresponding-source, SBOM, and release obligations before a
-public integrated release. Existing upstream notices and the MIT notices on any
-reused historical FORGE bootstrap code must be preserved.
+direction. The owner has now confirmed the exact project expression as
+`AGPL-3.0-only`. A file-level copyright, provenance, and compatibility audit
+must still complete notices, corresponding-source, SBOM, and release obligations
+before a public integrated release. Existing upstream notices and the MIT
+notices on any reused historical FORGE bootstrap code must be preserved.
 
 The software license does not transfer ownership of user design files,
 profiles, local knowledge, evidence, or produced artifacts. User data remains
 user-owned unless explicitly shared under separately chosen terms.
 
 The owner decision bundle and qualified-review questions are tracked in
-`docs/compliance/GATE-1-LICENSING-DECISION-PACKET.md`. The exact SPDX
-expression and compliance package remain open until the provenance audit and
-qualified legal review are complete.
+`docs/compliance/GATE-1-LICENSING-DECISION-PACKET.md`. The compliance package,
+provenance audit, and qualified legal review remain open.
 
 ### FORGE-DEC-078 — Non-free networking is outside the trusted baseline
 
@@ -541,9 +540,9 @@ lock-in boundary.
 3. Historical FAS-010 AI Council has no current production-number assignment.
 4. The full historical FAS-010–036 set should not be copied into current
    `docs/architecture` without a formal renumbering and reconciliation pass.
-5. GNU AGPL version 3 is the approved integrated-app licensing direction. The
-   exact SPDX expression and release compliance package remain pending the
-   file-level audit.
+5. GNU AGPL version 3 with the owner-confirmed `AGPL-3.0-only` expression is the
+   approved integrated-app licensing direction. The release compliance package
+   remains pending the file-level audit.
 
 ## Reconciliation status
 

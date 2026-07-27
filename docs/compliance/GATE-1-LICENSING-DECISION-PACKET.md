@@ -9,22 +9,69 @@ engineering and evidence packet, not legal advice and not a legal sign-off.
 No item below authorizes Orca source import, an integrated binary, a hosted
 integrated service, or public distribution.
 
-## 1. Decisions requiring owner approval
+## 1. Decisions in order
 
-| Decision | Recommended starting position | Current state |
-| --- | --- | --- |
-| Integrated FORGE license | GNU AGPLv3, exact expression `AGPL-3.0-only` unless qualified counsel identifies a documented reason to permit later versions | **Open** |
-| Orca relationship | Keep Orca-derived work in the same governed AGPLv3 distribution boundary; preserve all upstream notices and corresponding-source obligations | **Open for legal confirmation** |
-| MCUT path | Use only the GPLv3 option unless counsel and procurement explicitly approve a separately documented commercial path | **Open** |
-| Bambu networking | Exclude non-free networking source, binaries, downloads, runtime activation, and tests from the trusted build and release graph; treat profiles/assets separately | **Open; proof required** |
-| Historical FORGE code | Reuse only after file-level mapping and preservation of applicable MIT notices | **Open** |
-| User data | User retains ownership; local-first processing; sharing, telemetry, hosted operation, and community evidence are opt-in and separately disclosed | **Draft; legal confirmation required** |
-| Trademark | FORGE marks remain controlled by the project; OrcaSlicer and Bambu marks are nominative/descriptive only and do not imply endorsement | **Draft; legal confirmation required** |
-| Contributor terms | Require DCO/sign-off and inbound licensing terms consistent with the chosen project license and future source publication | **Draft; legal confirmation required** |
+### 1.1 MCUT licensing decision — first remaining decision
 
-The recommendations are intentionally conservative defaults for review. They are
-not final decisions until the owner records approval and qualified counsel
-confirms the resulting package.
+MCUT is presented upstream with a mutually exclusive GPLv3 path and a
+commercial path. FORGE's open-distribution default is the GPLv3 path: it keeps
+the dependency auditable and avoids introducing a separately negotiated,
+proprietary grant into the trusted worker. That choice still requires a
+reachability audit, preservation of MCUT notices/source obligations, and legal
+confirmation that the selected worker boundary and final distribution satisfy
+the applicable GPL terms. A commercial MCUT license is not assumed and cannot
+be selected implicitly; it would require separate procurement, contract
+review, and an updated notice/SBOM record.
+
+**Owner position:** use the MCUT GPLv3 option unless qualified counsel and
+procurement approve a documented commercial alternative. **Status: Open for
+evidence and legal confirmation.**
+
+### 1.2 Exact FORGE project license
+
+**Owner-confirmed:** GNU `AGPL-3.0-only`. This records the project's chosen
+version expression and does not by itself complete the file-level audit, final
+license grant, or legal sign-off. **Status: Owner confirmed; legal
+compatibility confirmation required.**
+
+### 1.3 Orca relationship and distribution boundary
+
+Keep Orca-derived work in the governed AGPLv3 distribution boundary, preserve
+all upstream notices and corresponding-source obligations, and do not import or
+publish it until Gate 1 closes. **Status: Open for legal confirmation.**
+
+### 1.4 Non-free Bambu networking exclusion
+
+Exclude non-free networking source, binaries, downloads, runtime activation, and
+tests from the trusted build and release graph. Treat Bambu profiles and assets
+as a separate attribution and trademark review. **Status: Open; proof required.**
+
+### 1.5 Historical FORGE provenance
+
+Reuse historical FORGE MIT code only after file-level mapping and preservation
+of applicable notices, authorship, and transformations. **Status: Open.**
+
+### 1.6 User-data terms
+
+Users retain ownership; processing is local-first; sharing, telemetry, hosted
+operation, and community evidence are opt-in and separately disclosed. **Status:
+Draft; legal confirmation required.**
+
+### 1.7 Trademark treatment
+
+FORGE marks remain controlled by the project. OrcaSlicer and Bambu marks are
+nominative/descriptive only and must not imply endorsement. **Status: Draft;
+legal confirmation required.**
+
+### 1.8 Contributor and inbound licensing
+
+Require DCO/sign-off and inbound licensing terms consistent with
+`AGPL-3.0-only` and future corresponding-source publication. **Status: Draft;
+legal confirmation required.**
+
+The owner-confirmed license expression is recorded now; all other positions are
+conservative starting positions until their evidence and qualified legal review
+are complete.
 
 ## 2. Evidence package provided to the reviewer
 
