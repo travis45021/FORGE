@@ -7,4 +7,5 @@ Historical source: FAS-031
 FAS-032 reviews observation sensors for modality, resolution, rate, privacy
 mode, and failure behavior. It is optional for v1 unless FORGE explicitly
 claims vision capabilities. A review never grants camera access, authority, or
-physical execution.
+physical execution. Malformed sensor collections, reviewer identity, and
+non-UTC review timestamps are rejected before acceptance.

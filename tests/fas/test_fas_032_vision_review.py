@@ -57,6 +57,22 @@ class Fas032VisionReviewTests(unittest.TestCase):
                 reviewed_at="2026-07-26T12:00:00Z",
             )
 
+    def test_malformed_sensors_and_review_metadata_fail_closed(self):
+        contract = self.contract()
+        contract["sensors"] = {"sensor_id": "camera:1"}
+        result = self.review.review(
+            contract, reviewer="forge-user:local", reviewed_at="2026-07-26T12:00:00Z"
+        )
+        self.assertEqual("needs_work", result["status"])
+        with self.assertRaisesRegex(VisionReviewError, "reviewer"):
+            self.review.review(
+                self.contract(), reviewer="", reviewed_at="2026-07-26T12:00:00Z"
+            )
+        with self.assertRaisesRegex(VisionReviewError, "UTC"):
+            self.review.review(
+                self.contract(), reviewer="forge-user:local", reviewed_at="not-a-time"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
