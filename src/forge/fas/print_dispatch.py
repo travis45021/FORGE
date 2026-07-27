@@ -64,9 +64,34 @@ class PrintDispatchCoordinator:
             evaluated_at=evaluated_at,
             provider_evidence=provider_evidence,
         )
+        upload_evidence = {
+            field: prepared_upload[field]
+            for field in (
+                "provider_id",
+                "job_id",
+                "artifact_digest",
+                "comparison_id",
+                "comparison_evidence_digest",
+                "comparison_reviewed_by",
+                "comparison_reviewed_at",
+                "input_digest",
+                "profile_digest",
+                "engine_source_digest",
+                "engine_build_digest",
+                "confirmed_by",
+                "confirmed_at",
+                "confirmation_expires_at",
+                "final_confirmation_evidence_digest",
+                "live_checks_checked_at",
+                "live_checks_expires_at",
+                "live_checks_evidence_digest",
+                "fourth_click_satisfied",
+                "physical_dispatch_allowed",
+            )
+        }
         return {
             "executive_request": executive_request,
-            "prepared_upload": prepared_upload,
+            "upload_evidence": upload_evidence,
             "runtime_result": runtime_result,
             "upload_dispatched": runtime_result.get("status") == "dispatched",
             "print_started": False,

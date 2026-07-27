@@ -38,7 +38,32 @@ def test_composes_existing_guards_without_claiming_print_outcome() -> None:
     )
     transport.prepare_artifact_upload.side_effect = lambda *args, **kwargs: (
         calls.append("transport")
-        or {"job_id": "job:1", "physical_dispatch_allowed": False}
+        or {
+            "provider_id": "provider:custom",
+            "job_id": "job:1",
+            "artifact_digest": "a" * 64,
+            "comparison_id": "comparison:1",
+            "comparison_evidence_digest": "b" * 64,
+            "comparison_reviewed_by": "reviewer:1",
+            "comparison_reviewed_at": "2026-07-26T12:00:00Z",
+            "input_digest": "c" * 64,
+            "profile_digest": "d" * 64,
+            "engine_source_digest": "e" * 64,
+            "engine_build_digest": "f" * 64,
+            "confirmed_by": "user:1",
+            "confirmed_at": "2026-07-26T12:04:00Z",
+            "confirmation_expires_at": "2026-07-26T12:09:00Z",
+            "confirmation_token": "secret-confirmation-token",
+            "final_confirmation_evidence": {
+                "confirmation_token": "secret-confirmation-token"
+            },
+            "final_confirmation_evidence_digest": "1" * 64,
+            "live_checks_checked_at": "2026-07-26T12:03:00Z",
+            "live_checks_expires_at": "2026-07-26T12:08:00Z",
+            "live_checks_evidence_digest": "2" * 64,
+            "fourth_click_satisfied": True,
+            "physical_dispatch_allowed": False,
+        }
     )
     runtime.dispatch_artifact_upload.side_effect = lambda *args, **kwargs: (
         calls.append("runtime")
@@ -57,6 +82,10 @@ def test_composes_existing_guards_without_claiming_print_outcome() -> None:
     assert result["upload_dispatched"] is True
     assert result["print_started"] is False
     assert result["physical_outcome_confirmed"] is False
+    assert result["upload_evidence"]["fourth_click_satisfied"] is True
+    assert "prepared_upload" not in result
+    assert "confirmation_token" not in result["upload_evidence"]
+    assert "final_confirmation_evidence" not in result["upload_evidence"]
 
 
 def test_stops_before_transport_when_executive_rejects() -> None:

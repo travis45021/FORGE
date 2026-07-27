@@ -287,10 +287,15 @@ class FourClickContractFlowTests(unittest.TestCase):
             runtime_lease_active=True,
             authorization_verified=True,
         )
-        self.assertTrue(dispatch_result["prepared_upload"]["fourth_click_satisfied"])
+        self.assertTrue(dispatch_result["upload_evidence"]["fourth_click_satisfied"])
         self.assertFalse(
-            dispatch_result["prepared_upload"]["physical_dispatch_allowed"]
+            dispatch_result["upload_evidence"]["physical_dispatch_allowed"]
         )
+        self.assertNotIn("confirmation_token", dispatch_result["upload_evidence"])
+        self.assertNotIn(
+            "final_confirmation_evidence", dispatch_result["upload_evidence"]
+        )
+        self.assertNotIn(job["confirmation_token"], json.dumps(dispatch_result))
         self.assertTrue(dispatch_result["upload_dispatched"])
         self.assertFalse(dispatch_result["print_started"])
         self.assertFalse(dispatch_result["physical_outcome_confirmed"])

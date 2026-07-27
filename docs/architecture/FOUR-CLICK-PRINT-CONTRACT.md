@@ -63,5 +63,11 @@ underlying gates. A product-facing application may call it only after creating
 the Mission, acceptance, authorization, fourth-click receipt, active Runtime
 lease, and fresh provider evidence required by those services.
 
+The raw confirmation token and complete internal confirmation receipt are
+passed only between the transport and Runtime guards. They are not returned to
+the application caller. The caller receives the non-secret evidence digests,
+lineage, attribution, validity windows, and dispatch result needed to explain
+the outcome.
+
 This contract is independent of the Orca integration and remains binding for
 any future engine or printer capability provider.
