@@ -116,6 +116,7 @@
         "request input bound to assigned workspace",
         "preflight output bound to assigned workspace",
         "disk-bounded stable-file preflight hashing",
+        "outcome-bound artifact digest claims",
         "supervisor fault-injection contracts",
         "digest-bound result contract"
       ],

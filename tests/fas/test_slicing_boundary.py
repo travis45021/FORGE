@@ -22,6 +22,7 @@ class SlicerBoundaryTests(unittest.TestCase):
                 "input": {"format": "3mf", "digest": "a" * 64, "path": "in/part.3mf"},
                 "context": "twin",
                 "profile_digest": "b" * 64,
+                "profile_ephemeral": True,
                 "authority": {
                     "mission_id": "mission-1",
                     "user_confirmation_stage": "created_mission",
@@ -39,6 +40,7 @@ class SlicerBoundaryTests(unittest.TestCase):
                     "input": {"format": "f3d", "digest": "a" * 64, "path": "part.f3d"},
                     "context": "production",
                     "profile_digest": "b" * 64,
+                    "profile_ephemeral": True,
                     "authority": {
                         "mission_id": "mission-1",
                         "user_confirmation_stage": "created_mission",
@@ -60,6 +62,7 @@ class SlicerBoundaryTests(unittest.TestCase):
                         "source_digest": "c" * 64,
                         "build_digest": "d" * 64,
                     },
+                    "artifact_digest": "a" * 64,
                     "warnings": [],
                     "authority": {"can_upload": False, "can_start_print": True},
                 }
@@ -78,10 +81,34 @@ class SlicerBoundaryTests(unittest.TestCase):
                         "version": "0",
                         "source_digest": "c" * 64,
                     },
+                    "artifact_digest": "a" * 64,
                     "warnings": [],
                     "authority": {"can_upload": False, "can_start_print": False},
                 }
             )
+
+    def test_success_requires_artifact_and_failure_cannot_claim_one(self) -> None:
+        base = {
+            "contract_version": "1.0",
+            "request_id": "req-1",
+            "status": "succeeded",
+            "context": "production",
+            "engine": {
+                "name": "test",
+                "version": "0",
+                "source_digest": "c" * 64,
+                "build_digest": "d" * 64,
+            },
+            "warnings": [],
+            "authority": {"can_upload": False, "can_start_print": False},
+        }
+        with self.assertRaisesRegex(SlicerContractError, "artifact digest"):
+            self.boundary.result(base)
+
+        base["status"] = "failed"
+        base["artifact_digest"] = "a" * 64
+        with self.assertRaisesRegex(SlicerContractError, "cannot claim"):
+            self.boundary.result(base)
 
 
 if __name__ == "__main__":

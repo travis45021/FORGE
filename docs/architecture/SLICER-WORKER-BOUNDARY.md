@@ -4,6 +4,10 @@ The worker manifest defines the Gate 4 isolation contract. Production and twin
 workers receive separate input, output, and log workspaces and explicit
 timeout, memory, and disk limits. Cancellation and crash recovery are part of
 the worker supervisor, not the slicer engine.
+Requests must declare an ephemeral profile. Successful result contracts must
+carry a lowercase SHA-256 artifact digest; failed, cancelled, or timed-out
+results cannot claim an artifact. Runtime validation and the published JSON
+Schemas enforce the same rule.
 
 Workspace paths are canonical relative POSIX paths under one dedicated worker
 root. Absolute paths, drive paths, backslashes, empty components, `.`/`..`

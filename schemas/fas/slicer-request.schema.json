@@ -4,7 +4,7 @@
   "title": "FORGE Slicer Request",
   "type": "object",
   "additionalProperties": false,
-  "required": ["contract_version", "request_id", "input", "context", "profile_digest", "authority"],
+  "required": ["contract_version", "request_id", "input", "context", "profile_digest", "profile_ephemeral", "authority"],
   "properties": {
     "contract_version": {"const": "1.0"},
     "request_id": {"type": "string", "minLength": 1},
@@ -20,6 +20,7 @@
     },
     "context": {"enum": ["production", "twin"]},
     "profile_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "profile_ephemeral": {"const": true},
     "authority": {
       "type": "object",
       "additionalProperties": false,

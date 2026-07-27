@@ -42,11 +42,36 @@ class SlicerContractTests(unittest.TestCase):
                 "source_digest": "a" * 64,
                 "build_digest": "b" * 64,
             },
+            "artifact_digest": "c" * 64,
             "warnings": [],
             "authority": {"can_upload": False, "can_start_print": False},
         }
         Draft202012Validator(schema).validate(result)
         result["authority"]["can_start_print"] = True
+        with self.assertRaises(ValidationError):
+            Draft202012Validator(schema).validate(result)
+
+    def test_result_artifact_presence_tracks_outcome(self) -> None:
+        schema = self.load("slicer-result.schema.json")
+        result = {
+            "contract_version": "1.0",
+            "request_id": "req-1",
+            "status": "succeeded",
+            "context": "production",
+            "engine": {
+                "name": "contract-test",
+                "version": "0",
+                "source_digest": "a" * 64,
+                "build_digest": "b" * 64,
+            },
+            "warnings": [],
+            "authority": {"can_upload": False, "can_start_print": False},
+        }
+        with self.assertRaises(ValidationError):
+            Draft202012Validator(schema).validate(result)
+
+        result["status"] = "failed"
+        result["artifact_digest"] = "c" * 64
         with self.assertRaises(ValidationError):
             Draft202012Validator(schema).validate(result)
 
