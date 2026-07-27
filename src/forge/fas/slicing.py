@@ -76,8 +76,13 @@ class SlicerContractBoundary:
         engine = item["engine"]
         if not isinstance(engine, Mapping):
             raise SlicerContractError("engine provenance is required")
-        self._require(engine, {"name", "version", "source_digest"}, "engine")
+        self._require(
+            engine,
+            {"name", "version", "source_digest", "build_digest"},
+            "engine",
+        )
         self._digest(engine["source_digest"], "engine source digest")
+        self._digest(engine["build_digest"], "engine build digest")
         return item
 
     @staticmethod

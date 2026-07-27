@@ -121,7 +121,9 @@ release is distributed until the applicable items in this gate are complete.
   bypass. Fourth-click, Executive, controlled transport, and Runtime boundaries
   preserve and recheck both deterministic and coordinated-pair preflight proof.
   Accepted output also remains bound to its exact source-input and ephemeral
-  profile digests through dispatch. Real engine artifact evidence remains open.
+  profile digests through dispatch. Result schema, preflight, and comparison
+  require the exact reviewed engine source and binary-build digests. Real engine
+  artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

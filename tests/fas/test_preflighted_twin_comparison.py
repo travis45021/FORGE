@@ -14,6 +14,7 @@ def evidence(context: str, artifact: str = "a") -> dict:
             "name": "reviewed-engine",
             "version": "pinned",
             "source_digest": "c" * 64,
+            "build_digest": "d" * 64,
         },
         "warnings": [],
         "status": "passed",

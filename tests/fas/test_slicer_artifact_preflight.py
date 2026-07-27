@@ -17,6 +17,7 @@ def result(digest: str, *, context: str = "production") -> dict:
             "name": "reviewed-engine",
             "version": "pinned",
             "source_digest": "c" * 64,
+            "build_digest": "d" * 64,
         },
         "artifact_digest": digest,
         "warnings": [],

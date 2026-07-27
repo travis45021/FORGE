@@ -40,6 +40,7 @@ class SlicerContractTests(unittest.TestCase):
                 "name": "contract-test",
                 "version": "0",
                 "source_digest": "a" * 64,
+                "build_digest": "b" * 64,
             },
             "warnings": [],
             "authority": {"can_upload": False, "can_start_print": False},

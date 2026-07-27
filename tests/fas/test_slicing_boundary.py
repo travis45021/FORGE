@@ -58,9 +58,28 @@ class SlicerBoundaryTests(unittest.TestCase):
                         "name": "test",
                         "version": "0",
                         "source_digest": "c" * 64,
+                        "build_digest": "d" * 64,
                     },
                     "warnings": [],
                     "authority": {"can_upload": False, "can_start_print": True},
+                }
+            )
+
+    def test_rejects_result_without_exact_engine_build(self) -> None:
+        with self.assertRaisesRegex(SlicerContractError, "build_digest"):
+            self.boundary.result(
+                {
+                    "contract_version": "1.0",
+                    "request_id": "req-1",
+                    "status": "succeeded",
+                    "context": "production",
+                    "engine": {
+                        "name": "test",
+                        "version": "0",
+                        "source_digest": "c" * 64,
+                    },
+                    "warnings": [],
+                    "authority": {"can_upload": False, "can_start_print": False},
                 }
             )
 

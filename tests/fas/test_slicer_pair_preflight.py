@@ -19,6 +19,7 @@ def result(context: str, digest: str) -> dict:
             "name": "reviewed-engine",
             "version": "pinned",
             "source_digest": "c" * 64,
+            "build_digest": "d" * 64,
         },
         "artifact_digest": digest,
         "warnings": [],
@@ -125,6 +126,24 @@ def test_rejects_output_from_different_engine(tmp_path: Path) -> None:
     twin_digest = output(twin_path, b"M84\n")
     production_result = result("production", production_digest)
     production_result["engine"]["version"] = "other"
+
+    with pytest.raises(PreflightError, match="different reviewed engine"):
+        ArtifactPreflight().inspect_worker_pair_outputs(
+            pair(production_digest, twin_digest),
+            production_path=production_path,
+            production_result=production_result,
+            twin_path=twin_path,
+            twin_result=result("twin", twin_digest),
+        )
+
+
+def test_rejects_output_from_different_engine_build(tmp_path: Path) -> None:
+    production_path = tmp_path / "production.gcode"
+    twin_path = tmp_path / "twin.gcode"
+    production_digest = output(production_path, b"G28\n")
+    twin_digest = output(twin_path, b"M84\n")
+    production_result = result("production", production_digest)
+    production_result["engine"]["build_digest"] = "e" * 64
 
     with pytest.raises(PreflightError, match="different reviewed engine"):
         ArtifactPreflight().inspect_worker_pair_outputs(

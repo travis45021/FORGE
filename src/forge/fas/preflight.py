@@ -182,7 +182,7 @@ class ArtifactPreflight:
             pair_engine, Mapping
         ):
             raise PreflightError(f"{context} engine provenance is invalid")
-        fields = ("name", "version", "source_digest")
+        fields = ("name", "version", "source_digest", "build_digest")
         if any(result_engine.get(field) != pair_engine.get(field) for field in fields):
             raise PreflightError(
                 f"{context} output came from a different reviewed engine"

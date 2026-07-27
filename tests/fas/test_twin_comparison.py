@@ -16,7 +16,12 @@ def result(context: str, artifact: str = "d") -> dict:
         "request_id": f"req-{context}",
         "status": "succeeded",
         "context": context,
-        "engine": {"name": "engine", "version": "1", "source_digest": "c" * 64},
+        "engine": {
+            "name": "engine",
+            "version": "1",
+            "source_digest": "c" * 64,
+            "build_digest": "d" * 64,
+        },
         "artifact_digest": artifact * 64,
         "warnings": [],
         "authority": {"can_upload": False, "can_start_print": False},
