@@ -1,6 +1,6 @@
 # OrcaSlicer Upstream Provenance Record
 
-Status: Initial evidence; file-level audit incomplete  
+Status: Source and license archives verified; file-level audit incomplete
 Recorded: 2026-07-26
 
 ## Pinned review baseline
@@ -43,6 +43,20 @@ not a substitute for archiving the exact source/license bytes and hashing them.
 - Byte length: `118753412`
 - Scope: digest verified and archive retained; file-level inventory remains open.
 
+## Local evidence re-verification
+
+On 2026-07-26, the retained evidence was read again from its recorded
+locations:
+
+- the archived license SHA-256 matched
+  `57c8ff33c9c0cfc3ef00e650a1cc910d7ee479a8bc509f6c9209a7c2a11399d6`;
+- the source archive byte length matched `118753412`; and
+- the source archive SHA-256 matched
+  `2c7eea7b1e3757011f2c9520dc1712d789b9182b5c276aba271bf814172b0a52`.
+
+This closes archive retention and digest verification only. It does not close
+file-level classification, compatibility, exclusion, build, or legal review.
+
 ## Initial upstream declarations
 
 The upstream release describes OrcaSlicer as licensed under GNU Affero General
@@ -67,7 +81,6 @@ The controlled status of each item is tracked in
 [`GATE-1-EVIDENCE-INDEX.md`](GATE-1-EVIDENCE-INDEX.md). No item below is
 considered complete merely because the pin is recorded.
 
-- Archive the exact source and license files and record cryptographic digests.
 - Enumerate file-level copyright and license headers.
 - Resolve submodules, vendored libraries, assets, profiles, translations,
   calibration content, and generated files.

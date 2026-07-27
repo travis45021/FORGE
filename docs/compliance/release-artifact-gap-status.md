@@ -12,9 +12,10 @@ public-release compliance gate:
 - consolidated `NOTICE` and third-party notices;
 - corresponding-source/source-offer publication instructions;
 - machine-readable SBOM tied to a reproducible build;
-- contributor sign-off/DCO, inbound licensing, trademark, and release-source
-  rules;
-- plain-language privacy and opt-in sharing terms; and
+- finalized contributor sign-off/DCO, inbound licensing, trademark, and
+  release-source rules (drafts are present);
+- finalized plain-language privacy and opt-in sharing terms (drafts are
+  present); and
 - automated release checks plus qualified legal review.
 
 These are release prerequisites, not optional documentation. Until they are

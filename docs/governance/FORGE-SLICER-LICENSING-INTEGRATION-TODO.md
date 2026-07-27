@@ -30,7 +30,8 @@ release is distributed until the applicable items in this gate are complete.
 - [x] Pin the reviewed OrcaSlicer release tag and exact source commit
   (`v2.3.2`,
   `c724a3f5f51c52336624b689e846c8fbc943a912`).
-- [ ] Archive the upstream license files and record the source URL and digest.
+- [x] Archive the upstream license and pinned source files; record their source
+  URLs, byte length, and verified SHA-256 digests.
 - [ ] Perform a file-level copyright, license-header, and SPDX inventory.
 - [ ] Inventory third-party libraries, assets, icons, fonts, translations,
   profiles, calibration patterns, firmware interfaces, and generated content.
