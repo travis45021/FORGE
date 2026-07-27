@@ -7,6 +7,10 @@ FORGE v1 has one safe request path. The local application, CLI, Builder,
 accessible presentation, and versioned local API authenticate a local identity
 and send meaningful actions through the Interface Gateway to the Executive.
 No presentation exposes a raw-hardware control path.
+The gateway rejects raw-hardware commands at every nesting depth, unknown
+request fields, malformed identifiers or parameters, and a declared API
+version that differs from the negotiated local version before the Executive
+sees the request.
 
 The Simple, Builder, Advanced, Accessible, and Developer modes change
 presentation, not authority or stored hardware definitions. Action and approval

@@ -45,6 +45,52 @@ class InterfaceTests(unittest.TestCase):
                 api_version="v1",
             )
 
+    def test_nested_raw_hardware_command_is_rejected(self):
+        request = {
+            **self.request,
+            "parameters": {
+                "provider": {
+                    "steps": [{"raw_hardware_command": "G28"}],
+                }
+            },
+        }
+        with self.assertRaisesRegex(InterfaceError, "raw-hardware"):
+            self.gateway.submit(
+                request,
+                authenticated_identity="user:local",
+                api_version="v1",
+            )
+
+    def test_unknown_request_fields_are_rejected(self):
+        with self.assertRaisesRegex(InterfaceError, "unknown interface"):
+            self.gateway.submit(
+                {**self.request, "bypass_policy": True},
+                authenticated_identity="user:local",
+                api_version="v1",
+            )
+
+    def test_declared_and_negotiated_versions_must_match(self):
+        with self.assertRaisesRegex(InterfaceError, "versions do not match"):
+            self.gateway.submit(
+                {**self.request, "api_version": "v9"},
+                authenticated_identity="user:local",
+                api_version="v1",
+            )
+
+    def test_request_identity_and_parameters_are_well_formed(self):
+        with self.assertRaisesRegex(InterfaceError, "request_id"):
+            self.gateway.submit(
+                {**self.request, "request_id": " "},
+                authenticated_identity="user:local",
+                api_version="v1",
+            )
+        with self.assertRaisesRegex(InterfaceError, "parameters"):
+            self.gateway.submit(
+                {**self.request, "parameters": []},
+                authenticated_identity="user:local",
+                api_version="v1",
+            )
+
     def test_local_identity_is_required(self):
         with self.assertRaises(InterfaceError):
             self.gateway.submit(

@@ -72,8 +72,23 @@ class InterfaceGateway:
         missing = sorted(required - item.keys())
         if missing:
             raise InterfaceError(f"request missing fields: {', '.join(missing)}")
-        if item.get("raw_hardware_command") is not None:
+        allowed = required | {"api_version", "client_context"}
+        unexpected = sorted(item.keys() - allowed)
+        if unexpected:
+            raise InterfaceError(
+                f"unknown interface request fields: {', '.join(unexpected)}"
+            )
+        if "api_version" in item and item["api_version"] != api_version:
+            raise InterfaceError("request and negotiated API versions do not match")
+        for field in ("request_id", "action", "target"):
+            if not isinstance(item[field], str) or not item[field].strip():
+                raise InterfaceError(f"request {field} must be readable text")
+        if not isinstance(item["parameters"], Mapping):
+            raise InterfaceError("request parameters must be an object")
+        if self._contains_key(item["parameters"], "raw_hardware_command"):
             raise InterfaceError("the local API is not a raw-hardware API")
+        if "client_context" in item and not isinstance(item["client_context"], Mapping):
+            raise InterfaceError("client context must be an object")
         item["requester"] = authenticated_identity
         item["source"] = "interface_gateway"
         item["api_version"] = api_version
@@ -335,3 +350,13 @@ class InterfaceGateway:
         elif isinstance(value, list):
             for nested in value:
                 cls._reject_presentation_secrets(nested)
+
+    @classmethod
+    def _contains_key(cls, value: Any, key: str) -> bool:
+        if isinstance(value, Mapping):
+            return key in value or any(
+                cls._contains_key(nested, key) for nested in value.values()
+            )
+        if isinstance(value, list):
+            return any(cls._contains_key(nested, key) for nested in value)
+        return False
