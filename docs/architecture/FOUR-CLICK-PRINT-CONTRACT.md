@@ -17,6 +17,13 @@ non-authorized state and requires the user to review again.
 
 ## Evidence chain
 
+The click-three presenter accepts only coordinated paired-preflight evidence.
+It independently validates input, profile, artifact, and engine lineage,
+recomputes production/twin differences and acceptance, requires an unreviewed
+non-authoritative comparison, and records user review with a UTC timestamp.
+A caller-created self-hash without the paired-preflight chain cannot create a
+Print Mission.
+
 Click three records the named reviewer, review time, immutable comparison
 digest, accepted artifact digest, input and profile digests, and exact slicing
 engine source and build digests. Click four is valid only when:
