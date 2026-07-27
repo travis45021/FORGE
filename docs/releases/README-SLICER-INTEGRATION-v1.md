@@ -38,8 +38,6 @@ path; it is not an input to the current integrated slicing contract.
   corresponding-source release is approved.
 - Root licensing, final notices, final SBOM, and policy documents remain
   audit- or legal-review dependent.
-- The two existing pytest collection warnings for assurance service class
-  names are non-failing but should be removed before release-candidate signoff.
 
 ## Rollback requirements
 

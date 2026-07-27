@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
-from typing import Any, Mapping
+from typing import Any
 
 
 class TestAssuranceError(ValueError):
     """Raised when test evidence violates the FAS-025 boundary."""
+
+    __test__ = False
 
 
 TEST_LAYERS = {
@@ -24,6 +27,8 @@ TEST_LAYERS = {
 
 class TestAssuranceService:
     """Records reproducible evidence without confusing simulation with reality."""
+
+    __test__ = False
 
     def __init__(self) -> None:
         self._simulators: dict[str, dict[str, Any]] = {}
@@ -46,7 +51,11 @@ class TestAssuranceService:
                 f"simulator manifest missing fields: {', '.join(missing)}"
             )
         if not set(item["suitable_layers"]) <= {
-            "unit", "contract", "integration", "scenario", "fault_injection"
+            "unit",
+            "contract",
+            "integration",
+            "scenario",
+            "fault_injection",
         }:
             raise TestAssuranceError("simulator declares an unsuitable test layer")
         item["provider_kind"] = "simulated"
@@ -73,9 +82,17 @@ class TestAssuranceService:
     def record_result(self, result: Mapping[str, Any]) -> dict[str, Any]:
         item = deepcopy(dict(result))
         required = {
-            "test_id", "layer", "test_version", "contract_versions",
-            "configuration_snapshot", "provider_versions", "input_data",
-            "event_sequence", "runtime_context", "expected", "observed",
+            "test_id",
+            "layer",
+            "test_version",
+            "contract_versions",
+            "configuration_snapshot",
+            "provider_versions",
+            "input_data",
+            "event_sequence",
+            "runtime_context",
+            "expected",
+            "observed",
             "outcome",
         }
         missing = sorted(required - item.keys())
@@ -103,8 +120,13 @@ class TestAssuranceService:
         user_authorized: bool,
     ) -> dict[str, Any]:
         required = {
-            "target_hardware", "limits", "stop_conditions", "physical_action",
-            "monitoring", "recovery_plan", "mission_kind",
+            "target_hardware",
+            "limits",
+            "stop_conditions",
+            "physical_action",
+            "monitoring",
+            "recovery_plan",
+            "mission_kind",
         }
         missing = sorted(required - plan.keys())
         if missing:
@@ -116,7 +138,9 @@ class TestAssuranceService:
         if plan["mission_kind"] != "test":
             raise TestAssuranceError("hardware test must be distinct from production")
         if not plan["limits"] or not plan["stop_conditions"]:
-            raise TestAssuranceError("hardware test requires limits and stop conditions")
+            raise TestAssuranceError(
+                "hardware test requires limits and stop conditions"
+            )
         result = deepcopy(dict(plan))
         result.update(
             {
@@ -131,10 +155,17 @@ class TestAssuranceService:
     def assess_release(self, record: Mapping[str, Any]) -> dict[str, Any]:
         item = deepcopy(dict(record))
         required = {
-            "release_version", "components", "supported_environments",
-            "test_results", "known_limitations", "security_review",
-            "compatibility_review", "migration", "rollback",
-            "documentation_complete", "integrity",
+            "release_version",
+            "components",
+            "supported_environments",
+            "test_results",
+            "known_limitations",
+            "security_review",
+            "compatibility_review",
+            "migration",
+            "rollback",
+            "documentation_complete",
+            "integrity",
         }
         missing = sorted(required - item.keys())
         if missing:
@@ -143,11 +174,11 @@ class TestAssuranceService:
             )
         results = item["test_results"]
         blocking = [
-            value for value in results
+            value
+            for value in results
             if value.get("outcome") != "passed"
             and (
-                value.get("required") is True
-                or value.get("security_critical") is True
+                value.get("required") is True or value.get("security_critical") is True
             )
         ]
         if item["security_review"] != "passed":
