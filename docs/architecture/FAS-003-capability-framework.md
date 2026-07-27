@@ -44,6 +44,10 @@ produce FAS-006 events.
 
 - arbitrary namespaced capabilities validate;
 - required operations and versions resolve deterministically;
+- unavailable capabilities distinguish missing, unhealthy, untrusted,
+  version-incompatible, and operation-incomplete providers in plain language;
+- explanations offer capability-first next steps for custom hardware without
+  creating execution authority or requiring a brand allowlist;
 - unhealthy or untrusted providers are excluded;
 - permission and safety requirements remain explicit;
 - adding unknown hardware requires a contract and provider, not core changes.
