@@ -50,5 +50,18 @@ evidence envelopes:
 Their SHA-256 digests make silent mutation detectable. Schema validity and a
 matching digest establish record integrity, not physical authority.
 
+## Application composition
+
+`forge.fas.print_dispatch.PrintDispatchCoordinator` is the reference
+application composition boundary. It invokes the Executive, replaceable
+transport registry, and Runtime in that order. Any rejection stops the chain.
+Its result distinguishes an upload command accepted by Runtime from an actual
+print start or confirmed physical outcome; both remain false.
+
+The coordinator has no network or device client and cannot bypass the
+underlying gates. A product-facing application may call it only after creating
+the Mission, acceptance, authorization, fourth-click receipt, active Runtime
+lease, and fresh provider evidence required by those services.
+
 This contract is independent of the Orca integration and remains binding for
 any future engine or printer capability provider.

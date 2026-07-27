@@ -153,7 +153,10 @@ release is distributed until the applicable items in this gate are complete.
   replaceable adapters.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
-  application integration remains open.
+  the reference application coordinator now composes Executive, replaceable
+  transport, and Runtime guards without contacting hardware or claiming a
+  print start. Product-facing UI/API wiring and real provider integration
+  remain open.
 - [x] Add capability-provider upload only after the mandatory final user gate.
 - [ ] Keep printer-specific behavior in replaceable capability providers, with
   Moonraker/Klipper only as the first tested reference. Hardware-neutral and
