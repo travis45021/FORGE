@@ -228,6 +228,33 @@ class Fas026PersistenceTests(unittest.TestCase):
             with self.assertRaisesRegex(PersistenceError, "secrets"):
                 AtomicSnapshotStore().write(Path(directory) / "state.json", snapshot)
 
+    def test_service_snapshot_load_is_review_only_and_scope_bound(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "state.json"
+            self.service.save_snapshot(path, owner_scope="forge-user:local")
+            restored = DataRecoveryService()
+            result = restored.load_snapshot(
+                path,
+                owner_scope="forge-user:local",
+                requested_at="2026-07-26T12:20:00Z",
+                reason="user requested local recovery",
+            )
+            self.assertEqual(
+                {self.profile["record_id"], self.state["record_id"]},
+                set(result["applied_record_ids"]),
+            )
+            self.assertFalse(result["hardware_resume_allowed"])
+            self.assertFalse(result["physical_commands_replayed"])
+            with self.assertRaisesRegex(PersistenceError, "owner scope"):
+                restored.load_snapshot(
+                    path,
+                    owner_scope="forge-user:other",
+                    requested_at="2026-07-26T12:20:00Z",
+                    reason="wrong scope",
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

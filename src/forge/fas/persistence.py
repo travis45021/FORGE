@@ -283,6 +283,48 @@ class DataRecoveryService:
             "export_digest": _digest(records),
         }
 
+    def save_snapshot(self, path: str | Path, *, owner_scope: str) -> dict[str, Any]:
+        """Persist a non-secret local export using an atomic filesystem write."""
+        snapshot = self.export(owner_scope=owner_scope)
+        return AtomicSnapshotStore().write(path, snapshot)
+
+    def load_snapshot(
+        self,
+        path: str | Path,
+        *,
+        owner_scope: str,
+        requested_at: str,
+        reason: str,
+    ) -> dict[str, Any]:
+        """Load a verified snapshot for review; never resumes physical work."""
+        _utc(requested_at)
+        snapshot = AtomicSnapshotStore().read(path)
+        if snapshot.get("owner_scope") != owner_scope:
+            raise PersistenceError("snapshot owner scope does not match request")
+        applied: list[str] = []
+        conflicts: list[str] = []
+        for item in snapshot["records"]:
+            self._validate_record(item)
+            current = self._records.get(item["record_id"])
+            if current is None:
+                self._records[item["record_id"]] = deepcopy(item)
+                applied.append(item["record_id"])
+            elif current["digest"] != item["digest"]:
+                conflicts.append(item["record_id"])
+        self._record("snapshot.loaded", owner_scope, reason)
+        return {
+            "snapshot_path": str(path),
+            "owner_scope": owner_scope,
+            "requested_at": requested_at,
+            "reason": reason,
+            "applied_record_ids": applied,
+            "conflicts": conflicts,
+            "hardware_resume_allowed": False,
+            "physical_commands_replayed": False,
+            "requires_live_reverification": True,
+            "requires_user_review": True,
+        }
+
     def migration_plan(
         self, *, from_version: str, to_version: str, created_at: str, backup_id: str
     ) -> dict[str, Any]:

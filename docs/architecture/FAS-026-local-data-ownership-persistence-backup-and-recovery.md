@@ -92,6 +92,7 @@ The reference service records:
     backup.verified
     data.integrity.failed
     restore.completed
+    snapshot.loaded
 
 Production persistence must connect these operations to FAS-006 events and
 FAS-007 Decision Records without putting secret contents into the audit stream.
@@ -99,10 +100,11 @@ FAS-007 Decision Records without putting secret contents into the audit stream.
 ## First-release boundary
 
 FAS-026 v1 scope includes local persistence for core records, manual local
-backup/restore, backup-before-material-change contracts, integrity checks,
-portable export/import contracts, migration planning, and separate secret
-handling. Cloud backup, automatic synchronization, distributed databases, and
-organization retention policy remain future work.
+backup/restore, crash-atomic non-secret snapshots, backup-before-material-change
+contracts, integrity checks, portable export/import contracts, migration
+planning, and separate secret handling. Cloud backup, automatic
+synchronization, distributed databases, and organization retention policy
+remain future work.
 
 ## Acceptance criteria
 
