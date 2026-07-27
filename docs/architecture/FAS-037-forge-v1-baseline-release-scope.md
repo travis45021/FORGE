@@ -12,3 +12,9 @@ distributed, shared-evidence, and autonomy features remain excluded.
 The gate reports whether a release is blocked or ready for a final human
 decision. It never self-approves, publishes, starts hardware, or changes the
 approved release scope.
+
+The reference evaluator accepts exactly the nine named evidence gates as
+explicit booleans, rejects unknown gates and malformed review identity or UTC
+timestamps, and returns the reviewed evidence with a deterministic SHA-256
+digest. Its strict schema keeps both release and physical-execution authority
+false even when all evidence is ready for a final human decision.

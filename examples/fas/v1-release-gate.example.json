@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "release_id": "forge-release:v1.0",
+  "reviewed_by": "forge-user:release",
+  "reviewed_at": "2026-07-26T12:00:00Z",
+  "evidence": {
+    "constitution": true,
+    "documentation": true,
+    "four_click": true,
+    "hardware": false,
+    "licensing": false,
+    "packaging": false,
+    "recovery": true,
+    "security": false,
+    "tests": true
+  },
+  "evidence_digest": "sha256:eaa68f9eecd11541268980576f0845260b3c1f0a16e0241d5f1e8908b6aa60c8",
+  "status": "blocked",
+  "failed_gates": [
+    "hardware",
+    "licensing",
+    "packaging",
+    "security"
+  ],
+  "release_authorized": false,
+  "physical_execution_authorized": false,
+  "future_gated_features_excluded": true
+}

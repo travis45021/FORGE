@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/v1-release-gate.schema.json",
+  "title": "FORGE v1 Release Gate Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "release_id",
+    "reviewed_by",
+    "reviewed_at",
+    "evidence",
+    "evidence_digest",
+    "status",
+    "failed_gates",
+    "release_authorized",
+    "physical_execution_authorized",
+    "future_gated_features_excluded"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "release_id": {"const": "forge-release:v1.0"},
+    "reviewed_by": {"type": "string", "minLength": 1},
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "constitution",
+        "documentation",
+        "four_click",
+        "hardware",
+        "licensing",
+        "packaging",
+        "recovery",
+        "security",
+        "tests"
+      ],
+      "properties": {
+        "constitution": {"type": "boolean"},
+        "documentation": {"type": "boolean"},
+        "four_click": {"type": "boolean"},
+        "hardware": {"type": "boolean"},
+        "licensing": {"type": "boolean"},
+        "packaging": {"type": "boolean"},
+        "recovery": {"type": "boolean"},
+        "security": {"type": "boolean"},
+        "tests": {"type": "boolean"}
+      }
+    },
+    "evidence_digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": ["blocked", "ready_for_final_human_decision"]
+    },
+    "failed_gates": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "constitution",
+          "documentation",
+          "four_click",
+          "hardware",
+          "licensing",
+          "packaging",
+          "recovery",
+          "security",
+          "tests"
+        ]
+      }
+    },
+    "release_authorized": {"const": false},
+    "physical_execution_authorized": {"const": false},
+    "future_gated_features_excluded": {"const": true}
+  }
+}
