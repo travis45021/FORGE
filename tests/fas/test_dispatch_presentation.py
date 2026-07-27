@@ -1,14 +1,19 @@
 """Tests for honest post-confirmation upload status presentation."""
 
+import json
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator, ValidationError
 
 from forge.fas.dispatch_presentation import (
     DispatchOutcomePresenter,
     DispatchPresentationError,
 )
 from forge.fas.interfaces import InterfaceGateway
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def dispatch_result() -> dict:
@@ -54,6 +59,51 @@ def test_dispatch_status_uses_the_unified_interface_contract() -> None:
     assert screen["separate_slicer_interface"] is False
     assert screen["core_workflow_parity"] is True
     assert screen["can_start_print"] is False
+
+
+def test_generated_and_published_presentations_match_strict_schema() -> None:
+    contract = json.loads(
+        (ROOT / "schemas/fas/dispatch-status-presentation.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    example = json.loads(
+        (ROOT / "examples/fas/dispatch-status-presentation.example.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    generated = DispatchOutcomePresenter().present(dispatch_result())
+    validator = Draft202012Validator(contract)
+
+    Draft202012Validator.check_schema(contract)
+    validator.validate(example)
+    validator.validate(generated)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("confirmation_token", "secret"),
+        ("printer_receipt_confirmed", True),
+        ("print_started", True),
+        ("start_control_enabled", True),
+    ],
+)
+def test_schema_rejects_secret_or_overstated_status(field: str, value) -> None:
+    contract = json.loads(
+        (ROOT / "schemas/fas/dispatch-status-presentation.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    example = json.loads(
+        (ROOT / "examples/fas/dispatch-status-presentation.example.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    example[field] = value
+
+    with pytest.raises(ValidationError):
+        Draft202012Validator(contract).validate(example)
 
 
 @pytest.mark.parametrize(

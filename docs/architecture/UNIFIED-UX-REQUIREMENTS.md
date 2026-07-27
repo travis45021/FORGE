@@ -17,7 +17,9 @@ slicer application or write code to use supported or custom hardware.
 - **After click four — Dispatch status:** distinguish the upload command being
   sent from printer receipt, print start, and confirmed physical outcome.
   Until provider evidence proves those later states, show them as unconfirmed
-  and keep the print-start control disabled.
+  and keep the print-start control disabled. The public contract is the
+  [dispatch-status schema](../../schemas/fas/dispatch-status-presentation.schema.json)
+  with a matching [example](../../examples/fas/dispatch-status-presentation.example.json).
 
 Unavailable capabilities must be explained in plain language with next steps.
 The UI must never imply that an inferred brand profile is a compatibility

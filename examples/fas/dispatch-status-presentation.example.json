@@ -1,0 +1,31 @@
+{
+  "accessible_label": "Upload command sent. Printer receipt and print start are not confirmed.",
+  "actions": [
+    {
+      "id": "view_job_status",
+      "label": "View job status"
+    },
+    {
+      "id": "view_evidence",
+      "label": "View evidence"
+    }
+  ],
+  "artifact_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "can_start_print": false,
+  "can_upload": false,
+  "final_confirmation_evidence_digest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "heading": "Print upload sent",
+  "job_id": "job:1",
+  "non_color_cue": "waiting",
+  "physical_outcome_confirmed": false,
+  "plain_language": true,
+  "print_started": false,
+  "printer_receipt_confirmed": false,
+  "provider_dispatch_evidence_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "provider_id": "provider:custom",
+  "schema_version": "1.0.0",
+  "stage": "upload_command_dispatched",
+  "start_control_enabled": false,
+  "summary": "FORGE sent the verified upload command to the printer provider. The printer has not yet confirmed receipt or started printing.",
+  "upload_command_dispatched": true
+}

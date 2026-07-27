@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/dispatch-status-presentation.schema.json",
+  "title": "FORGE Upload Dispatch Status Presentation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "stage",
+    "heading",
+    "summary",
+    "job_id",
+    "provider_id",
+    "artifact_digest",
+    "final_confirmation_evidence_digest",
+    "provider_dispatch_evidence_digest",
+    "actions",
+    "upload_command_dispatched",
+    "printer_receipt_confirmed",
+    "print_started",
+    "physical_outcome_confirmed",
+    "start_control_enabled",
+    "can_upload",
+    "can_start_print",
+    "plain_language",
+    "accessible_label",
+    "non_color_cue"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "stage": {"const": "upload_command_dispatched"},
+    "heading": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "job_id": {"type": "string", "minLength": 1},
+    "provider_id": {"type": "string", "minLength": 1},
+    "artifact_digest": {"$ref": "#/$defs/digest"},
+    "final_confirmation_evidence_digest": {"$ref": "#/$defs/digest"},
+    "provider_dispatch_evidence_digest": {"$ref": "#/$defs/digest"},
+    "actions": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label"],
+        "properties": {
+          "id": {"enum": ["view_job_status", "view_evidence"]},
+          "label": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "upload_command_dispatched": {"const": true},
+    "printer_receipt_confirmed": {"const": false},
+    "print_started": {"const": false},
+    "physical_outcome_confirmed": {"const": false},
+    "start_control_enabled": {"const": false},
+    "can_upload": {"const": false},
+    "can_start_print": {"const": false},
+    "plain_language": {"const": true},
+    "accessible_label": {"type": "string", "minLength": 1},
+    "non_color_cue": {"const": "waiting"}
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}
