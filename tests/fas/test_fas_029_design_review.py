@@ -62,6 +62,24 @@ class Fas029DesignReviewTests(unittest.TestCase):
                 reviewed_at="2026-07-26T12:00:00Z",
             )
 
+    def test_malformed_axes_and_review_metadata_fail_closed(self):
+        contract = self.contract()
+        contract["axes"] = {"axis_id": "x"}
+        with self.assertRaisesRegex(DesignReviewError, "at least one axis"):
+            self.review.review(
+                contract,
+                reviewer="forge-user:local",
+                reviewed_at="2026-07-26T12:00:00Z",
+            )
+        with self.assertRaisesRegex(DesignReviewError, "reviewer"):
+            self.review.review(
+                self.contract(), reviewer="", reviewed_at="2026-07-26T12:00:00Z"
+            )
+        with self.assertRaisesRegex(DesignReviewError, "UTC"):
+            self.review.review(
+                self.contract(), reviewer="forge-user:local", reviewed_at="not-a-time"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

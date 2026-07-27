@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any, ClassVar
 
 
@@ -38,11 +39,24 @@ class MotionDesignReview:
             raise DesignReviewError(
                 "motion review requires capability_id motion.positioning"
             )
-        if not item["axes"] or not isinstance(item["axes"], list):
+        if not isinstance(item["axes"], list) or not item["axes"]:
             raise DesignReviewError("motion contract requires at least one axis")
+        if not isinstance(item["provider_id"], str) or not item["provider_id"].strip():
+            raise DesignReviewError("motion contract provider identity is invalid")
+        if not isinstance(reviewer, str) or not reviewer.strip():
+            raise DesignReviewError("motion review requires a reviewer")
+        if not isinstance(reviewed_at, str) or not reviewed_at.endswith("Z"):
+            raise DesignReviewError("motion review time must be UTC")
+        try:
+            datetime.fromisoformat(reviewed_at[:-1] + "+00:00")
+        except ValueError as exc:
+            raise DesignReviewError("motion review time must be valid UTC") from exc
         findings: list[str] = []
         ids: set[str] = set()
         for axis in item["axes"]:
+            if not isinstance(axis, Mapping):
+                findings.append("axis entry must be an object")
+                continue
             missing_axis = sorted(self.REQUIRED_AXIS_FIELDS - axis.keys())
             if missing_axis:
                 findings.append(
