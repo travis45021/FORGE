@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/fourth-click-presentation-record.schema.json",
+  "title": "FORGE Fourth-Click Presentation Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "provider_id",
+    "artifact_digest",
+    "live_checks_evidence_digest",
+    "live_checks_expires_at",
+    "stage",
+    "confirmed_by",
+    "confirmed_at",
+    "action",
+    "click_number",
+    "requires_controlled_upload",
+    "physical_dispatch_allowed"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "provider_id": {"type": "string", "minLength": 1},
+    "artifact_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "live_checks_evidence_digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "live_checks_expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "stage": {"const": "final_confirmation_recorded"},
+    "confirmed_by": {"type": "string", "minLength": 1},
+    "confirmed_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "action": {"const": "Yes, Print"},
+    "click_number": {"const": 4},
+    "requires_controlled_upload": {"const": true},
+    "physical_dispatch_allowed": {"const": false}
+  }
+}

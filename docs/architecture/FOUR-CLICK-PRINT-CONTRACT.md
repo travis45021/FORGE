@@ -54,6 +54,8 @@ evidence envelopes:
   and [example](../../examples/fas/live-printer-check-evidence.example.json);
 - [final-confirmation schema](../../schemas/fas/final-confirmation-evidence.schema.json)
   and [example](../../examples/fas/final-confirmation-evidence.example.json);
+- [fourth-click presentation-record schema](../../schemas/fas/fourth-click-presentation-record.schema.json)
+  and [example](../../examples/fas/fourth-click-presentation-record.example.json);
 - [provider-dispatch schema](../../schemas/fas/provider-dispatch-evidence.schema.json)
   and [example](../../examples/fas/provider-dispatch-evidence.example.json).
 

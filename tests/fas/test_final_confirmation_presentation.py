@@ -1,6 +1,10 @@
 """Tests for the mandatory Yes, Print interface contract."""
 
+import json
+from pathlib import Path
+
 import pytest
+from jsonschema import Draft202012Validator, ValidationError
 
 from forge.fas.final_confirmation_presentation import (
     FinalConfirmationPresentationError,
@@ -11,6 +15,8 @@ from forge.fas.live_printer_checks import (
     LivePrinterCheckService,
     live_check_evidence_digest,
 )
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
 def evidence(*, failed: str | None = None) -> dict:
@@ -59,6 +65,35 @@ def test_records_fourth_click_without_dispatching() -> None:
     assert result["action"] == "Yes, Print"
     assert result["requires_controlled_upload"] is True
     assert result["physical_dispatch_allowed"] is False
+
+
+def test_record_and_example_match_strict_non_authoritative_schema() -> None:
+    schema = json.loads(
+        (ROOT / "schemas/fas/fourth-click-presentation-record.schema.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    example = json.loads(
+        (ROOT / "examples/fas/fourth-click-presentation-record.example.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    generated = FinalConfirmationPresenter().confirm(
+        evidence(),
+        printer_name="Workshop printer",
+        job_name="Bracket",
+        actor="user-1",
+        action="yes_print",
+        presented_at="2026-07-26T12:05:00Z",
+    )
+    validator = Draft202012Validator(schema)
+    Draft202012Validator.check_schema(schema)
+    validator.validate(generated)
+    validator.validate(example)
+
+    example["physical_dispatch_allowed"] = True
+    with pytest.raises(ValidationError):
+        validator.validate(example)
 
 
 @pytest.mark.parametrize("failed", sorted(REQUIRED_CHECKS))

@@ -22,6 +22,7 @@ EXAMPLE_SCHEMAS = {
     "execution-context-print.example.json": "execution-context.schema.json",
     "final-confirmation-evidence.example.json": "final-confirmation-evidence.schema.json",
     "forge-object-custom-extruder.example.json": "forge-object.schema.json",
+    "fourth-click-presentation-record.example.json": "fourth-click-presentation-record.schema.json",
     "health-report-provider.example.json": "health-report.schema.json",
     "interaction-profile-simple.example.json": "interaction-profile.schema.json",
     "interface-request.example.json": "interface-request.schema.json",
