@@ -14,6 +14,10 @@ from .final_confirmation_policy import (
     FinalConfirmationPolicy,
     FinalConfirmationPolicyError,
 )
+from .final_confirmation_presentation import (
+    FinalConfirmationPresentationError,
+    FinalConfirmationPresenter,
+)
 from .health import HEALTH_STATES, HealthError, HealthService
 from .import_presentation import ImportPresentationError, ImportStatusPresenter
 from .imports import ImportAssessmentError, ImportQuarantine
@@ -94,6 +98,8 @@ __all__ = [
     "ExecutiveError",
     "FinalConfirmationPolicy",
     "FinalConfirmationPolicyError",
+    "FinalConfirmationPresentationError",
+    "FinalConfirmationPresenter",
     "ForgeExecutive",
     "ForgeRuntime",
     "HardwareTransportRegistry",

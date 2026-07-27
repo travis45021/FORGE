@@ -1,0 +1,77 @@
+"""Tests for the mandatory Yes, Print interface contract."""
+
+import pytest
+
+from forge.fas.final_confirmation_presentation import (
+    FinalConfirmationPresentationError,
+    FinalConfirmationPresenter,
+)
+from forge.fas.live_printer_checks import REQUIRED_CHECKS, LivePrinterCheckService
+
+
+def evidence(*, failed: str | None = None) -> dict:
+    checks = {name: True for name in REQUIRED_CHECKS}
+    if failed:
+        checks[failed] = False
+    return LivePrinterCheckService().evaluate(
+        provider_id="provider:user-built",
+        artifact_digest="a" * 64,
+        checks=checks,
+    )
+
+
+def show(live: dict) -> dict:
+    return FinalConfirmationPresenter().present(
+        live,
+        printer_name="Workshop printer",
+        job_name="Bracket",
+    )
+
+
+def test_shows_yes_print_only_after_all_live_checks_pass() -> None:
+    result = show(evidence())
+
+    assert result["stage"] == "before_click_four"
+    assert result["confirmation_label"] == "Yes, Print"
+    assert result["confirmation_is_fourth_click"] is True
+    assert result["bypass_enabled"] is False
+    assert result["can_upload"] is False
+
+
+def test_records_fourth_click_without_dispatching() -> None:
+    result = FinalConfirmationPresenter().confirm(
+        evidence(),
+        printer_name="Workshop printer",
+        job_name="Bracket",
+        actor="user-1",
+        action="yes_print",
+    )
+
+    assert result["click_number"] == 4
+    assert result["action"] == "Yes, Print"
+    assert result["requires_controlled_upload"] is True
+    assert result["physical_dispatch_allowed"] is False
+
+
+@pytest.mark.parametrize("failed", sorted(REQUIRED_CHECKS))
+def test_each_failed_or_stale_check_removes_yes_print(failed: str) -> None:
+    result = show(evidence(failed=failed))
+
+    assert result["can_confirm"] is False
+    assert "yes_print" not in {action["id"] for action in result["actions"]}
+    with pytest.raises(FinalConfirmationPresentationError):
+        FinalConfirmationPresenter().confirm(
+            evidence(failed=failed),
+            printer_name="Workshop printer",
+            job_name="Bracket",
+            actor="user-1",
+            action="yes_print",
+        )
+
+
+def test_rejects_live_evidence_that_claims_upload_authority() -> None:
+    live = evidence()
+    live["can_upload"] = True
+
+    with pytest.raises(FinalConfirmationPresentationError):
+        show(live)
