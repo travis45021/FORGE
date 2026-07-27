@@ -27,6 +27,38 @@ review, and an updated notice/SBOM record.
 procurement approve a documented commercial alternative. **Status: Open for
 evidence and legal confirmation.**
 
+#### Simplest route
+
+1. Keep MCUT inside the isolated, headless Orca worker rather than making it a
+   FORGE kernel dependency.
+2. Select and document MCUT's GPLv3 option; do not negotiate or ship the
+   commercial option for v1.
+3. Verify whether the pinned worker actually builds and links MCUT, then record
+   the reachable files, notices, source-offer obligations, and SBOM entries.
+4. Keep the worker unable to discover printers, upload, start, or contact cloud
+   services. FORGE remains the only authority-bearing layer.
+5. Have qualified counsel confirm the combined-work, linking, notice, and
+   corresponding-source treatment before import or distribution.
+
+This is the lowest-complexity route because it avoids a second commercial
+license negotiation and keeps one auditable open-source compliance boundary.
+It is not a conclusion that every MCUT use is legally compatible; the build
+reachability and legal review remain required.
+
+#### Long-term FORGE fit
+
+The GPLv3 route does not conflict with FORGE's stated long-term goals of an
+open, inspectable, user-controlled, local-first ecosystem. It supports the
+existing AGPL direction, preserves source availability, and avoids tying core
+capabilities to a vendor contract. The isolation boundary also protects
+FORGE's hardware-neutral kernel and keeps MCUT replaceable.
+
+The commercial route would create more long-term risk: vendor dependency,
+restricted redistribution, a split source/binary story, and possible conflict
+with FORGE's open-ecosystem and corresponding-source commitments. It should be
+considered only if the GPLv3 path fails a documented technical or legal need
+and counsel confirms the resulting boundary.
+
 ### 1.2 Exact FORGE project license
 
 **Owner-confirmed:** GNU `AGPL-3.0-only`. This records the project's chosen
