@@ -1,5 +1,7 @@
 """Tests for one accessible FORGE print interface across every v1 mode."""
 
+from copy import deepcopy
+
 import pytest
 
 from forge.fas.interfaces import INTERFACE_MODES, InterfaceError, InterfaceGateway
@@ -70,4 +72,48 @@ def test_rejects_interface_presentations_that_claim_authority(
     presentation["can_upload"] = True
 
     with pytest.raises(InterfaceError):
+        gateway.print_workflow_screen("confirm_context", presentation)
+
+
+@pytest.mark.parametrize(
+    "secret_field",
+    [
+        "confirmation_token",
+        "final_confirmation_evidence",
+        "private_key",
+        "secret",
+    ],
+)
+def test_rejects_nested_secret_material(
+    gateway: InterfaceGateway,
+    presentation: dict,
+    secret_field: str,
+) -> None:
+    unsafe = deepcopy(presentation)
+    unsafe["details"] = {"nested": {secret_field: "must-not-render"}}
+
+    with pytest.raises(InterfaceError, match="secret material"):
+        gateway.print_workflow_screen("confirm_context", unsafe)
+
+
+def test_rejects_duplicate_workflow_actions(
+    gateway: InterfaceGateway, presentation: dict
+) -> None:
+    presentation["actions"].append(
+        {"id": "confirm_context", "label": "Duplicate confirmation"}
+    )
+
+    with pytest.raises(InterfaceError, match="unique"):
+        gateway.print_workflow_screen("confirm_context", presentation)
+
+
+@pytest.mark.parametrize("field", ["heading", "summary", "accessible_label"])
+def test_rejects_unreadable_required_text(
+    gateway: InterfaceGateway,
+    presentation: dict,
+    field: str,
+) -> None:
+    presentation[field] = " "
+
+    with pytest.raises(InterfaceError, match=field):
         gateway.print_workflow_screen("confirm_context", presentation)

@@ -21,6 +21,12 @@ PRINT_WORKFLOW_SCREENS = {
     "yes_print",
     "print_dispatch_status",
 }
+PRESENTATION_SECRET_FIELDS = {
+    "confirmation_token",
+    "final_confirmation_evidence",
+    "private_key",
+    "secret",
+}
 
 
 class InterfaceGateway:
@@ -203,14 +209,23 @@ class InterfaceGateway:
             raise InterfaceError("print workflow must use plain language")
         if item["can_upload"] is not False or item["can_start_print"] is not False:
             raise InterfaceError("interface presentation cannot grant authority")
+        for field in ("heading", "summary", "accessible_label", "non_color_cue"):
+            if not isinstance(item[field], str) or not item[field].strip():
+                raise InterfaceError(f"print workflow {field} must be readable text")
+        self._reject_presentation_secrets(item)
         actions = item["actions"]
         if not isinstance(actions, list) or any(
             not isinstance(action, Mapping)
-            or not action.get("id")
-            or not action.get("label")
+            or not isinstance(action.get("id"), str)
+            or not action["id"].strip()
+            or not isinstance(action.get("label"), str)
+            or not action["label"].strip()
             for action in actions
         ):
             raise InterfaceError("workflow actions require identifiers and labels")
+        action_ids = [action["id"] for action in actions]
+        if len(action_ids) != len(set(action_ids)):
+            raise InterfaceError("workflow action identifiers must be unique")
         return {
             "schema_version": "1.0.0",
             "interface": "forge",
@@ -306,3 +321,17 @@ class InterfaceGateway:
     def _mode(mode: str) -> None:
         if mode not in INTERFACE_MODES:
             raise InterfaceError("unknown interface mode")
+
+    @classmethod
+    def _reject_presentation_secrets(cls, value: Any) -> None:
+        if isinstance(value, Mapping):
+            exposed = sorted(PRESENTATION_SECRET_FIELDS & value.keys())
+            if exposed:
+                raise InterfaceError(
+                    f"secret material cannot enter presentation: {', '.join(exposed)}"
+                )
+            for nested in value.values():
+                cls._reject_presentation_secrets(nested)
+        elif isinstance(value, list):
+            for nested in value:
+                cls._reject_presentation_secrets(nested)

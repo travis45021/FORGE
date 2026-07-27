@@ -27,5 +27,10 @@ boundary or that simulation evidence is physical proof. Accessibility,
 structured errors, equivalent core workflows, license/source access, privacy,
 and data export are first-release requirements.
 
+The shared interface boundary rejects confirmation tokens, full final-
+confirmation evidence, private keys, and generic secret fields at any nesting
+depth. It also requires readable labels and unique action identifiers before a
+screen can reach any interface mode.
+
 These requirements are contract-only until Gate 1 and the implementation gates
 are complete.
