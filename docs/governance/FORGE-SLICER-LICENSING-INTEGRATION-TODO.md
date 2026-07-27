@@ -145,7 +145,9 @@ release is distributed until the applicable items in this gate are complete.
   path-traversal and malformed-structure tests are implemented; fixture suite
   remains incomplete.
 - [ ] Test worker crashes, timeouts, resource exhaustion, cancellation, and
-  stale context.
+  stale context. Deterministic supervisor fault-injection contracts cover each
+  failure and deny artifact/physical authority; real worker-process tests
+  remain open.
 - [x] Prove that twin evidence cannot authorize production.
 - [x] Prove that historical replay cannot upload or start a print.
 - [x] Prove that no v1 path skips the fourth click for every implemented

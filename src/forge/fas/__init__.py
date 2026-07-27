@@ -49,7 +49,11 @@ from .safety_review import SafetyDesignReview, SafetyReviewError
 from .scheduler import MissionScheduler, SchedulingError
 from .slicer_acceptance import SlicerAcceptanceError, SlicerArtifactAcceptance
 from .slicer_preparation import SlicerMissionPreparation, SlicerPreparationError
-from .slicer_worker import SlicerWorkerBoundary, SlicerWorkerError
+from .slicer_worker import (
+    SlicerWorkerBoundary,
+    SlicerWorkerError,
+    SlicerWorkerSupervisor,
+)
 from .slicing import SlicerContractBoundary, SlicerContractError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 from .thermal_review import ThermalDesignReview, ThermalReviewError
@@ -158,6 +162,7 @@ __all__ = [
     "SlicerPreparationError",
     "SlicerWorkerBoundary",
     "SlicerWorkerError",
+    "SlicerWorkerSupervisor",
     "TestAssuranceError",
     "TestAssuranceService",
     "ThermalDesignReview",
