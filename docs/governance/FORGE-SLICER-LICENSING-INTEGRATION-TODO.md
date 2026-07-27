@@ -124,7 +124,10 @@ release is distributed until the applicable items in this gate are complete.
   profile digests through dispatch. Result schema, preflight, and comparison
   require the exact reviewed engine source and binary-build digests. Acceptance,
   fourth-click, Executive, transport, and Runtime preserve and recheck those
-  engine digests. Real engine artifact evidence remains open.
+  engine digests. The complete paired comparison is canonically hashed after
+  review, and that digest is required through fourth-click dispatch so warnings
+  or evidence cannot change silently. Real engine artifact evidence remains
+  open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

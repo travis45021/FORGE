@@ -11,10 +11,11 @@ from forge.fas.slicer_acceptance import (
     SlicerAcceptanceError,
     SlicerArtifactAcceptance,
 )
+from forge.fas.twin_comparison import comparison_evidence_digest
 
 
 def comparison() -> dict:
-    return {
+    value = {
         "comparison_id": "cmp-1",
         "input_digest": "a" * 64,
         "profile_digest": "b" * 64,
@@ -51,6 +52,8 @@ def comparison() -> dict:
         "pair_preflight_verified": True,
         "can_authorize_production": False,
     }
+    value["evidence_digest"] = comparison_evidence_digest(value)
+    return value
 
 
 class SlicerAcceptanceTests(unittest.TestCase):
@@ -65,6 +68,10 @@ class SlicerAcceptanceTests(unittest.TestCase):
         self.assertEqual(result["profile_digest"], "b" * 64)
         self.assertEqual(result["engine_source_digest"], "c" * 64)
         self.assertEqual(result["engine_build_digest"], "d" * 64)
+        self.assertEqual(
+            result["comparison_evidence_digest"],
+            comparison()["evidence_digest"],
+        )
         self.assertFalse(result["can_upload"])
         self.assertFalse(result["can_start_print"])
 
@@ -90,6 +97,7 @@ class SlicerAcceptanceTests(unittest.TestCase):
     def test_rejects_individually_preflighted_but_unpaired_results(self) -> None:
         value = comparison()
         value["pair_preflight_verified"] = False
+        value["evidence_digest"] = comparison_evidence_digest(value)
         with self.assertRaisesRegex(
             SlicerAcceptanceError, "coordinated production and twin"
         ):
@@ -98,13 +106,21 @@ class SlicerAcceptanceTests(unittest.TestCase):
     def test_rejects_missing_input_or_profile_lineage(self) -> None:
         value = comparison()
         value.pop("profile_digest")
+        value["evidence_digest"] = comparison_evidence_digest(value)
         with self.assertRaisesRegex(SlicerAcceptanceError, "input and profile"):
             self.service.accept(value)
 
     def test_rejects_missing_exact_engine_build_provenance(self) -> None:
         value = comparison()
         value["production"]["engine"].pop("build_digest")
+        value["evidence_digest"] = comparison_evidence_digest(value)
         with self.assertRaisesRegex(SlicerAcceptanceError, "exact engine"):
+            self.service.accept(value)
+
+    def test_rejects_comparison_changed_after_review(self) -> None:
+        value = comparison()
+        value["production"]["artifact_digest"] = "e" * 64
+        with self.assertRaisesRegex(SlicerAcceptanceError, "changed"):
             self.service.accept(value)
 
 

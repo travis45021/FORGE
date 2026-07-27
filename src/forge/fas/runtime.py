@@ -267,6 +267,8 @@ class ForgeRuntime:
             raise RuntimeError("upload handoff requires deterministic preflight")
         if handoff.get("artifact_pair_preflight_verified") is not True:
             raise RuntimeError("upload handoff requires coordinated pair preflight")
+        if not handoff.get("comparison_id"):
+            raise RuntimeError("upload handoff requires reviewed comparison identity")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")
@@ -280,6 +282,7 @@ class ForgeRuntime:
         ):
             raise RuntimeError("upload artifact digest must be lowercase SHA-256")
         for field in (
+            "comparison_evidence_digest",
             "input_digest",
             "profile_digest",
             "engine_source_digest",
@@ -314,6 +317,8 @@ class ForgeRuntime:
             {
                 "job_id": handoff.get("job_id"),
                 "artifact_digest": artifact_digest,
+                "comparison_id": handoff.get("comparison_id"),
+                "comparison_evidence_digest": handoff["comparison_evidence_digest"],
                 "input_digest": handoff["input_digest"],
                 "profile_digest": handoff["profile_digest"],
                 "engine_source_digest": handoff["engine_source_digest"],

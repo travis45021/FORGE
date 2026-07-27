@@ -14,6 +14,7 @@ def inputs() -> dict[str, dict]:
     profile_digest = "c" * 64
     engine_source_digest = "d" * 64
     engine_build_digest = "e" * 64
+    comparison_digest = "f" * 64
     return {
         "mission": {
             "mission_id": "mission:print-1",
@@ -26,6 +27,8 @@ def inputs() -> dict[str, dict]:
                 "profile_digest": profile_digest,
                 "engine_source_digest": engine_source_digest,
                 "engine_build_digest": engine_build_digest,
+                "comparison_id": "comparison-1",
+                "comparison_evidence_digest": comparison_digest,
             },
             "plan": [{"capability_id": "artifact.upload"}],
         },
@@ -39,6 +42,8 @@ def inputs() -> dict[str, dict]:
             "profile_digest": profile_digest,
             "engine_source_digest": engine_source_digest,
             "engine_build_digest": engine_build_digest,
+            "comparison_id": "comparison-1",
+            "comparison_evidence_digest": comparison_digest,
             "final_confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
         },
@@ -48,6 +53,8 @@ def inputs() -> dict[str, dict]:
             "profile_digest": profile_digest,
             "engine_source_digest": engine_source_digest,
             "engine_build_digest": engine_build_digest,
+            "comparison_id": "comparison-1",
+            "comparison_evidence_digest": comparison_digest,
             "ready_for_live_checks": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,
@@ -83,6 +90,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
     assert request["payload"]["profile_digest"] == "c" * 64
     assert request["payload"]["engine_source_digest"] == "d" * 64
     assert request["payload"]["engine_build_digest"] == "e" * 64
+    assert request["payload"]["comparison_evidence_digest"] == "f" * 64
     assert "confirmation_token" not in request["payload"]
 
 
@@ -93,6 +101,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
         ("job", "artifact_digest", "b" * 64),
         ("job", "profile_digest", "d" * 64),
         ("job", "engine_build_digest", "f" * 64),
+        ("job", "comparison_evidence_digest", "a" * 64),
         ("acceptance", "can_upload", True),
         ("acceptance", "preflight_verified", False),
         ("acceptance", "pair_preflight_verified", False),

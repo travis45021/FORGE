@@ -18,6 +18,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
         self.profile_digest = "c" * 64
         self.engine_source_digest = "d" * 64
         self.engine_build_digest = "e" * 64
+        self.comparison_digest = "f" * 64
         self.lifecycle.create(
             {
                 "job_id": "job-1",
@@ -27,6 +28,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
                 "profile_digest": self.profile_digest,
                 "engine_source_digest": self.engine_source_digest,
                 "engine_build_digest": self.engine_build_digest,
+                "comparison_id": "comparison-1",
+                "comparison_evidence_digest": self.comparison_digest,
                 "provider_id": "provider-1",
                 "state": "draft",
                 "preflight_passed": True,
@@ -43,6 +46,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "profile_digest": self.profile_digest,
             "engine_source_digest": self.engine_source_digest,
             "engine_build_digest": self.engine_build_digest,
+            "comparison_id": "comparison-1",
+            "comparison_evidence_digest": self.comparison_digest,
             "final_confirmation_required": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,

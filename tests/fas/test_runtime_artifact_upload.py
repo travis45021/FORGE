@@ -52,6 +52,8 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "profile_digest": "c" * 64,
             "engine_source_digest": "d" * 64,
             "engine_build_digest": "e" * 64,
+            "comparison_id": "comparison-1",
+            "comparison_evidence_digest": "f" * 64,
             "confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
@@ -82,6 +84,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["input_digest"], "b" * 64)
         self.assertEqual(result["profile_digest"], "c" * 64)
         self.assertEqual(result["engine_build_digest"], "e" * 64)
+        self.assertEqual(result["comparison_evidence_digest"], "f" * 64)
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
@@ -131,6 +134,11 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
     def test_rejects_handoff_without_engine_source_provenance(self) -> None:
         self.handoff.pop("engine_source_digest")
         with self.assertRaisesRegex(RuntimeError, "engine source digest"):
+            self.dispatch()
+
+    def test_rejects_handoff_without_reviewed_comparison(self) -> None:
+        self.handoff.pop("comparison_id")
+        with self.assertRaisesRegex(RuntimeError, "comparison identity"):
             self.dispatch()
 
 

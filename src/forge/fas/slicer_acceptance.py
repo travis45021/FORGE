@@ -6,6 +6,8 @@ from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any
 
+from .twin_comparison import comparison_evidence_digest
+
 
 class SlicerAcceptanceError(ValueError):
     """Raised when slicer evidence is not ready for the final user gate."""
@@ -16,6 +18,14 @@ class SlicerArtifactAcceptance:
 
     def accept(self, comparison: Mapping[str, Any]) -> dict[str, Any]:
         item = deepcopy(dict(comparison))
+        evidence_digest = item.get("evidence_digest")
+        if (
+            not self._digest(evidence_digest)
+            or comparison_evidence_digest(item) != evidence_digest
+        ):
+            raise SlicerAcceptanceError(
+                "comparison evidence changed after paired verification"
+            )
         if item.get("can_authorize_production") is not False:
             raise SlicerAcceptanceError("comparison evidence must be non-authoritative")
         production = item.get("production")
@@ -73,6 +83,7 @@ class SlicerArtifactAcceptance:
             raise SlicerAcceptanceError("user review is required")
         return {
             "comparison_id": item.get("comparison_id"),
+            "comparison_evidence_digest": evidence_digest,
             "artifact_digest": artifact_digest,
             "input_digest": input_digest,
             "profile_digest": profile_digest,

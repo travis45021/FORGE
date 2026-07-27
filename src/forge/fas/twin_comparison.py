@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
+from copy import deepcopy
+from hashlib import sha256
 from typing import Any
 
 from .slicing import SlicerContractBoundary, SlicerContractError
@@ -10,6 +13,19 @@ from .slicing import SlicerContractBoundary, SlicerContractError
 
 class TwinComparisonError(ValueError):
     """Raised when production and twin evidence cannot be safely compared."""
+
+
+def comparison_evidence_digest(value: Mapping[str, Any]) -> str:
+    """Hash the complete comparison so later review cannot change silently."""
+    item = deepcopy(dict(value))
+    item.pop("evidence_digest", None)
+    canonical = json.dumps(
+        item,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return sha256(canonical).hexdigest()
 
 
 class TwinComparisonService:
@@ -138,6 +154,7 @@ class TwinComparisonService:
         result["profile_digest"] = pair.get("profile_digest")
         result["pair_preflight_verified"] = True
         result["acceptance"]["pair_preflight_required"] = True
+        result["evidence_digest"] = comparison_evidence_digest(result)
         return result
 
     @staticmethod

@@ -153,6 +153,8 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "profile_digest": acceptance["profile_digest"],
                 "engine_source_digest": acceptance["engine_source_digest"],
                 "engine_build_digest": acceptance["engine_build_digest"],
+                "comparison_id": acceptance["comparison_id"],
+                "comparison_evidence_digest": acceptance["comparison_evidence_digest"],
                 "provider_id": "provider:custom",
                 "state": "draft",
                 "preflight_passed": True,

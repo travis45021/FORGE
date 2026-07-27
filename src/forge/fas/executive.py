@@ -89,6 +89,7 @@ class ForgeExecutive:
         profile_digest = acceptance.get("profile_digest")
         engine_source_digest = acceptance.get("engine_source_digest")
         engine_build_digest = acceptance.get("engine_build_digest")
+        comparison_evidence_digest = acceptance.get("comparison_evidence_digest")
         if not all(
             self._digest(value)
             for value in (
@@ -96,6 +97,7 @@ class ForgeExecutive:
                 profile_digest,
                 engine_source_digest,
                 engine_build_digest,
+                comparison_evidence_digest,
             )
         ):
             raise ExecutiveError("accepted artifact lineage is invalid")
@@ -103,6 +105,12 @@ class ForgeExecutive:
             raise ExecutiveError("job has not passed the fourth-click gate")
         if job.get("artifact_digest") != artifact_digest:
             raise ExecutiveError("job and accepted artifact do not match")
+        if (
+            not acceptance.get("comparison_id")
+            or job.get("comparison_id") != acceptance.get("comparison_id")
+            or job.get("comparison_evidence_digest") != comparison_evidence_digest
+        ):
+            raise ExecutiveError("job and reviewed comparison do not match")
         if (
             job.get("input_digest") != input_digest
             or job.get("profile_digest") != profile_digest
@@ -128,6 +136,8 @@ class ForgeExecutive:
             or context.get("profile_digest") != profile_digest
             or context.get("engine_source_digest") != engine_source_digest
             or context.get("engine_build_digest") != engine_build_digest
+            or context.get("comparison_id") != acceptance.get("comparison_id")
+            or context.get("comparison_evidence_digest") != comparison_evidence_digest
         ):
             raise ExecutiveError("Mission context does not match the confirmed job")
 
@@ -140,6 +150,8 @@ class ForgeExecutive:
                 "profile_digest": profile_digest,
                 "engine_source_digest": engine_source_digest,
                 "engine_build_digest": engine_build_digest,
+                "comparison_id": acceptance["comparison_id"],
+                "comparison_evidence_digest": comparison_evidence_digest,
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
                 "artifact_preflight_verified": True,

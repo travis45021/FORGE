@@ -175,6 +175,8 @@ class HardwareTransportRegistry:
             raise TransportError("deterministic artifact preflight is required")
         if item.get("artifact_pair_preflight_verified") is not True:
             raise TransportError("coordinated pair preflight is required")
+        if not item.get("comparison_id"):
+            raise TransportError("reviewed comparison identity is required")
         confirmation_token = item.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise TransportError("fresh final-confirmation token is required")
@@ -186,6 +188,7 @@ class HardwareTransportRegistry:
         ):
             raise TransportError("job artifact digest must be lowercase SHA-256")
         for field in (
+            "comparison_evidence_digest",
             "input_digest",
             "profile_digest",
             "engine_source_digest",
@@ -206,6 +209,8 @@ class HardwareTransportRegistry:
             "provider_id": provider_id,
             "job_id": item["job_id"],
             "artifact_digest": artifact_digest,
+            "comparison_id": item.get("comparison_id"),
+            "comparison_evidence_digest": item["comparison_evidence_digest"],
             "input_digest": item["input_digest"],
             "profile_digest": item["profile_digest"],
             "engine_source_digest": item["engine_source_digest"],

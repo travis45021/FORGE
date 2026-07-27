@@ -100,6 +100,7 @@ def test_paired_preflight_proof_is_carried_into_comparison() -> None:
     assert result["pair_preflight_verified"] is True
     assert result["acceptance"]["pair_preflight_required"] is True
     assert result["profile_digest"] == "e" * 64
+    assert len(result["evidence_digest"]) == 64
     assert result["can_authorize_production"] is False
 
 
