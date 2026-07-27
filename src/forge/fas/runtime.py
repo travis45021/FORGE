@@ -365,6 +365,8 @@ class ForgeRuntime:
             raise RuntimeError("provider dispatch checks are incomplete")
         if any(provider_checks[name] is not True for name in provider_checks):
             raise RuntimeError("provider dispatch checks did not all pass")
+        if command_expires_at > provider_expires_at:
+            raise RuntimeError("upload command cannot outlive provider evidence")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")

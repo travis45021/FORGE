@@ -147,7 +147,8 @@ release is distributed until the applicable items in this gate are complete.
   those two evidence expiries. Final provider health, state, and capability
   checks are represented by hashed, non-authoritative evidence bound to the
   exact provider, Runtime context, and upload capability, with a maximum
-  thirty-second lifetime.
+  thirty-second lifetime. Runtime commands cannot outlive this provider
+  evidence either.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

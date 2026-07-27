@@ -93,7 +93,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             self.handoff,
             command_id="command:upload-1",
             resource_ids=self.context["reserved_resources"],
-            expires_at="2026-07-25T21:01:00Z",
+            expires_at="2026-07-25T21:00:20Z",
             evaluated_at="2026-07-25T21:00:00Z",
             provider_evidence=self.provider_evidence(),
         )
@@ -215,6 +215,18 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
                 expires_at="2026-07-25T21:01:00Z",
                 evaluated_at="2026-07-25T21:00:00Z",
                 provider_evidence=provider,
+            )
+
+    def test_rejects_command_that_outlives_provider_evidence(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "outlive provider"):
+            self.runtime.dispatch_artifact_upload(
+                self.context["context_id"],
+                self.handoff,
+                command_id="command:provider-window",
+                resource_ids=self.context["reserved_resources"],
+                expires_at="2026-07-25T21:00:21Z",
+                evaluated_at="2026-07-25T21:00:00Z",
+                provider_evidence=self.provider_evidence(),
             )
 
     def test_rejects_duplicate_live_handoff(self) -> None:
