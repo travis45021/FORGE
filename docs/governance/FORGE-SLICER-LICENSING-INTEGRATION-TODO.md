@@ -155,8 +155,8 @@ release is distributed until the applicable items in this gate are complete.
   contract path.
 - [ ] Verify that shipped binaries correspond to the published complete source.
 - [ ] Pass FAS-025 release assurance and the licensing compliance checks.
-- [ ] Document supported upstream version, known limitations, rollback, and
-  recovery.
+- [x] Document supported upstream version, known limitations, rollback, and
+  recovery (`docs/releases/README-SLICER-INTEGRATION-v1.md`).
 
 ## Canonical sequencing
 
