@@ -55,7 +55,10 @@ release is distributed until the applicable items in this gate are complete.
   publication (`docs/compliance/LEGAL-REVIEW-RECORD.md`).
 - [ ] Add automated release checks for license texts, notices, source match,
   excluded components, and SBOM completeness. A contract-only baseline check
-  exists at `scripts/check_gate1.py`; it does not close Gate 1.
+  exists at `scripts/check_gate1.py`; it verifies committed license bytes,
+  pin/digest consistency, policy disclosures, unresolved exclusion/legal state,
+  and preliminary SBOM structure. Build/source matching, exclusion proof, and
+  final SBOM completeness remain open.
 
 ## Gate 2 - Upstream engineering spike
 
