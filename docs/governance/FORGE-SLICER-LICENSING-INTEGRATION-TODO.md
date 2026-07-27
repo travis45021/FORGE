@@ -98,7 +98,10 @@ release is distributed until the applicable items in this gate are complete.
 ## Gate 4 - Governed integration
 
 - [ ] Build the adapter from verified FORGE Objects and configuration to an
-  ephemeral Orca worker profile.
+  ephemeral Orca worker profile. A deterministic hardware-neutral adapter now
+  derives data-only ephemeral profiles and rejects unknowns, endpoints,
+  credentials, cloud, and capability mismatch; real Orca profile translation
+  remains open.
 - [ ] Run the production and twin contexts with separate workspaces, inputs,
   outputs, logs, resource limits, and cancellation. Manifest isolation and
   resource validation are implemented; real worker execution remains open.

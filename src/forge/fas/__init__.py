@@ -49,6 +49,7 @@ from .safety_review import SafetyDesignReview, SafetyReviewError
 from .scheduler import MissionScheduler, SchedulingError
 from .slicer_acceptance import SlicerAcceptanceError, SlicerArtifactAcceptance
 from .slicer_preparation import SlicerMissionPreparation, SlicerPreparationError
+from .slicer_profile import SlicerProfileAdapter, SlicerProfileError
 from .slicer_worker import (
     SlicerWorkerBoundary,
     SlicerWorkerError,
@@ -160,6 +161,8 @@ __all__ = [
     "SlicerContractError",
     "SlicerMissionPreparation",
     "SlicerPreparationError",
+    "SlicerProfileAdapter",
+    "SlicerProfileError",
     "SlicerWorkerBoundary",
     "SlicerWorkerError",
     "SlicerWorkerSupervisor",
