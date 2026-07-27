@@ -72,6 +72,8 @@ class ForgeExecutive:
         """Bind accepted evidence and the fourth click to an Executive request."""
         if acceptance.get("ready_for_live_checks") is not True:
             raise ExecutiveError("slicer artifact is not accepted")
+        if acceptance.get("preflight_verified") is not True:
+            raise ExecutiveError("slicer acceptance lacks deterministic preflight")
         if (
             acceptance.get("final_confirmation_required") is not True
             or acceptance.get("can_upload") is not False
@@ -109,6 +111,7 @@ class ForgeExecutive:
                 "artifact_digest": artifact_digest,
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
+                "artifact_preflight_verified": True,
                 "physical_dispatch_allowed": False,
                 "requires_runtime_dispatcher": True,
             }

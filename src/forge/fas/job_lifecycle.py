@@ -135,6 +135,10 @@ class PrintJobLifecycle:
             raise JobLifecycleError("accepted slicer artifact does not match the job")
         if acceptance.get("final_confirmation_required") is not True:
             raise JobLifecycleError("slicer acceptance must require final confirmation")
+        if acceptance.get("preflight_verified") is not True:
+            raise JobLifecycleError(
+                "slicer acceptance must include deterministic preflight"
+            )
         if (
             acceptance.get("can_upload") is not False
             or acceptance.get("can_start_print") is not False

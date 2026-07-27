@@ -32,6 +32,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
         self.acceptance = {
             "artifact_digest": self.digest,
             "final_confirmation_required": True,
+            "preflight_verified": True,
             "can_upload": False,
             "can_start_print": False,
         }
@@ -65,6 +66,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
 
     def test_rejects_failed_live_checks(self) -> None:
         self.live["passed"] = False
+        with self.assertRaises(JobLifecycleError):
+            self.confirm()
+
+    def test_rejects_acceptance_without_preflight(self) -> None:
+        self.acceptance["preflight_verified"] = False
         with self.assertRaises(JobLifecycleError):
             self.confirm()
 
