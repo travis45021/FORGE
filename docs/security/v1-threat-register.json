@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0.0",
+  "scope": "FORGE v1 local baseline",
+  "status": "incomplete",
+  "security_gate_passed": false,
+  "release_authorized": false,
+  "threats": [
+    {
+      "threat_id": "FORGE-THREAT-001",
+      "asset": "local filesystem and import worker",
+      "boundary": "untrusted STEP or 3MF input",
+      "scenario": "A hostile model attempts path traversal, entity expansion, decompression exhaustion, binary injection, or malformed-structure abuse.",
+      "impact": "high",
+      "status": "partially_controlled",
+      "controls": [
+        "quarantine assessment",
+        "archive path and link rejection",
+        "compression and size limits",
+        "XML entity and DOCTYPE rejection",
+        "STEP structure and text limits"
+      ],
+      "evidence_refs": [
+        "tests/fas/test_import_hostile_fixtures.py",
+        "tests/fas/test_import_quarantine.py"
+      ],
+      "residual_risk": "The real engine worker and reviewed geometry fixtures are not yet exercised.",
+      "release_blocking": true
+    },
+    {
+      "threat_id": "FORGE-THREAT-002",
+      "asset": "printer control authority",
+      "boundary": "local interface to Executive",
+      "scenario": "A client attempts to bypass governed actions with a raw hardware command hidden in request parameters.",
+      "impact": "critical",
+      "status": "controlled",
+      "controls": [
+        "recursive raw-hardware key rejection",
+        "strict request fields",
+        "Executive-only request path"
+      ],
+      "evidence_refs": [
+        "tests/fas/test_fas_024_interfaces.py",
+        "schemas/fas/interface-request.schema.json"
+      ],
+      "residual_risk": "Future provider APIs require the same boundary review.",
+      "release_blocking": false
+    },
+    {
+      "threat_id": "FORGE-THREAT-003",
+      "asset": "fourth-click user authority",
+      "boundary": "final confirmation to controlled upload",
+      "scenario": "A stale, replayed, transplanted, or missing confirmation token is used to dispatch an artifact.",
+      "impact": "critical",
+      "status": "controlled",
+      "controls": [
+        "artifact-bound confirmation evidence",
+        "ten-minute maximum validity",
+        "single-use token consumption",
+        "live-check and click-three ordering"
+      ],
+      "evidence_refs": [
+        "tests/fas/test_controlled_upload.py",
+        "tests/fas/test_print_dispatch_coordinator.py"
+      ],
+      "residual_risk": "Real provider integration and hardware tests remain required.",
+      "release_blocking": false
+    },
+    {
+      "threat_id": "FORGE-THREAT-004",
+      "asset": "confirmation secrets and local identity material",
+      "boundary": "core services to user presentation",
+      "scenario": "Secret confirmation material or private keys leak through a nested presentation payload.",
+      "impact": "high",
+      "status": "controlled",
+      "controls": [
+        "minimized upload evidence",
+        "recursive presentation-secret rejection",
+        "dispatch presentation schema"
+      ],
+      "evidence_refs": [
+        "tests/fas/test_print_interface_parity.py",
+        "tests/fas/test_dispatch_presentation.py"
+      ],
+      "residual_risk": "Application rendering must preserve the same contract.",
+      "release_blocking": false
+    },
+    {
+      "threat_id": "FORGE-THREAT-005",
+      "asset": "user understanding and physical safety",
+      "boundary": "provider dispatch result to user interface",
+      "scenario": "An upload command is misrepresented as printer receipt, print start, or confirmed physical outcome.",
+      "impact": "critical",
+      "status": "controlled",
+      "controls": [
+        "honest dispatch status model",
+        "false receipt and start defaults",
+        "disabled start control"
+      ],
+      "evidence_refs": [
+        "tests/fas/test_dispatch_presentation.py",
+        "schemas/fas/dispatch-status-presentation.schema.json"
+      ],
+      "residual_risk": "Real provider receipts require authenticated adapter evidence.",
+      "release_blocking": false
+    },
+    {
+      "threat_id": "FORGE-THREAT-006",
+      "asset": "slicer integrity and local host",
+      "boundary": "FORGE to future Orca worker process",
+      "scenario": "A compromised or malformed slicer worker exceeds resource limits, writes outside its workspace, or returns fabricated lineage.",
+      "impact": "critical",
+      "status": "open",
+      "controls": [
+        "specified worker boundary",
+        "supervisor fault-injection contracts",
+        "digest-bound result contract"
+      ],
+      "evidence_refs": [
+        "docs/architecture/SLICER-WORKER-BOUNDARY.md",
+        "tests/fas/test_slicer_worker_faults.py"
+      ],
+      "residual_risk": "Real process isolation, resource enforcement, and reviewed Orca execution are not implemented.",
+      "release_blocking": true
+    },
+    {
+      "threat_id": "FORGE-THREAT-007",
+      "asset": "release artifacts and dependency chain",
+      "boundary": "source repository to installed package",
+      "scenario": "A substituted package or compromised dependency differs from the reviewed source.",
+      "impact": "high",
+      "status": "partially_controlled",
+      "controls": [
+        "immutable CI actions",
+        "wheel-to-source byte comparison",
+        "dependency health check"
+      ],
+      "evidence_refs": [
+        "scripts/verify_wheel_source.py",
+        ".github/workflows/ci.yml"
+      ],
+      "residual_risk": "Complete source, locked dependency, SBOM, signing, and Orca artifact evidence remain open.",
+      "release_blocking": true
+    },
+    {
+      "threat_id": "FORGE-THREAT-008",
+      "asset": "printer, material, work area, and people",
+      "boundary": "capability provider to physical hardware",
+      "scenario": "Declared capabilities or live state do not match the connected custom printer.",
+      "impact": "critical",
+      "status": "open",
+      "controls": [
+        "capability-first contracts",
+        "plain-language unavailable-capability reasons",
+        "mandatory live checks",
+        "bounded hardware-test specification"
+      ],
+      "evidence_refs": [
+        "tests/fas/test_capability_resolution_explanation.py",
+        "tests/fas/test_live_printer_checks.py"
+      ],
+      "residual_risk": "Independent hardware-in-the-loop evidence is not yet recorded.",
+      "release_blocking": true
+    }
+  ]
+}

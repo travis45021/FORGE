@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/security-threat-register.schema.json",
+  "title": "FORGE v1 Security Threat Register",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "scope",
+    "status",
+    "security_gate_passed",
+    "release_authorized",
+    "threats"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "scope": {"const": "FORGE v1 local baseline"},
+    "status": {"enum": ["incomplete", "review_ready", "reviewed"]},
+    "security_gate_passed": {"type": "boolean"},
+    "release_authorized": {"const": false},
+    "threats": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "threat_id",
+          "asset",
+          "boundary",
+          "scenario",
+          "impact",
+          "status",
+          "controls",
+          "evidence_refs",
+          "residual_risk",
+          "release_blocking"
+        ],
+        "properties": {
+          "threat_id": {
+            "type": "string",
+            "pattern": "^FORGE-THREAT-[0-9]{3}$"
+          },
+          "asset": {"type": "string", "minLength": 1},
+          "boundary": {"type": "string", "minLength": 1},
+          "scenario": {"type": "string", "minLength": 1},
+          "impact": {"enum": ["low", "medium", "high", "critical"]},
+          "status": {
+            "enum": ["controlled", "partially_controlled", "open"]
+          },
+          "controls": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "evidence_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "residual_risk": {"type": "string", "minLength": 1},
+          "release_blocking": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

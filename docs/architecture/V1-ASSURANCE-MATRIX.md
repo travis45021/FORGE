@@ -11,6 +11,7 @@ Status: Planned evidence matrix; execution remains open
 | Four-click authority | UI, API, automation, and recovery-path scenarios | No path skips the final **Yes, Print** action |
 | Hardware neutrality | Known, custom, unavailable, unhealthy, untrusted, and mismatched capability scenarios | The reference registry returns plain-language, capability-first limits and safe next steps without a brand allowlist |
 | Release integrity | Notices, source match, SBOM, excluded components, signatures | CI verifies wheel Python byte-for-byte against published source; the complete release evidence set remains open |
+| Security threat model | Threat register, control evidence, residual risks, worker/dependency/hardware boundaries | The fail-closed v1 register is implemented; open worker, dependency, and hardware threats keep the security gate false |
 | Accessibility | Equivalent keyboard, assistive, and plain-language workflows | Core workflow remains usable without hidden bypasses |
 
 The matrix is a planning artifact. Passing individual tests cannot close Gate 1
