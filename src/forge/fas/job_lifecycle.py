@@ -111,6 +111,9 @@ class PrintJobLifecycle:
         missing = sorted(required - item.keys())
         if missing:
             raise JobLifecycleError(f"job missing: {', '.join(missing)}")
+        for field in ("job_id", "artifact_id", "provider_id"):
+            if not isinstance(item[field], str) or not item[field].strip():
+                raise JobLifecycleError(f"job {field} must be a non-empty string")
         if item["job_id"] in self._jobs or item["state"] != "draft":
             raise JobLifecycleError("job identity or initial state is invalid")
         if item["click_count"] != 0:
@@ -121,7 +124,11 @@ class PrintJobLifecycle:
 
     def click(self, job_id: str, *, action: str, actor: str) -> dict[str, Any]:
         job = self._require(job_id)
-        if action not in {"upload", "configure", "review"} or not actor:
+        if (
+            action not in {"upload", "configure", "review"}
+            or not isinstance(actor, str)
+            or not actor.strip()
+        ):
             raise JobLifecycleError(
                 "preparation click requires a named actor and valid action"
             )
@@ -164,7 +171,8 @@ class PrintJobLifecycle:
                 "final confirmation requires exactly three preparation clicks"
             )
         if (
-            not actor
+            not isinstance(actor, str)
+            or not actor.strip()
             or not confirmed_at
             or confirmation is not True
             or live_checks_passed is not True
@@ -176,7 +184,7 @@ class PrintJobLifecycle:
         job.update(
             {
                 "state": "upload_pending",
-                "final_confirmed_by": actor,
+                "final_confirmed_by": actor.strip(),
                 "final_confirmed_at": confirmed_at,
                 "confirmation_expires_at": confirmation_expires_at,
                 "confirmation_token": token_urlsafe(32),

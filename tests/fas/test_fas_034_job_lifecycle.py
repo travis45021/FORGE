@@ -104,6 +104,14 @@ class Fas034JobLifecycleTests(unittest.TestCase):
                 authorization_verified=True,
             )
 
+    def test_job_identity_and_click_actor_must_be_non_empty_strings(self):
+        invalid = dict(self.job)
+        invalid["provider_id"] = " "
+        with self.assertRaisesRegex(JobLifecycleError, "provider_id"):
+            PrintJobLifecycle().create(invalid)
+        with self.assertRaisesRegex(JobLifecycleError, "actor"):
+            self.service.click("job:001", action="review", actor=" ")
+
 
 if __name__ == "__main__":
     unittest.main()
