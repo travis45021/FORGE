@@ -254,6 +254,70 @@ class SlicerWorkerSupervisor:
             "can_control_hardware": False,
         }
 
+    def assess_pair(
+        self,
+        assignment: Mapping[str, Any],
+        *,
+        production: Mapping[str, Any],
+        twin: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Fail the whole pair when either isolated worker is not successful."""
+        pair = dict(assignment)
+        if (
+            pair.get("workspaces_isolated") is not True
+            or pair.get("same_engine_build") is not True
+            or pair.get("same_input") is not True
+            or pair.get("same_profile") is not True
+            or pair.get("can_control_hardware") is not False
+            or pair.get("can_upload") is not False
+            or pair.get("can_start_print") is not False
+        ):
+            raise SlicerWorkerError("worker pair assignment is not trusted")
+        production_item = self._pair_outcome(
+            production, pair.get("production"), "production"
+        )
+        twin_item = self._pair_outcome(twin, pair.get("twin"), "twin")
+        succeeded = (
+            production_item["status"] == "succeeded"
+            and twin_item["status"] == "succeeded"
+        )
+        return {
+            "schema_version": "1.0.0",
+            "engine": deepcopy(pair.get("engine")),
+            "input_digest": pair.get("input_digest"),
+            "profile_digest": pair.get("profile_digest"),
+            "status": "ready_for_preflight" if succeeded else "failed_closed",
+            "production": deepcopy(production_item),
+            "twin": deepcopy(twin_item),
+            "cancel_remaining_worker": not succeeded,
+            "artifacts_eligible_for_preflight": succeeded,
+            "retry_requires_fresh_pair": not succeeded,
+            "can_compare": succeeded,
+            "can_upload": False,
+            "can_start_print": False,
+            "can_control_hardware": False,
+        }
+
+    @staticmethod
+    def _pair_outcome(
+        outcome: Mapping[str, Any],
+        assigned: Any,
+        context: str,
+    ) -> dict[str, Any]:
+        if not isinstance(assigned, Mapping):
+            raise SlicerWorkerError(f"{context} worker assignment is missing")
+        item = dict(outcome)
+        if (
+            item.get("worker_id") != assigned.get("worker_id")
+            or item.get("context") != context
+            or item.get("can_upload") is not False
+            or item.get("can_start_print") is not False
+            or item.get("can_control_hardware") is not False
+            or item.get("status") not in {"succeeded", "failed_closed"}
+        ):
+            raise SlicerWorkerError(f"{context} worker outcome is invalid")
+        return item
+
     @staticmethod
     def _digest(value: Any) -> None:
         if (
