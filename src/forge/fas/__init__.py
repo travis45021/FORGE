@@ -4,6 +4,7 @@ from .assurance import AssuranceError, AssuranceService, context_fingerprint
 from .authorization import AuthorizationEngine, EvaluationError
 from .capabilities import CapabilityError, CapabilityRegistry
 from .configuration import ConfigurationError, ConfigurationManager
+from .context_presentation import ContextPresentationError, PrintContextPresenter
 from .design_review import DesignReviewError, MotionDesignReview
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
@@ -81,6 +82,7 @@ __all__ = [
     "CapabilityRegistry",
     "ConfigurationError",
     "ConfigurationManager",
+    "ContextPresentationError",
     "DataRecoveryService",
     "DesignReviewError",
     "EvaluationError",
@@ -126,6 +128,7 @@ __all__ = [
     "PolicyBundleError",
     "PolicyBundleRegistry",
     "PreflightError",
+    "PrintContextPresenter",
     "PrintJobLifecycle",
     "ReleaseGate",
     "ReleaseGateError",

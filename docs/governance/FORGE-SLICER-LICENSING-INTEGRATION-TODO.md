@@ -117,7 +117,8 @@ release is distributed until the applicable items in this gate are complete.
   A presentation-neutral, accessible status and user-resolution contract is
   implemented; application rendering remains open.
 - [ ] Show inferred printer, material, process, and safety context before click
-  two.
+  two. A plain-language, accessible, fail-closed click-two presentation and
+  confirmation contract is implemented; application rendering remains open.
 - [ ] Show verification, twin comparison, warnings, and limitations before
   click three.
 - [ ] Show live printer checks and the mandatory **Yes, Print** action before
