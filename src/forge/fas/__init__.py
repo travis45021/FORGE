@@ -44,6 +44,7 @@ from .trust import (
     development_hmac_verifier,
     payload_digest,
 )
+from .twin_comparison import TwinComparisonError, TwinComparisonService
 from .updates import UpdateError, UpdateManager
 from .vision_review import VisionDesignReview, VisionReviewError
 
@@ -118,6 +119,8 @@ __all__ = [
     "TransportError",
     "TrustError",
     "TrustService",
+    "TwinComparisonError",
+    "TwinComparisonService",
     "UpdateError",
     "UpdateManager",
     "VisionDesignReview",
