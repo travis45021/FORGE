@@ -10,7 +10,7 @@ Status: Planned evidence matrix; execution remains open
 | Twin separation | Twin output, replay, and comparison attempts | No twin or replay path grants production authority |
 | Four-click authority | UI, API, automation, and recovery-path scenarios | No path skips the final **Yes, Print** action |
 | Hardware neutrality | Known, custom, unavailable, and mismatched capability scenarios | Users receive plain-language limits and safe next steps |
-| Release integrity | Notices, source match, SBOM, excluded components, signatures | Shipped artifacts match reviewed evidence |
+| Release integrity | Notices, source match, SBOM, excluded components, signatures | CI verifies wheel Python byte-for-byte against published source; the complete release evidence set remains open |
 | Accessibility | Equivalent keyboard, assistive, and plain-language workflows | Core workflow remains usable without hidden bypasses |
 
 The matrix is a planning artifact. Passing individual tests cannot close Gate 1

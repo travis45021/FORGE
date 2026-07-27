@@ -214,6 +214,10 @@ release is distributed until the applicable items in this gate are complete.
 - [x] Prove that no v1 path skips the fourth click for every implemented
   contract path.
 - [ ] Verify that shipped binaries correspond to the published complete source.
+  CI now compares every Python module in the built wheel byte-for-byte against
+  `src/forge` and rejects missing, extra, or changed modules. Complete release
+  contents, Orca artifacts, notices, SBOM, exclusions, and signatures remain
+  open.
 - [ ] Pass FAS-025 release assurance and the licensing compliance checks.
 - [x] Document supported upstream version, known limitations, rollback, and
   recovery (`docs/releases/README-SLICER-INTEGRATION-v1.md`).
