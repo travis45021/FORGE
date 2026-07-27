@@ -17,6 +17,7 @@ class SlicerBoundaryTests(unittest.TestCase):
     def test_accepts_supported_request(self) -> None:
         request = self.boundary.request(
             {
+                "contract_version": "1.0",
                 "request_id": "req-1",
                 "input": {"format": "3mf", "digest": "a" * 64, "path": "in/part.3mf"},
                 "context": "twin",
@@ -33,6 +34,7 @@ class SlicerBoundaryTests(unittest.TestCase):
         with self.assertRaises(SlicerContractError):
             self.boundary.request(
                 {
+                    "contract_version": "1.0",
                     "request_id": "req-1",
                     "input": {"format": "f3d", "digest": "a" * 64, "path": "part.f3d"},
                     "context": "production",
@@ -48,6 +50,7 @@ class SlicerBoundaryTests(unittest.TestCase):
         with self.assertRaises(SlicerContractError):
             self.boundary.result(
                 {
+                    "contract_version": "1.0",
                     "request_id": "req-1",
                     "status": "succeeded",
                     "context": "production",

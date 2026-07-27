@@ -76,8 +76,8 @@ release is distributed until the applicable items in this gate are complete.
   Quarantine assessment, structural checks, digesting, and 3MF path-traversal
   rejection are implemented; full normalization/parsing remains open.
 - [x] Define the Manufacturing Intent object and loss/ambiguity reporting.
-- [ ] Define versioned slicer request, result, warning, and failure contracts.
-- [ ] Record source digest, engine build, derived profile digest, context,
+- [x] Define versioned slicer request, result, warning, and failure contracts.
+- [x] Record source digest, engine build, derived profile digest, context,
   settings, warnings, and output digest for reproducibility.
 - [x] Specify production-versus-twin comparison evidence and acceptance rules.
 - [x] Implement the four-click state machine:
@@ -133,7 +133,8 @@ release is distributed until the applicable items in this gate are complete.
   stale context.
 - [x] Prove that twin evidence cannot authorize production.
 - [ ] Prove that historical replay cannot upload or start a print.
-- [x] Prove that no implemented v1 contract path skips the fourth click.
+- [x] Prove that no v1 path skips the fourth click for every implemented
+  contract path.
 - [ ] Verify that shipped binaries correspond to the published complete source.
 - [ ] Pass FAS-025 release assurance and the licensing compliance checks.
 - [ ] Document supported upstream version, known limitations, rollback, and

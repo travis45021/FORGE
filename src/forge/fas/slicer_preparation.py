@@ -49,6 +49,7 @@ class SlicerMissionPreparation:
             raise SlicerPreparationError("assessment and intent source digests differ")
 
         request = {
+            "contract_version": "1.0",
             "request_id": request_id,
             "input": {
                 "format": assessment["format"],

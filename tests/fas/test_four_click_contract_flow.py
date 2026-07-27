@@ -58,6 +58,7 @@ class FourClickContractFlowTests(unittest.TestCase):
 
         def result(request: dict) -> dict:
             return {
+                "contract_version": "1.0",
                 "request_id": request["request_id"],
                 "status": "succeeded",
                 "context": request["context"],

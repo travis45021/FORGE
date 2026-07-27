@@ -1,13 +1,14 @@
 """Validation coverage for the contract-only Gate 3 slicer schemas."""
 
 import json
-from pathlib import Path
 import unittest
+from pathlib import Path
 
 try:
-    from jsonschema import Draft202012Validator
+    from jsonschema import Draft202012Validator, ValidationError
 except ImportError:  # pragma: no cover - optional validation dependency
     Draft202012Validator = None
+    ValidationError = Exception
 
 
 ROOT = Path(__file__).parents[2]
@@ -31,6 +32,7 @@ class SlicerContractTests(unittest.TestCase):
     def test_result_cannot_grant_physical_authority(self) -> None:
         schema = self.load("slicer-result.schema.json")
         result = {
+            "contract_version": "1.0",
             "request_id": "req-1",
             "status": "succeeded",
             "context": "twin",
@@ -44,7 +46,7 @@ class SlicerContractTests(unittest.TestCase):
         }
         Draft202012Validator(schema).validate(result)
         result["authority"]["can_start_print"] = True
-        with self.assertRaises(Exception):
+        with self.assertRaises(ValidationError):
             Draft202012Validator(schema).validate(result)
 
 

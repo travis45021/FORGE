@@ -21,8 +21,16 @@ class SlicerContractBoundary:
 
     def request(self, value: Mapping[str, Any]) -> dict[str, Any]:
         item = deepcopy(dict(value))
-        required = {"request_id", "input", "context", "profile_digest", "authority"}
+        required = {
+            "contract_version",
+            "request_id",
+            "input",
+            "context",
+            "profile_digest",
+            "authority",
+        }
         self._require(item, required, "request")
+        self._version(item)
         source = item["input"]
         if not isinstance(source, Mapping):
             raise SlicerContractError("request input must be an object")
@@ -45,9 +53,18 @@ class SlicerContractBoundary:
         item = deepcopy(dict(value))
         self._require(
             item,
-            {"request_id", "status", "context", "engine", "warnings", "authority"},
+            {
+                "contract_version",
+                "request_id",
+                "status",
+                "context",
+                "engine",
+                "warnings",
+                "authority",
+            },
             "result",
         )
+        self._version(item)
         if item["status"] not in RESULT_STATES or item["context"] not in CONTEXTS:
             raise SlicerContractError("invalid result state or context")
         authority = item["authority"]
@@ -77,3 +94,8 @@ class SlicerContractBoundary:
             or any(character not in "0123456789abcdef" for character in value)
         ):
             raise SlicerContractError(f"{label} must be lowercase SHA-256")
+
+    @staticmethod
+    def _version(value: Mapping[str, Any]) -> None:
+        if value.get("contract_version") != "1.0":
+            raise SlicerContractError("unsupported slicer contract version")

@@ -12,6 +12,7 @@ from forge.fas.twin_comparison import TwinComparisonError, TwinComparisonService
 
 def result(context: str, artifact: str = "d") -> dict:
     return {
+        "contract_version": "1.0",
         "request_id": f"req-{context}",
         "status": "succeeded",
         "context": context,
