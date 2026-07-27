@@ -144,7 +144,10 @@ release is distributed until the applicable items in this gate are complete.
   evidence remains open. Final-confirmation validity is capped at ten minutes
   and live-check validity at five minutes; Runtime independently rejects forged
   longer windows. The Runtime upload command cannot outlive the earlier of
-  those two evidence expiries.
+  those two evidence expiries. Final provider health, state, and capability
+  checks are represented by hashed, non-authoritative evidence bound to the
+  exact provider, Runtime context, and upload capability, with a maximum
+  thirty-second lifetime.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

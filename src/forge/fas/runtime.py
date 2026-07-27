@@ -12,6 +12,10 @@ from .job_lifecycle import (
     final_confirmation_evidence_digest,
 )
 from .live_printer_checks import MAX_LIVE_CHECK_AGE
+from .provider_dispatch import (
+    MAX_PROVIDER_DISPATCH_AGE,
+    provider_dispatch_evidence_digest,
+)
 
 
 class RuntimeError(ValueError):
@@ -251,8 +255,7 @@ class ForgeRuntime:
         resource_ids: list[str],
         expires_at: str,
         evaluated_at: str,
-        provider_healthy: bool,
-        current_state_allows: bool,
+        provider_evidence: Mapping[str, Any],
         historical_replay: bool = False,
     ) -> dict[str, Any]:
         """Dispatch a fourth-click upload handoff through the recorded runtime."""
@@ -335,6 +338,33 @@ class ForgeRuntime:
             raise RuntimeError(
                 "upload command cannot outlive confirmation or live checks"
             )
+        provider_check = deepcopy(dict(provider_evidence))
+        provider_checked_at = _utc(provider_check.get("checked_at"))
+        provider_expires_at = _utc(provider_check.get("expires_at"))
+        if (
+            provider_check.get("provider_id") != handoff.get("provider_id")
+            or provider_check.get("context_id") != context_id
+            or provider_check.get("capability_id") != "artifact.upload"
+            or provider_check.get("passed") is not True
+            or provider_check.get("can_upload") is not False
+            or provider_check.get("can_start_print") is not False
+            or provider_check.get("evidence_digest")
+            != provider_dispatch_evidence_digest(provider_check)
+            or provider_expires_at <= provider_checked_at
+            or provider_expires_at - provider_checked_at > MAX_PROVIDER_DISPATCH_AGE
+            or provider_checked_at > dispatch_at
+            or dispatch_at >= provider_expires_at
+        ):
+            raise RuntimeError("fresh provider dispatch evidence is required")
+        provider_checks = provider_check.get("checks")
+        if not isinstance(provider_checks, Mapping) or set(provider_checks) != {
+            "provider_healthy",
+            "current_state_allows",
+            "capability_available",
+        }:
+            raise RuntimeError("provider dispatch checks are incomplete")
+        if any(provider_checks[name] is not True for name in provider_checks):
+            raise RuntimeError("provider dispatch checks did not all pass")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")
@@ -376,8 +406,8 @@ class ForgeRuntime:
                 "verification_passed": True,
             },
             evaluated_at=evaluated_at,
-            provider_healthy=provider_healthy,
-            current_state_allows=current_state_allows,
+            provider_healthy=provider_checks["provider_healthy"],
+            current_state_allows=provider_checks["current_state_allows"],
         )
         self._consumed_confirmation_tokens.add(confirmation_token)
         result.update(
@@ -399,6 +429,7 @@ class ForgeRuntime:
                 "live_checks_checked_at": handoff.get("live_checks_checked_at"),
                 "live_checks_expires_at": handoff.get("live_checks_expires_at"),
                 "live_checks_evidence_digest": handoff["live_checks_evidence_digest"],
+                "provider_dispatch_evidence_digest": provider_check["evidence_digest"],
             }
         )
         return result

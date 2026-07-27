@@ -13,6 +13,7 @@ from forge.fas.job_lifecycle import (
     final_confirmation_evidence,
     final_confirmation_evidence_digest,
 )
+from forge.fas.provider_dispatch import ProviderDispatchCheckService
 from forge.fas.runtime import ForgeRuntime, RuntimeError
 
 
@@ -94,8 +95,21 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             resource_ids=self.context["reserved_resources"],
             expires_at="2026-07-25T21:01:00Z",
             evaluated_at="2026-07-25T21:00:00Z",
-            provider_healthy=True,
-            current_state_allows=True,
+            provider_evidence=self.provider_evidence(),
+        )
+
+    def provider_evidence(self) -> dict:
+        return ProviderDispatchCheckService().evaluate(
+            provider_id="provider:custom",
+            context_id=self.context["context_id"],
+            capability_id="artifact.upload",
+            checked_at="2026-07-25T20:59:50Z",
+            expires_at="2026-07-25T21:00:20Z",
+            checks={
+                "provider_healthy": True,
+                "current_state_allows": True,
+                "capability_available": True,
+            },
         )
 
     def rebind(self) -> None:
@@ -186,8 +200,21 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
                 resource_ids=self.context["reserved_resources"],
                 expires_at="2026-07-25T21:01:01Z",
                 evaluated_at="2026-07-25T21:00:00Z",
-                provider_healthy=True,
-                current_state_allows=True,
+                provider_evidence=self.provider_evidence(),
+            )
+
+    def test_rejects_tampered_provider_evidence(self) -> None:
+        provider = self.provider_evidence()
+        provider["checks"]["provider_healthy"] = False
+        with self.assertRaisesRegex(RuntimeError, "provider dispatch evidence"):
+            self.runtime.dispatch_artifact_upload(
+                self.context["context_id"],
+                self.handoff,
+                command_id="command:tampered-provider",
+                resource_ids=self.context["reserved_resources"],
+                expires_at="2026-07-25T21:01:00Z",
+                evaluated_at="2026-07-25T21:00:00Z",
+                provider_evidence=provider,
             )
 
     def test_rejects_duplicate_live_handoff(self) -> None:
@@ -204,8 +231,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
                 resource_ids=self.context["reserved_resources"],
                 expires_at="2026-07-25T21:30:00Z",
                 evaluated_at="2026-07-25T21:00:00Z",
-                provider_healthy=True,
-                current_state_allows=True,
+                provider_evidence=self.provider_evidence(),
                 historical_replay=True,
             )
         self.assertFalse(
