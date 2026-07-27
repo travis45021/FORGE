@@ -114,6 +114,7 @@ class FinalConfirmationPresenter:
                 if passed
                 else f"Printing blocked. {len(failed)} live checks failed."
             ),
+            "non_color_cue": "check" if passed else "blocked",
         }
 
     def confirm(

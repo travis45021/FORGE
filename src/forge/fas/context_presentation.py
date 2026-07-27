@@ -115,6 +115,7 @@ class PrintContextPresenter:
                 if can_confirm
                 else "Print setup needs changes before confirmation"
             ),
+            "non_color_cue": "check" if can_confirm else "warning",
         }
 
     def confirm(

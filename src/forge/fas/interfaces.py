@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable, Mapping
 from copy import deepcopy
-from typing import Any, Callable, Mapping
+from typing import Any
 
 
 class InterfaceError(ValueError):
@@ -13,6 +14,12 @@ class InterfaceError(ValueError):
 INTERFACE_MODES = {"simple", "builder", "advanced", "accessible", "developer"}
 CONTENT_KINDS = {"status", "alert", "suggestion", "approval", "decision", "error"}
 LOCAL_API_VERSION = "v1"
+PRINT_WORKFLOW_SCREENS = {
+    "add_file",
+    "confirm_context",
+    "create_print_mission",
+    "yes_print",
+}
 
 
 class InterfaceGateway:
@@ -74,8 +81,14 @@ class InterfaceGateway:
     ) -> dict[str, Any]:
         self._mode(mode)
         required = {
-            "summary", "target", "reason", "safety_conditions", "reversible",
-            "failure_response", "approval_scope", "data_behavior",
+            "summary",
+            "target",
+            "reason",
+            "safety_conditions",
+            "reversible",
+            "failure_response",
+            "approval_scope",
+            "data_behavior",
         }
         missing = sorted(required - action.keys())
         if missing:
@@ -98,8 +111,15 @@ class InterfaceGateway:
 
     def approval_summary(self, approval: Mapping[str, Any]) -> dict[str, Any]:
         required = {
-            "requester", "action", "scope", "expires_at", "targets", "risks",
-            "verification_state", "grant_type", "revocation_method",
+            "requester",
+            "action",
+            "scope",
+            "expires_at",
+            "targets",
+            "risks",
+            "verification_state",
+            "grant_type",
+            "revocation_method",
         }
         missing = sorted(required - approval.keys())
         if missing:
@@ -128,7 +148,9 @@ class InterfaceGateway:
         if kind == "suggestion" and not suggestions_enabled:
             return None
         if not text or not accessible_label or not cue:
-            raise InterfaceError("content requires text, accessible label, and non-color cue")
+            raise InterfaceError(
+                "content requires text, accessible label, and non-color cue"
+            )
         return {
             "kind": kind,
             "text": text,
@@ -148,6 +170,97 @@ class InterfaceGateway:
             "reduced_motion": True,
             "pointer_only_actions": False,
         }
+
+    def print_workflow_screen(
+        self,
+        screen_id: str,
+        presentation: Mapping[str, Any],
+        *,
+        mode: str = "simple",
+    ) -> dict[str, Any]:
+        """Expose every print stage through one mode-parity FORGE contract."""
+        self._mode(mode)
+        if screen_id not in PRINT_WORKFLOW_SCREENS:
+            raise InterfaceError("unknown print workflow screen")
+        item = deepcopy(dict(presentation))
+        required = {
+            "heading",
+            "summary",
+            "actions",
+            "plain_language",
+            "accessible_label",
+            "non_color_cue",
+            "can_upload",
+            "can_start_print",
+        }
+        missing = sorted(required - item.keys())
+        if missing:
+            raise InterfaceError(
+                f"print workflow presentation missing: {', '.join(missing)}"
+            )
+        if item["plain_language"] is not True:
+            raise InterfaceError("print workflow must use plain language")
+        if item["can_upload"] is not False or item["can_start_print"] is not False:
+            raise InterfaceError("interface presentation cannot grant authority")
+        actions = item["actions"]
+        if not isinstance(actions, list) or any(
+            not isinstance(action, Mapping)
+            or not action.get("id")
+            or not action.get("label")
+            for action in actions
+        ):
+            raise InterfaceError("workflow actions require identifiers and labels")
+        return {
+            "schema_version": "1.0.0",
+            "interface": "forge",
+            "separate_slicer_interface": False,
+            "screen_id": screen_id,
+            "mode": mode,
+            "heading": item["heading"],
+            "summary": item["summary"],
+            "actions": deepcopy(actions),
+            "accessible_label": item["accessible_label"],
+            "non_color_cue": item["non_color_cue"],
+            "keyboard_operable": True,
+            "screen_reader_state": True,
+            "core_workflow_parity": True,
+            "can_upload": False,
+            "can_start_print": False,
+            "details": item,
+        }
+
+    def print_workflow_error(
+        self,
+        *,
+        screen_id: str,
+        reason: str,
+        summary: str,
+        affected_object: str,
+        next_step: str,
+        mode: str = "simple",
+        safety_impact: str = "none",
+    ) -> dict[str, Any]:
+        """Return a mode-independent, actionable workflow error."""
+        self._mode(mode)
+        if screen_id not in PRINT_WORKFLOW_SCREENS:
+            raise InterfaceError("unknown print workflow screen")
+        result = self.error(
+            reason=reason,
+            summary=summary,
+            affected_object=affected_object,
+            next_step=next_step,
+            safety_impact=safety_impact,
+        )
+        result.update(
+            {
+                "screen_id": screen_id,
+                "mode": mode,
+                "accessible_label": f"Error: {summary}",
+                "non_color_cue": "error",
+                "core_workflow_parity": True,
+            }
+        )
+        return result
 
     def subscribe(
         self,

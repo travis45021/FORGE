@@ -113,6 +113,9 @@ release is distributed until the applicable items in this gate are complete.
 ## Gate 5 - Unified user experience
 
 - [ ] Implement one FORGE interface rather than exposing a second slicer app.
+  One presentation-neutral FORGE print-interface contract now covers every
+  stage and mode without exposing a slicer interface; application rendering
+  remains open.
 - [ ] Provide plain-language STEP/3MF import status and ambiguity resolution.
   A presentation-neutral, accessible status and user-resolution contract is
   implemented; application rendering remains open.
@@ -126,7 +129,9 @@ release is distributed until the applicable items in this gate are complete.
   controlled upload/start. A plain-language, accessible, fail-closed click-four
   presentation contract is implemented; application rendering remains open.
 - [ ] Meet FAS-024 accessibility, structured error, and interface parity
-  requirements.
+  requirements. Mode-parity screens, keyboard and screen-reader semantics,
+  non-color cues, and actionable structured errors are implemented as
+  contracts; application conformance remains open.
 - [ ] Provide license, source, notices, privacy, and data-export access inside
   the product.
 

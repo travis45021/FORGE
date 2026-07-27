@@ -26,6 +26,7 @@ from .interfaces import (
     CONTENT_KINDS,
     INTERFACE_MODES,
     LOCAL_API_VERSION,
+    PRINT_WORKFLOW_SCREENS,
     InterfaceError,
     InterfaceGateway,
 )
@@ -78,6 +79,7 @@ __all__ = [
     "HEALTH_STATES",
     "INTERFACE_MODES",
     "LOCAL_API_VERSION",
+    "PRINT_WORKFLOW_SCREENS",
     "REQUIRED_GATES",
     "TEST_LAYERS",
     "V1_EXPERIENCE_MODES",
