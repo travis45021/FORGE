@@ -92,7 +92,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             self.handoff,
             command_id="command:upload-1",
             resource_ids=self.context["reserved_resources"],
-            expires_at="2026-07-25T21:30:00Z",
+            expires_at="2026-07-25T21:01:00Z",
             evaluated_at="2026-07-25T21:00:00Z",
             provider_healthy=True,
             current_state_allows=True,
@@ -176,6 +176,19 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.handoff["confirmation_token"] = "confirmation-" + ("y" * 32)
         with self.assertRaisesRegex(RuntimeError, "evidence binding"):
             self.dispatch()
+
+    def test_rejects_command_that_outlives_supporting_evidence(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "cannot outlive"):
+            self.runtime.dispatch_artifact_upload(
+                self.context["context_id"],
+                self.handoff,
+                command_id="command:overlong-upload",
+                resource_ids=self.context["reserved_resources"],
+                expires_at="2026-07-25T21:01:01Z",
+                evaluated_at="2026-07-25T21:00:00Z",
+                provider_healthy=True,
+                current_state_allows=True,
+            )
 
     def test_rejects_duplicate_live_handoff(self) -> None:
         self.dispatch()

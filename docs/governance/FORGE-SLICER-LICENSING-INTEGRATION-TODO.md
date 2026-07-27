@@ -143,7 +143,8 @@ release is distributed until the applicable items in this gate are complete.
   validity window; token transplantation fails closed. Real engine artifact
   evidence remains open. Final-confirmation validity is capped at ten minutes
   and live-check validity at five minutes; Runtime independently rejects forged
-  longer windows.
+  longer windows. The Runtime upload command cannot outlive the earlier of
+  those two evidence expiries.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

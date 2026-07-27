@@ -326,6 +326,15 @@ class ForgeRuntime:
             raise RuntimeError("live printer check validity exceeds five minutes")
         if dispatch_at >= live_checks_expires_at:
             raise RuntimeError("live printer checks expired before dispatch")
+        command_expires_at = _utc(expires_at)
+        evidence_expires_at = min(
+            confirmation_expires_at,
+            live_checks_expires_at,
+        )
+        if command_expires_at > evidence_expires_at:
+            raise RuntimeError(
+                "upload command cannot outlive confirmation or live checks"
+            )
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")
