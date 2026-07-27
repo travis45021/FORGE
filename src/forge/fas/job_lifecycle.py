@@ -116,6 +116,47 @@ class PrintJobLifecycle:
         self._record("job.final.confirmed", job_id)
         return deepcopy(job)
 
+    def final_confirm_with_evidence(
+        self,
+        job_id: str,
+        *,
+        actor: str,
+        confirmation: bool,
+        acceptance: Mapping[str, Any],
+        live_checks: Mapping[str, Any],
+        authorization_verified: bool,
+    ) -> dict[str, Any]:
+        """Require matching artifact/provider evidence for the fourth click."""
+        job = self._require(job_id)
+        artifact_digest = job.get("artifact_digest")
+        if not artifact_digest or acceptance.get("artifact_digest") != artifact_digest:
+            raise JobLifecycleError("accepted slicer artifact does not match the job")
+        if acceptance.get("final_confirmation_required") is not True:
+            raise JobLifecycleError("slicer acceptance must require final confirmation")
+        if (
+            acceptance.get("can_upload") is not False
+            or acceptance.get("can_start_print") is not False
+        ):
+            raise JobLifecycleError("slicer acceptance must remain non-authoritative")
+        if live_checks.get("provider_id") != job["provider_id"]:
+            raise JobLifecycleError("live checks do not match the job provider")
+        if live_checks.get("artifact_digest") != artifact_digest:
+            raise JobLifecycleError("live checks do not match the accepted artifact")
+        if live_checks.get("passed") is not True:
+            raise JobLifecycleError("all live printer checks must pass")
+        if (
+            live_checks.get("can_upload") is not False
+            or live_checks.get("can_start_print") is not False
+        ):
+            raise JobLifecycleError("live checks must remain non-authoritative")
+        return self.final_confirm(
+            job_id,
+            actor=actor,
+            confirmation=confirmation,
+            live_checks_passed=True,
+            authorization_verified=authorization_verified,
+        )
+
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:
         job = self._require(job_id)
         if state not in STATES or state not in TRANSITIONS.get(job["state"], set()):
