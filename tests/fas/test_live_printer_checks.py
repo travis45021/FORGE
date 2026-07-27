@@ -48,6 +48,26 @@ class LivePrinterCheckTests(unittest.TestCase):
         with self.assertRaises(LivePrinterCheckError):
             self.evaluate()
 
+    def test_rejects_unknown_or_non_boolean_checks(self) -> None:
+        self.checks["confirmation_token"] = True
+        with self.assertRaisesRegex(LivePrinterCheckError, "unknown live"):
+            self.evaluate()
+
+        self.checks.pop("confirmation_token")
+        self.checks["connected"] = 1
+        with self.assertRaisesRegex(LivePrinterCheckError, "explicit booleans"):
+            self.evaluate()
+
+    def test_rejects_non_string_provider_identity(self) -> None:
+        with self.assertRaisesRegex(LivePrinterCheckError, "provider identity"):
+            self.service.evaluate(
+                provider_id=1,
+                artifact_digest="a" * 64,
+                checks=self.checks,
+                checked_at="2026-07-26T12:04:00Z",
+                expires_at="2026-07-26T12:09:00Z",
+            )
+
     def test_rejects_invalid_freshness_window(self) -> None:
         with self.assertRaisesRegex(LivePrinterCheckError, "expiry"):
             self.service.evaluate(

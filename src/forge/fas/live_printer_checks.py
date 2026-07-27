@@ -50,8 +50,9 @@ class LivePrinterCheckService:
         checked_at: str,
         expires_at: str,
     ) -> dict[str, Any]:
-        if not provider_id:
+        if not isinstance(provider_id, str) or not provider_id.strip():
             raise LivePrinterCheckError("provider identity is required")
+        provider_id = provider_id.strip()
         self._digest(artifact_digest)
         checked = self._utc(checked_at)
         expiry = self._utc(expires_at)
@@ -61,10 +62,17 @@ class LivePrinterCheckService:
             raise LivePrinterCheckError(
                 "live check validity cannot exceed five minutes"
             )
+        if not isinstance(checks, Mapping):
+            raise LivePrinterCheckError("live checks must be an object")
         evidence = deepcopy(dict(checks))
         missing = sorted(REQUIRED_CHECKS - evidence.keys())
         if missing:
             raise LivePrinterCheckError(f"live checks missing: {', '.join(missing)}")
+        unexpected = sorted(evidence.keys() - REQUIRED_CHECKS)
+        if unexpected:
+            raise LivePrinterCheckError(f"unknown live checks: {', '.join(unexpected)}")
+        if any(type(evidence[name]) is not bool for name in REQUIRED_CHECKS):
+            raise LivePrinterCheckError("live check values must be explicit booleans")
         invalid = sorted(name for name in REQUIRED_CHECKS if evidence[name] is not True)
         result = {
             "provider_id": provider_id,

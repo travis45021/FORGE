@@ -29,6 +29,11 @@ engine source and build digests. Click four is valid only when:
 - the final provider health, state, and upload-capability evidence is no more
   than thirty seconds old at Runtime dispatch.
 
+Live-check records accept exactly the six named provider-neutral checks as
+explicit booleans. Unknown fields, non-boolean values, invalid provider
+identity, non-UTC timestamps, and validity windows over five minutes are
+rejected before evidence is created.
+
 The Executive and Runtime independently preserve and verify this lineage.
 Expiry is fail-closed: the upload command cannot outlive any evidence it
 depends on. Upload permission does not start the print, and each published

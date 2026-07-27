@@ -40,8 +40,16 @@
         "artifact_current": {"type": "boolean"}
       }
     },
-    "checked_at": {"type": "string", "format": "date-time"},
-    "expires_at": {"type": "string", "format": "date-time"},
+    "checked_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
     "passed": {"type": "boolean"},
     "failed_checks": {
       "type": "array",
