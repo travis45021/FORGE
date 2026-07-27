@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/provider-dispatch-evidence.schema.json",
+  "title": "FORGE Provider Dispatch Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "provider_id",
+    "context_id",
+    "capability_id",
+    "checked_at",
+    "expires_at",
+    "checks",
+    "passed",
+    "can_upload",
+    "can_start_print",
+    "evidence_digest"
+  ],
+  "properties": {
+    "provider_id": {"type": "string", "minLength": 1},
+    "context_id": {"type": "string", "minLength": 1},
+    "capability_id": {"const": "artifact.upload"},
+    "checked_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "provider_healthy",
+        "current_state_allows",
+        "capability_available"
+      ],
+      "properties": {
+        "provider_healthy": {"type": "boolean"},
+        "current_state_allows": {"type": "boolean"},
+        "capability_available": {"type": "boolean"}
+      }
+    },
+    "passed": {"type": "boolean"},
+    "can_upload": {"const": false},
+    "can_start_print": {"const": false},
+    "evidence_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}

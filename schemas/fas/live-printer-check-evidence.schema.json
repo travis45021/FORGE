@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/live-printer-check-evidence.schema.json",
+  "title": "FORGE Live Printer Check Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "provider_id",
+    "artifact_digest",
+    "checks",
+    "checked_at",
+    "expires_at",
+    "passed",
+    "failed_checks",
+    "final_confirmation_required",
+    "can_upload",
+    "can_start_print",
+    "evidence_digest"
+  ],
+  "properties": {
+    "provider_id": {"type": "string", "minLength": 1},
+    "artifact_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "checks": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "connected",
+        "idle",
+        "capabilities_match",
+        "material_available",
+        "safety_state_clear",
+        "artifact_current"
+      ],
+      "properties": {
+        "connected": {"type": "boolean"},
+        "idle": {"type": "boolean"},
+        "capabilities_match": {"type": "boolean"},
+        "material_available": {"type": "boolean"},
+        "safety_state_clear": {"type": "boolean"},
+        "artifact_current": {"type": "boolean"}
+      }
+    },
+    "checked_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "passed": {"type": "boolean"},
+    "failed_checks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "connected",
+          "idle",
+          "capabilities_match",
+          "material_available",
+          "safety_state_clear",
+          "artifact_current"
+        ]
+      }
+    },
+    "final_confirmation_required": {"const": true},
+    "can_upload": {"const": false},
+    "can_start_print": {"const": false},
+    "evidence_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+  }
+}
