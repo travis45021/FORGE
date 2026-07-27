@@ -1,0 +1,35 @@
+{
+  "artifact_digests": [
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  ],
+  "artifacts_match": true,
+  "can_authorize_production": false,
+  "can_start_print": false,
+  "can_upload": false,
+  "context": "production",
+  "engine": {
+    "build_digest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+    "name": "reviewed-engine",
+    "source_digest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "version": "1.0"
+  },
+  "evidence_digest": "a61509ffd480f7eea1b5098b0f1fe8e8705cb24e72c5cf5d0f8f746dbeee1a31",
+  "input_digest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "profile_digest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "real_engine_runs_required": true,
+  "reason": "repeated_results_match",
+  "reproducible": true,
+  "request_ids": [
+    "request:1",
+    "request:2"
+  ],
+  "run_count": 2,
+  "run_group_id": "reproducibility:1",
+  "schema_version": "1.0.0",
+  "warning_sets": [
+    [],
+    []
+  ],
+  "warnings_match": true
+}

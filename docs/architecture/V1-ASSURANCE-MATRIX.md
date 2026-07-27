@@ -6,7 +6,7 @@ Status: Planned evidence matrix; execution remains open
 | --- | --- | --- |
 | Input security | Hostile and malformed STEP/3MF fixtures, including path traversal | Quarantine rejects or safely contains every fixture |
 | Worker resilience | Crash, timeout, cancellation, memory, disk, and stale-context scenarios | Supervisor produces deterministic terminal evidence |
-| Reproducibility | Source/profile/input digests and deterministic output comparison | Repeated runs produce explainable matching results |
+| Reproducibility | Source/profile/input digests and deterministic output comparison | Repeated real-engine runs produce explainable matching results; the non-authoritative comparison evaluator is implemented |
 | Twin separation | Twin output, replay, and comparison attempts | No twin or replay path grants production authority |
 | Four-click authority | UI, API, automation, and recovery-path scenarios | No path skips the final **Yes, Print** action |
 | Hardware neutrality | Known, custom, unavailable, and mismatched capability scenarios | Users receive plain-language limits and safe next steps |

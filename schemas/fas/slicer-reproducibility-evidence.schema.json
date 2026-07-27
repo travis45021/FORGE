@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/slicer-reproducibility-evidence.schema.json",
+  "title": "FORGE Slicer Reproducibility Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run_group_id",
+    "context",
+    "input_digest",
+    "profile_digest",
+    "engine",
+    "run_count",
+    "request_ids",
+    "artifact_digests",
+    "warning_sets",
+    "artifacts_match",
+    "warnings_match",
+    "reproducible",
+    "reason",
+    "real_engine_runs_required",
+    "can_authorize_production",
+    "can_upload",
+    "can_start_print",
+    "evidence_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "run_group_id": {"type": "string", "minLength": 1},
+    "context": {"enum": ["production", "twin"]},
+    "input_digest": {"$ref": "#/$defs/digest"},
+    "profile_digest": {"$ref": "#/$defs/digest"},
+    "engine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "source_digest", "build_digest"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "source_digest": {"$ref": "#/$defs/digest"},
+        "build_digest": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "run_count": {"type": "integer", "minimum": 2},
+    "request_ids": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "artifact_digests": {
+      "type": "array",
+      "minItems": 2,
+      "items": {"$ref": "#/$defs/digest"}
+    },
+    "warning_sets": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "array",
+        "items": {"type": "string"}
+      }
+    },
+    "artifacts_match": {"type": "boolean"},
+    "warnings_match": {"type": "boolean"},
+    "reproducible": {"type": "boolean"},
+    "reason": {
+      "enum": [
+        "repeated_results_match",
+        "artifact_digest_mismatch",
+        "warning_mismatch"
+      ]
+    },
+    "real_engine_runs_required": {"const": true},
+    "can_authorize_production": {"const": false},
+    "can_upload": {"const": false},
+    "can_start_print": {"const": false},
+    "evidence_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}

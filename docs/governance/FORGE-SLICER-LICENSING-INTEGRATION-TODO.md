@@ -205,6 +205,10 @@ release is distributed until the applicable items in this gate are complete.
   stale context. Deterministic supervisor fault-injection contracts cover each
   failure and deny artifact/physical authority; real worker-process tests
   remain open.
+- [ ] Prove repeated slicing reproducibility. A non-authoritative evaluator now
+  requires identical engine source/build, input, profile, context, artifact
+  digests, and warnings across repeated successful results. Real reviewed Orca
+  engine runs remain blocked by Gate 1 and are still required.
 - [x] Prove that twin evidence cannot authorize production.
 - [x] Prove that historical replay cannot upload or start a print.
 - [x] Prove that no v1 path skips the fourth click for every implemented

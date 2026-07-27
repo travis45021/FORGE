@@ -52,6 +52,11 @@ from .scheduler import MissionScheduler, SchedulingError
 from .slicer_acceptance import SlicerAcceptanceError, SlicerArtifactAcceptance
 from .slicer_preparation import SlicerMissionPreparation, SlicerPreparationError
 from .slicer_profile import SlicerProfileAdapter, SlicerProfileError
+from .slicer_reproducibility import (
+    SlicerReproducibilityError,
+    SlicerReproducibilityService,
+    reproducibility_evidence_digest,
+)
 from .slicer_worker import (
     SlicerWorkerBoundary,
     SlicerWorkerError,
@@ -168,6 +173,8 @@ __all__ = [
     "SlicerPreparationError",
     "SlicerProfileAdapter",
     "SlicerProfileError",
+    "SlicerReproducibilityError",
+    "SlicerReproducibilityService",
     "SlicerWorkerBoundary",
     "SlicerWorkerError",
     "SlicerWorkerSupervisor",
@@ -196,5 +203,6 @@ __all__ = [
     "development_hmac_verifier",
     "moonraker_klipper_reference_manifest",
     "payload_digest",
+    "reproducibility_evidence_digest",
     "validate_event",
 ]
