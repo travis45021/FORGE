@@ -148,15 +148,19 @@ Install the optional strict Draft 2020-12 schema validator:
 python -m pip install -e ".[validation]"
 ```
 
-Run the complete FAS test suite:
+Install the complete local verification toolchain and run it:
 
 ```bash
-python -m unittest discover -s tests/fas -p "test_*.py" -v
+python -m pip install -e ".[validation,quality]"
+python -m ruff check .
+python -m ruff format --check .
+python -m pytest -q
 ```
 
-The same suite, compilation check, dependency-health check, and wheel build run
-in `.github/workflows/ci.yml`.
+The same quality checks and complete pytest suite, plus compilation,
+dependency-health, and wheel-build checks, run in `.github/workflows/ci.yml`.
 
 The validator is intentionally optional: FORGE runtime components use only the
 Python standard library, while validation and development environments can
-enable strict schema and format checks through the `validation` extra.
+enable strict schemas through the `validation` extra and the declared
+verification tools through the `quality` extra.
