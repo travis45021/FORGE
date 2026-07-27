@@ -10,12 +10,19 @@ from forge.fas.executive import ExecutiveError, ForgeExecutive
 @pytest.fixture
 def inputs() -> dict[str, dict]:
     digest = "a" * 64
+    input_digest = "b" * 64
+    profile_digest = "c" * 64
     return {
         "mission": {
             "mission_id": "mission:print-1",
             "state": "approved",
             "correlation_id": "job-1",
-            "context": {"job_id": "job-1", "artifact_digest": digest},
+            "context": {
+                "job_id": "job-1",
+                "artifact_digest": digest,
+                "input_digest": input_digest,
+                "profile_digest": profile_digest,
+            },
             "plan": [{"capability_id": "artifact.upload"}],
         },
         "job": {
@@ -24,11 +31,15 @@ def inputs() -> dict[str, dict]:
             "state": "upload_pending",
             "click_count": 3,
             "artifact_digest": digest,
+            "input_digest": input_digest,
+            "profile_digest": profile_digest,
             "final_confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
         },
         "acceptance": {
             "artifact_digest": digest,
+            "input_digest": input_digest,
+            "profile_digest": profile_digest,
             "ready_for_live_checks": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,
@@ -60,6 +71,8 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
     assert request["payload"]["final_confirmation_verified"] is True
     assert request["payload"]["physical_dispatch_allowed"] is False
     assert request["payload"]["requires_runtime_dispatcher"] is True
+    assert request["payload"]["input_digest"] == "b" * 64
+    assert request["payload"]["profile_digest"] == "c" * 64
     assert "confirmation_token" not in request["payload"]
 
 
@@ -68,6 +81,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
     [
         ("job", "state", "final_confirmation_required"),
         ("job", "artifact_digest", "b" * 64),
+        ("job", "profile_digest", "d" * 64),
         ("acceptance", "can_upload", True),
         ("acceptance", "preflight_verified", False),
         ("acceptance", "pair_preflight_verified", False),

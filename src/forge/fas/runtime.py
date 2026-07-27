@@ -279,6 +279,16 @@ class ForgeRuntime:
             or any(character not in "0123456789abcdef" for character in artifact_digest)
         ):
             raise RuntimeError("upload artifact digest must be lowercase SHA-256")
+        for field in ("input_digest", "profile_digest"):
+            value = handoff.get(field)
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise RuntimeError(
+                    f"upload {field.replace('_', ' ')} must be lowercase SHA-256"
+                )
         result = self.dispatch(
             context_id,
             {
@@ -299,6 +309,8 @@ class ForgeRuntime:
             {
                 "job_id": handoff.get("job_id"),
                 "artifact_digest": artifact_digest,
+                "input_digest": handoff["input_digest"],
+                "profile_digest": handoff["profile_digest"],
                 "confirmed_by": handoff.get("confirmed_by"),
             }
         )

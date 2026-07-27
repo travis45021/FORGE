@@ -48,6 +48,8 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "provider_id": "provider:custom",
             "job_id": "job-1",
             "artifact_digest": "a" * 64,
+            "input_digest": "b" * 64,
+            "profile_digest": "c" * 64,
             "confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
@@ -75,6 +77,8 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["status"], "dispatched")
         self.assertFalse(result["physical_outcome_confirmed"])
         self.assertEqual(result["artifact_digest"], "a" * 64)
+        self.assertEqual(result["input_digest"], "b" * 64)
+        self.assertEqual(result["profile_digest"], "c" * 64)
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
@@ -114,6 +118,11 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
     def test_rejects_handoff_without_pair_preflight(self) -> None:
         self.handoff["artifact_pair_preflight_verified"] = False
         with self.assertRaisesRegex(RuntimeError, "coordinated pair"):
+            self.dispatch()
+
+    def test_rejects_handoff_without_input_lineage(self) -> None:
+        self.handoff.pop("input_digest")
+        with self.assertRaisesRegex(RuntimeError, "input digest"):
             self.dispatch()
 
 

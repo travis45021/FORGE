@@ -85,10 +85,19 @@ class ForgeExecutive:
         artifact_digest = acceptance.get("artifact_digest")
         if not self._digest(artifact_digest):
             raise ExecutiveError("accepted artifact digest is invalid")
+        input_digest = acceptance.get("input_digest")
+        profile_digest = acceptance.get("profile_digest")
+        if not self._digest(input_digest) or not self._digest(profile_digest):
+            raise ExecutiveError("accepted artifact lineage is invalid")
         if job.get("state") != "upload_pending" or job.get("click_count") != 3:
             raise ExecutiveError("job has not passed the fourth-click gate")
         if job.get("artifact_digest") != artifact_digest:
             raise ExecutiveError("job and accepted artifact do not match")
+        if (
+            job.get("input_digest") != input_digest
+            or job.get("profile_digest") != profile_digest
+        ):
+            raise ExecutiveError("job and accepted artifact lineage do not match")
         if job.get("provider_id") != capability.get("provider_id"):
             raise ExecutiveError("job and capability provider do not match")
         token = job.get("confirmation_token")
@@ -103,6 +112,8 @@ class ForgeExecutive:
             not isinstance(context, Mapping)
             or context.get("job_id") != job.get("job_id")
             or context.get("artifact_digest") != artifact_digest
+            or context.get("input_digest") != input_digest
+            or context.get("profile_digest") != profile_digest
         ):
             raise ExecutiveError("Mission context does not match the confirmed job")
 
@@ -111,6 +122,8 @@ class ForgeExecutive:
             {
                 "job_id": job["job_id"],
                 "artifact_digest": artifact_digest,
+                "input_digest": input_digest,
+                "profile_digest": profile_digest,
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
                 "artifact_preflight_verified": True,

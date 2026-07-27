@@ -185,12 +185,24 @@ class HardwareTransportRegistry:
             or any(character not in "0123456789abcdef" for character in artifact_digest)
         ):
             raise TransportError("job artifact digest must be lowercase SHA-256")
+        for field in ("input_digest", "profile_digest"):
+            value = item.get(field)
+            if (
+                not isinstance(value, str)
+                or len(value) != 64
+                or any(character not in "0123456789abcdef" for character in value)
+            ):
+                raise TransportError(
+                    f"job {field.replace('_', ' ')} must be lowercase SHA-256"
+                )
         if not runtime_lease_active or not authorization_verified:
             raise TransportError("active runtime lease and authorization are required")
         prepared = {
             "provider_id": provider_id,
             "job_id": item["job_id"],
             "artifact_digest": artifact_digest,
+            "input_digest": item["input_digest"],
+            "profile_digest": item["profile_digest"],
             "confirmed_by": item["final_confirmed_by"],
             "confirmation_token": confirmation_token,
             "artifact_preflight_verified": True,

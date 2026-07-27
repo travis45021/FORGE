@@ -14,11 +14,15 @@ class FourthClickEvidenceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.lifecycle = PrintJobLifecycle()
         self.digest = "a" * 64
+        self.input_digest = "b" * 64
+        self.profile_digest = "c" * 64
         self.lifecycle.create(
             {
                 "job_id": "job-1",
                 "artifact_id": "artifact-1",
                 "artifact_digest": self.digest,
+                "input_digest": self.input_digest,
+                "profile_digest": self.profile_digest,
                 "provider_id": "provider-1",
                 "state": "draft",
                 "preflight_passed": True,
@@ -31,6 +35,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
             self.lifecycle.click("job-1", action=action, actor="user-1")
         self.acceptance = {
             "artifact_digest": self.digest,
+            "input_digest": self.input_digest,
+            "profile_digest": self.profile_digest,
             "final_confirmation_required": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,
@@ -80,6 +86,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
     def test_rejects_acceptance_without_pair_preflight(self) -> None:
         self.acceptance["pair_preflight_verified"] = False
         with self.assertRaisesRegex(JobLifecycleError, "coordinated pair"):
+            self.confirm()
+
+    def test_rejects_acceptance_from_different_profile(self) -> None:
+        self.acceptance["profile_digest"] = "d" * 64
+        with self.assertRaisesRegex(JobLifecycleError, "profile digest"):
             self.confirm()
 
 

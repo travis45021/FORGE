@@ -32,6 +32,12 @@ class SlicerArtifactAcceptance:
         artifact_digest = production.get("artifact_digest")
         if not self._digest(artifact_digest):
             raise SlicerAcceptanceError("production artifact digest is required")
+        input_digest = item.get("input_digest")
+        profile_digest = item.get("profile_digest")
+        if not self._digest(input_digest) or not self._digest(profile_digest):
+            raise SlicerAcceptanceError(
+                "accepted artifact requires input and profile lineage"
+            )
         if acceptance.get("status") != "matching":
             raise SlicerAcceptanceError("production and twin artifacts must match")
         if acceptance.get("preflight_evidence_required") is not True:
@@ -57,6 +63,8 @@ class SlicerArtifactAcceptance:
         return {
             "comparison_id": item.get("comparison_id"),
             "artifact_digest": artifact_digest,
+            "input_digest": input_digest,
+            "profile_digest": profile_digest,
             "preflight_verified": True,
             "pair_preflight_verified": True,
             "ready_for_live_checks": True,

@@ -142,6 +142,8 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "job_id": "job-1",
                 "artifact_id": "artifact-1",
                 "artifact_digest": artifact_digest,
+                "input_digest": acceptance["input_digest"],
+                "profile_digest": acceptance["profile_digest"],
                 "provider_id": "provider:custom",
                 "state": "draft",
                 "preflight_passed": True,

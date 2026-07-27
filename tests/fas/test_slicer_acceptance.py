@@ -16,6 +16,8 @@ from forge.fas.slicer_acceptance import (
 def comparison() -> dict:
     return {
         "comparison_id": "cmp-1",
+        "input_digest": "a" * 64,
+        "profile_digest": "b" * 64,
         "production": {
             "context": "production",
             "status": "succeeded",
@@ -47,6 +49,8 @@ class SlicerAcceptanceTests(unittest.TestCase):
         result = self.service.accept(comparison())
         self.assertTrue(result["ready_for_live_checks"])
         self.assertTrue(result["final_confirmation_required"])
+        self.assertEqual(result["input_digest"], "a" * 64)
+        self.assertEqual(result["profile_digest"], "b" * 64)
         self.assertFalse(result["can_upload"])
         self.assertFalse(result["can_start_print"])
 
@@ -75,6 +79,12 @@ class SlicerAcceptanceTests(unittest.TestCase):
         with self.assertRaisesRegex(
             SlicerAcceptanceError, "coordinated production and twin"
         ):
+            self.service.accept(value)
+
+    def test_rejects_missing_input_or_profile_lineage(self) -> None:
+        value = comparison()
+        value.pop("profile_digest")
+        with self.assertRaisesRegex(SlicerAcceptanceError, "input and profile"):
             self.service.accept(value)
 
 

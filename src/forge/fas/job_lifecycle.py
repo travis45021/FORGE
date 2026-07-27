@@ -133,6 +133,13 @@ class PrintJobLifecycle:
         artifact_digest = job.get("artifact_digest")
         if not artifact_digest or acceptance.get("artifact_digest") != artifact_digest:
             raise JobLifecycleError("accepted slicer artifact does not match the job")
+        for field in ("input_digest", "profile_digest"):
+            if not self._digest(job.get(field)) or acceptance.get(field) != job.get(
+                field
+            ):
+                raise JobLifecycleError(
+                    f"accepted slicer {field.replace('_', ' ')} does not match the job"
+                )
         if acceptance.get("final_confirmation_required") is not True:
             raise JobLifecycleError("slicer acceptance must require final confirmation")
         if acceptance.get("preflight_verified") is not True:
@@ -184,6 +191,14 @@ class PrintJobLifecycle:
 
     def job(self, job_id: str) -> dict[str, Any]:
         return deepcopy(self._require(job_id))
+
+    @staticmethod
+    def _digest(value: Any) -> bool:
+        return (
+            isinstance(value, str)
+            and len(value) == 64
+            and all(character in "0123456789abcdef" for character in value)
+        )
 
     def _require(self, job_id: str) -> dict[str, Any]:
         try:
