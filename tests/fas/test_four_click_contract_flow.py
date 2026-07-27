@@ -14,6 +14,7 @@ from forge.fas.job_lifecycle import PrintJobLifecycle
 from forge.fas.live_printer_checks import REQUIRED_CHECKS, LivePrinterCheckService
 from forge.fas.slicer_acceptance import SlicerArtifactAcceptance
 from forge.fas.slicer_preparation import SlicerMissionPreparation
+from forge.fas.slicer_profile import SlicerProfileAdapter
 from forge.fas.transport import HardwareTransportRegistry
 from forge.fas.twin_comparison import TwinComparisonService
 
@@ -40,6 +41,25 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "mission_reviewed": True,
             },
         }
+        profile = SlicerProfileAdapter().derive(
+            machine={
+                "object_id": "machine:custom",
+                "version": 1,
+                "lifecycle_state": "active",
+                "knowledge_state": "locally_measured",
+                "health": {"state": "healthy"},
+                "capabilities": ["fff.extrusion", "artifact.upload"],
+                "limits": {"maximum_nozzle_temperature_c": 300},
+                "unknown_fields": [],
+                "evidence_refs": ["evidence:local-measurement"],
+            },
+            configuration={
+                "profile_ids": ["profile:safe"],
+                "values": {"layer_height_mm": 0.2},
+                "hard_limits": {"maximum_nozzle_temperature_c": 300},
+            },
+            intent=intent,
+        )
         preparation = SlicerMissionPreparation()
         production_request = preparation.prepare(
             request_id="request-production",
@@ -48,6 +68,7 @@ class FourClickContractFlowTests(unittest.TestCase):
             context="production",
             assessment=assessment,
             intent=intent,
+            derived_profile=profile,
         )
         twin_request = preparation.prepare(
             request_id="request-twin",
@@ -56,6 +77,7 @@ class FourClickContractFlowTests(unittest.TestCase):
             context="twin",
             assessment=assessment,
             intent=intent,
+            derived_profile=profile,
         )
         artifact_digest = "d" * 64
 

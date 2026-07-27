@@ -29,7 +29,7 @@ class SlicerMissionPreparation:
         context: str,
         assessment: Mapping[str, Any],
         intent: Mapping[str, Any],
-        settings: Mapping[str, Any] | None = None,
+        derived_profile: Mapping[str, Any],
     ) -> dict[str, Any]:
         if assessment.get("decision") != "accepted":
             raise SlicerPreparationError("import assessment must be accepted")
@@ -47,6 +47,33 @@ class SlicerMissionPreparation:
             raise SlicerPreparationError(str(exc)) from exc
         if validated_intent["source_digest"] != assessment.get("source_digest"):
             raise SlicerPreparationError("assessment and intent source digests differ")
+        profile = dict(derived_profile)
+        if (
+            profile.get("lifecycle") != "ephemeral"
+            or profile.get("persist_after_worker") is not False
+            or profile.get("delete_after_result") is not True
+            or profile.get("hardware_neutral") is not True
+            or profile.get("contains_transport_endpoint") is not False
+            or profile.get("contains_credentials") is not False
+            or profile.get("cloud_access") is not False
+            or profile.get("can_control_printer") is not False
+            or profile.get("can_upload") is not False
+            or profile.get("can_start_print") is not False
+        ):
+            raise SlicerPreparationError(
+                "derived worker profile violates the ephemeral authority boundary"
+            )
+        profile_digest = profile.get("profile_digest")
+        if (
+            not isinstance(profile_digest, str)
+            or len(profile_digest) != 64
+            or any(character not in "0123456789abcdef" for character in profile_digest)
+        ):
+            raise SlicerPreparationError(
+                "derived profile digest must be lowercase SHA-256"
+            )
+        if not isinstance(profile.get("content"), Mapping):
+            raise SlicerPreparationError("derived profile content is required")
 
         request = {
             "contract_version": "1.0",
@@ -57,12 +84,13 @@ class SlicerMissionPreparation:
                 "path": source_path,
             },
             "context": context,
-            "profile_digest": validated_intent["process"]["profile_digest"],
+            "profile_digest": profile_digest,
             "authority": {
                 "mission_id": mission_id,
                 "user_confirmation_stage": "created_mission",
             },
-            "settings": dict(settings or {}),
+            "settings": dict(profile["content"]),
+            "profile_ephemeral": True,
         }
         try:
             return self._boundary.request(request)

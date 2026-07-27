@@ -34,6 +34,20 @@ class SlicerPreparationTests(unittest.TestCase):
                 "mission_reviewed": True,
             },
         }
+        self.profile = {
+            "profile_digest": "d" * 64,
+            "content": {"machine": {"capabilities": ["fff.extrusion"]}},
+            "lifecycle": "ephemeral",
+            "persist_after_worker": False,
+            "delete_after_result": True,
+            "hardware_neutral": True,
+            "contains_transport_endpoint": False,
+            "contains_credentials": False,
+            "cloud_access": False,
+            "can_control_printer": False,
+            "can_upload": False,
+            "can_start_print": False,
+        }
 
     def prepare(self) -> dict:
         return self.service.prepare(
@@ -43,11 +57,13 @@ class SlicerPreparationTests(unittest.TestCase):
             context="production",
             assessment=self.assessment,
             intent=self.intent,
+            derived_profile=self.profile,
         )
 
     def test_prepares_request_from_matching_evidence(self) -> None:
         request = self.prepare()
-        self.assertEqual(request["profile_digest"], "b" * 64)
+        self.assertEqual(request["profile_digest"], "d" * 64)
+        self.assertTrue(request["profile_ephemeral"])
         self.assertEqual(
             request["authority"]["user_confirmation_stage"], "created_mission"
         )
@@ -59,6 +75,11 @@ class SlicerPreparationTests(unittest.TestCase):
 
     def test_rejects_digest_mismatch(self) -> None:
         self.intent["source_digest"] = "c" * 64
+        with self.assertRaises(SlicerPreparationError):
+            self.prepare()
+
+    def test_rejects_profile_with_printer_authority(self) -> None:
+        self.profile["can_control_printer"] = True
         with self.assertRaises(SlicerPreparationError):
             self.prepare()
 
