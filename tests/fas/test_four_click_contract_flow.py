@@ -1,17 +1,23 @@
 """End-to-end contract test for the governed four-click print path."""
 
+import json
 import sys
 import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
 from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
+from forge.fas.executive import ForgeExecutive
 from forge.fas.imports import ImportQuarantine
 from forge.fas.job_lifecycle import PrintJobLifecycle
 from forge.fas.live_printer_checks import REQUIRED_CHECKS, LivePrinterCheckService
+from forge.fas.print_dispatch import PrintDispatchCoordinator
+from forge.fas.provider_dispatch import ProviderDispatchCheckService
+from forge.fas.runtime import ForgeRuntime
 from forge.fas.slicer_acceptance import SlicerArtifactAcceptance
 from forge.fas.slicer_preparation import SlicerMissionPreparation
 from forge.fas.slicer_profile import SlicerProfileAdapter
@@ -195,14 +201,99 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "health": "healthy",
             }
         )
-        handoff = registry.prepare_artifact_upload(
-            "provider:custom",
-            job,
+        runtime_context = json.loads(
+            (ROOT / "examples/fas/execution-context-print.example.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        runtime_context = deepcopy(runtime_context)
+        runtime_context["allowed_capabilities"].append("artifact.upload")
+        runtime_context["resolved_capabilities"].append(
+            {
+                "capability_id": "artifact.upload",
+                "provider_id": "provider:custom",
+            }
+        )
+        runtime = ForgeRuntime()
+        runtime.create_context(runtime_context)
+        for state in ("preparing", "ready"):
+            runtime.transition(
+                runtime_context["context_id"],
+                state,
+                trigger=state,
+                authority_reference=runtime_context["authority_reference"],
+            )
+        runtime.reserve(
+            runtime_context["context_id"],
+            runtime_context["reserved_resources"][0],
+            mode="exclusive",
+            acquired_at="2026-07-26T12:00:00Z",
+            expires_at="2026-07-26T13:00:00Z",
+        )
+        provider_evidence = ProviderDispatchCheckService().evaluate(
+            provider_id="provider:custom",
+            context_id=runtime_context["context_id"],
+            capability_id="artifact.upload",
+            checked_at="2026-07-26T12:04:50Z",
+            expires_at="2026-07-26T12:05:20Z",
+            checks={
+                "provider_healthy": True,
+                "current_state_allows": True,
+                "capability_available": True,
+            },
+        )
+        mission = {
+            "mission_id": "mission-1",
+            "state": "approved",
+            "correlation_id": "job-1",
+            "context": {
+                "job_id": job["job_id"],
+                "artifact_digest": acceptance["artifact_digest"],
+                "input_digest": acceptance["input_digest"],
+                "profile_digest": acceptance["profile_digest"],
+                "engine_source_digest": acceptance["engine_source_digest"],
+                "engine_build_digest": acceptance["engine_build_digest"],
+                "comparison_id": acceptance["comparison_id"],
+                "comparison_evidence_digest": acceptance["comparison_evidence_digest"],
+                "comparison_reviewed_by": acceptance["reviewed_by"],
+                "comparison_reviewed_at": acceptance["reviewed_at"],
+            },
+            "plan": [{"capability_id": "artifact.upload"}],
+        }
+        dispatch_result = PrintDispatchCoordinator(
+            executive=ForgeExecutive(),
+            transport=registry,
+            runtime=runtime,
+        ).dispatch_confirmed_upload(
+            mission=mission,
+            job=job,
+            acceptance=acceptance,
+            authorization={
+                "outcome": "allow",
+                "evaluation_id": "authorization:1",
+                "decision_id": "decision:1",
+                "effective_action": {"action_type": "artifact.upload"},
+            },
+            capability={
+                "capability_id": "artifact.upload",
+                "provider_id": "provider:custom",
+            },
+            context_id=runtime_context["context_id"],
+            command_id="command:upload-1",
+            resource_ids=runtime_context["reserved_resources"],
+            command_expires_at="2026-07-26T12:05:20Z",
+            evaluated_at="2026-07-26T12:05:00Z",
+            provider_evidence=provider_evidence,
             runtime_lease_active=True,
             authorization_verified=True,
         )
-        self.assertTrue(handoff["fourth_click_satisfied"])
-        self.assertFalse(handoff["physical_dispatch_allowed"])
+        self.assertTrue(dispatch_result["prepared_upload"]["fourth_click_satisfied"])
+        self.assertFalse(
+            dispatch_result["prepared_upload"]["physical_dispatch_allowed"]
+        )
+        self.assertTrue(dispatch_result["upload_dispatched"])
+        self.assertFalse(dispatch_result["print_started"])
+        self.assertFalse(dispatch_result["physical_outcome_confirmed"])
 
 
 if __name__ == "__main__":
