@@ -31,6 +31,7 @@ from .scheduler import MissionScheduler, SchedulingError
 from .runtime import ForgeRuntime, RuntimeError
 from .release_gate import REQUIRED_GATES, ReleaseGate, ReleaseGateError
 from .safety_review import SafetyDesignReview, SafetyReviewError
+from .slicing import SlicerContractBoundary, SlicerContractError
 from .trust import (
     TrustError,
     TrustService,
@@ -100,6 +101,8 @@ __all__ = [
     "ReleaseGateError",
     "SafetyDesignReview",
     "SafetyReviewError",
+    "SlicerContractBoundary",
+    "SlicerContractError",
     "TrustError",
     "TrustService",
     "UpdateError",
