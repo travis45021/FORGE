@@ -7,6 +7,8 @@ Historical source: FAS-026
 FAS-027 defines the local service lifecycle boundary for FORGE. Services are
 registered with explicit dependencies and provided capabilities, then moved
 through observable states only with a user-scoped authority reference.
+Manifest dependencies and provided capabilities are unique, non-empty names,
+and a service cannot depend on itself.
 
 The reference implementation in `src/forge/fas/lifecycle.py` provides service
 registration, constrained state transitions, explicit start/stop plans, and a

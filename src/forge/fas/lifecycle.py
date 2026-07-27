@@ -65,6 +65,16 @@ class ServiceLifecycle:
             item["provides"], list
         ):
             raise LifecycleError("dependencies and provides must be lists")
+        if not isinstance(item["service_id"], str) or not item["service_id"]:
+            raise LifecycleError("service identity must be a non-empty string")
+        for field in ("dependencies", "provides"):
+            values = item[field]
+            if any(not isinstance(value, str) or not value for value in values):
+                raise LifecycleError(f"{field} must contain non-empty strings")
+            if len(values) != len(set(values)):
+                raise LifecycleError(f"{field} must not contain duplicates")
+        if item["service_id"] in item["dependencies"]:
+            raise LifecycleError("service cannot depend on itself")
         self._services[item["service_id"]] = item
         self._record("service.registered", item["service_id"], "manifest_registered")
         return deepcopy(item)

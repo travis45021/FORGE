@@ -80,6 +80,16 @@ class Fas027LifecycleTests(unittest.TestCase):
                 observed_at="2026-07-26T12:00:00-05:00",
             )
 
+    def test_manifest_rejects_duplicate_or_self_dependencies(self):
+        duplicate = dict(self.manifest)
+        duplicate["dependencies"] = ["forge-service:worker", "forge-service:worker"]
+        with self.assertRaisesRegex(LifecycleError, "duplicates"):
+            ServiceLifecycle().register(duplicate)
+        self_reference = dict(self.manifest)
+        self_reference["dependencies"] = [self.manifest["service_id"]]
+        with self.assertRaisesRegex(LifecycleError, "itself"):
+            ServiceLifecycle().register(self_reference)
+
 
 if __name__ == "__main__":
     unittest.main()
