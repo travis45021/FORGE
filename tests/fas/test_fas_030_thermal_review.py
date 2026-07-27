@@ -60,6 +60,22 @@ class Fas030ThermalReviewTests(unittest.TestCase):
                 reviewed_at="2026-07-26T12:00:00Z",
             )
 
+    def test_malformed_zones_and_review_metadata_fail_closed(self):
+        contract = self.contract()
+        contract["zones"] = {"zone_id": "bed"}
+        result = self.review.review(
+            contract, reviewer="forge-user:local", reviewed_at="2026-07-26T12:00:00Z"
+        )
+        self.assertEqual("needs_work", result["status"])
+        with self.assertRaisesRegex(ThermalReviewError, "reviewer"):
+            self.review.review(
+                self.contract(), reviewer="", reviewed_at="2026-07-26T12:00:00Z"
+            )
+        with self.assertRaisesRegex(ThermalReviewError, "UTC"):
+            self.review.review(
+                self.contract(), reviewer="forge-user:local", reviewed_at="not-a-time"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

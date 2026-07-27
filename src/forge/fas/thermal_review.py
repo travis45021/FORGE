@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any, ClassVar
 
 
@@ -40,7 +41,20 @@ class ThermalDesignReview:
         ids: set[str] = set()
         if not isinstance(item["zones"], list) or not item["zones"]:
             findings.append("at least one thermal zone is required")
+        if not isinstance(item["provider_id"], str) or not item["provider_id"].strip():
+            raise ThermalReviewError("thermal contract provider identity is invalid")
+        if not isinstance(reviewer, str) or not reviewer.strip():
+            raise ThermalReviewError("thermal review requires a reviewer")
+        if not isinstance(reviewed_at, str) or not reviewed_at.endswith("Z"):
+            raise ThermalReviewError("thermal review time must be UTC")
+        try:
+            datetime.fromisoformat(reviewed_at[:-1] + "+00:00")
+        except ValueError as exc:
+            raise ThermalReviewError("thermal review time must be valid UTC") from exc
         for zone in item.get("zones", []):
+            if not isinstance(zone, Mapping):
+                findings.append("thermal zone entry must be an object")
+                continue
             missing_zone = sorted(self.REQUIRED_ZONE_FIELDS - zone.keys())
             if missing_zone:
                 findings.append(
