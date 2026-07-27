@@ -154,3 +154,23 @@ def test_published_confirmation_digest_is_valid() -> None:
     assert value["evidence_digest"] == final_confirmation_evidence_digest(
         value["evidence"]
     )
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "comparison_reviewed_at",
+        "live_checks_checked_at",
+        "live_checks_expires_at",
+        "final_confirmed_at",
+        "confirmation_expires_at",
+    ],
+)
+def test_confirmation_schema_requires_utc_z_timestamps(field: str) -> None:
+    value = confirmation_evidence()
+    value["evidence"][field] = "2026-07-25T16:00:00-05:00"
+
+    with pytest.raises(ValidationError):
+        Draft202012Validator(
+            schema("final-confirmation-evidence.schema.json")
+        ).validate(value)

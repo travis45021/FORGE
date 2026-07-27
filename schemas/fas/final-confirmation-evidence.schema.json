@@ -40,13 +40,33 @@
         "comparison_id": {"type": "string", "minLength": 1},
         "comparison_evidence_digest": {"$ref": "#/$defs/digest"},
         "comparison_reviewed_by": {"type": "string", "minLength": 1},
-        "comparison_reviewed_at": {"type": "string", "format": "date-time"},
-        "live_checks_checked_at": {"type": "string", "format": "date-time"},
-        "live_checks_expires_at": {"type": "string", "format": "date-time"},
+        "comparison_reviewed_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "live_checks_checked_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "live_checks_expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
         "live_checks_evidence_digest": {"$ref": "#/$defs/digest"},
         "final_confirmed_by": {"type": "string", "minLength": 1},
-        "final_confirmed_at": {"type": "string", "format": "date-time"},
-        "confirmation_expires_at": {"type": "string", "format": "date-time"},
+        "final_confirmed_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
+        "confirmation_expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$"
+        },
         "confirmation_token": {"type": "string", "minLength": 32}
       }
     },
