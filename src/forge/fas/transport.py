@@ -11,6 +11,60 @@ class TransportError(ValueError):
     """Raised when a hardware provider contract is invalid or unsafe."""
 
 
+def capability_provider_manifest(
+    *,
+    provider_id: str,
+    transport: str,
+    capabilities: list[str],
+    endpoint_scope: str = "local_only",
+    tested_reference: str | None = None,
+) -> dict[str, Any]:
+    """Create a replaceable, hardware-neutral transport provider manifest."""
+    if not provider_id.startswith("provider:"):
+        raise TransportError("provider identity must use the provider namespace")
+    if not transport.strip():
+        raise TransportError("provider transport is required")
+    if (
+        not capabilities
+        or any(not capability.strip() for capability in capabilities)
+        or len(capabilities) != len(set(capabilities))
+    ):
+        raise TransportError("provider capabilities must be unique and non-empty")
+    if endpoint_scope not in {"offline", "local_only"}:
+        raise TransportError("v1 hardware providers must remain offline or local-only")
+    return {
+        "schema_version": "1.0.0",
+        "provider_id": provider_id,
+        "transport": transport,
+        "capabilities": sorted(capabilities),
+        "state": "registered",
+        "health": "unknown",
+        "endpoint_scope": endpoint_scope,
+        "tested_reference": tested_reference,
+        "compatibility_boundary": False,
+        "direct_slicer_control": False,
+        "requires_runtime_dispatcher": True,
+    }
+
+
+def moonraker_klipper_reference_manifest(
+    *, provider_id: str = "provider:moonraker-local"
+) -> dict[str, Any]:
+    """Describe Moonraker/Klipper as one tested local reference provider."""
+    return capability_provider_manifest(
+        provider_id=provider_id,
+        transport="moonraker-http-local",
+        capabilities=[
+            "artifact.upload",
+            "job.start",
+            "job.status",
+            "job.cancel",
+        ],
+        endpoint_scope="local_only",
+        tested_reference="moonraker-klipper",
+    )
+
+
 class HardwareTransportRegistry:
     """Discover providers and prepare bounded commands without sending them."""
 

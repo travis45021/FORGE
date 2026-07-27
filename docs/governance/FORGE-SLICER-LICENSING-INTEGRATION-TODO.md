@@ -106,7 +106,9 @@ release is distributed until the applicable items in this gate are complete.
   application integration remains open.
 - [x] Add capability-provider upload only after the mandatory final user gate.
 - [ ] Keep printer-specific behavior in replaceable capability providers, with
-  Moonraker/Klipper only as the first tested reference.
+  Moonraker/Klipper only as the first tested reference. Hardware-neutral and
+  Moonraker/Klipper reference manifests are implemented with no compatibility
+  boundary; real provider adapters and hardware tests remain open.
 
 ## Gate 5 - Unified user experience
 

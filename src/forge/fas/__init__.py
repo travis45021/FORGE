@@ -46,7 +46,12 @@ from .slicer_worker import SlicerWorkerBoundary, SlicerWorkerError
 from .slicing import SlicerContractBoundary, SlicerContractError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 from .thermal_review import ThermalDesignReview, ThermalReviewError
-from .transport import HardwareTransportRegistry, TransportError
+from .transport import (
+    HardwareTransportRegistry,
+    TransportError,
+    capability_provider_manifest,
+    moonraker_klipper_reference_manifest,
+)
 from .trust import (
     TrustError,
     TrustService,
@@ -147,11 +152,13 @@ __all__ = [
     "UpdateManager",
     "VisionDesignReview",
     "VisionReviewError",
+    "capability_provider_manifest",
     "content_digest",
     "context_fingerprint",
     "custom_component_manifest",
     "development_hmac_signature",
     "development_hmac_verifier",
+    "moonraker_klipper_reference_manifest",
     "payload_digest",
     "validate_event",
 ]
