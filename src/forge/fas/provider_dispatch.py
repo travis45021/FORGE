@@ -48,17 +48,27 @@ class ProviderDispatchCheckService:
         expires_at: str,
         checks: Mapping[str, Any],
     ) -> dict[str, Any]:
-        if not provider_id or not context_id or capability_id != "artifact.upload":
+        if (
+            not isinstance(provider_id, str)
+            or not provider_id.strip()
+            or not isinstance(context_id, str)
+            or not context_id.strip()
+            or capability_id != "artifact.upload"
+        ):
             raise ProviderDispatchError("provider dispatch identity is invalid")
+        provider_id = provider_id.strip()
+        context_id = context_id.strip()
         checked = self._utc(checked_at)
         expiry = self._utc(expires_at)
         if expiry <= checked or expiry - checked > MAX_PROVIDER_DISPATCH_AGE:
             raise ProviderDispatchError(
                 "provider dispatch evidence must expire within thirty seconds"
             )
+        if not isinstance(checks, Mapping):
+            raise ProviderDispatchError("provider dispatch checks must be an object")
         evidence = deepcopy(dict(checks))
         if set(evidence) != REQUIRED_CHECKS or any(
-            not isinstance(evidence[name], bool) for name in REQUIRED_CHECKS
+            type(evidence[name]) is not bool for name in REQUIRED_CHECKS
         ):
             raise ProviderDispatchError(
                 "provider dispatch checks must be complete booleans"

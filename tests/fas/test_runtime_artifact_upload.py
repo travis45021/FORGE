@@ -141,6 +141,24 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["live_checks_evidence_digest"], "9" * 64)
         self.assertEqual(len(result["final_confirmation_evidence_digest"]), 64)
 
+    def test_rejects_extra_provider_evidence_even_with_recomputed_digest(self) -> None:
+        from forge.fas.provider_dispatch import provider_dispatch_evidence_digest
+
+        evidence = self.provider_evidence()
+        evidence["confirmation_token"] = "must-not-cross-runtime"
+        evidence["evidence_digest"] = provider_dispatch_evidence_digest(evidence)
+
+        with self.assertRaisesRegex(RuntimeError, "fields are invalid"):
+            self.runtime.dispatch_artifact_upload(
+                self.context["context_id"],
+                self.handoff,
+                command_id="command:upload-extra-evidence",
+                resource_ids=self.context["reserved_resources"],
+                expires_at="2026-07-25T21:00:20Z",
+                evaluated_at="2026-07-25T21:00:00Z",
+                provider_evidence=evidence,
+            )
+
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
         with self.assertRaises(RuntimeError):

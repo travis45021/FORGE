@@ -45,6 +45,12 @@ depends on. Upload permission does not start the print, and each published
 evidence record explicitly carries `can_upload: false` and
 `can_start_print: false` where those fields apply.
 
+Final provider-dispatch evidence accepts exactly three boolean checks, exact
+provider/context/capability identity, UTC timestamps, and no more than thirty
+seconds of validity. Runtime rejects unknown top-level fields even when a
+caller recomputes the evidence digest, so secret or contradictory data cannot
+be smuggled through the final provider envelope.
+
 ## Public adapter contracts
 
 Replaceable printer adapters use the following strict, non-authoritative

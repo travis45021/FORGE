@@ -339,6 +339,20 @@ class ForgeRuntime:
                 "upload command cannot outlive confirmation or live checks"
             )
         provider_check = deepcopy(dict(provider_evidence))
+        provider_fields = {
+            "provider_id",
+            "context_id",
+            "capability_id",
+            "checked_at",
+            "expires_at",
+            "checks",
+            "passed",
+            "can_upload",
+            "can_start_print",
+            "evidence_digest",
+        }
+        if set(provider_check) != provider_fields:
+            raise RuntimeError("provider dispatch evidence fields are invalid")
         provider_checked_at = _utc(provider_check.get("checked_at"))
         provider_expires_at = _utc(provider_check.get("expires_at"))
         if (
@@ -363,7 +377,10 @@ class ForgeRuntime:
             "capability_available",
         }:
             raise RuntimeError("provider dispatch checks are incomplete")
-        if any(provider_checks[name] is not True for name in provider_checks):
+        if any(
+            type(provider_checks[name]) is not bool or provider_checks[name] is not True
+            for name in provider_checks
+        ):
             raise RuntimeError("provider dispatch checks did not all pass")
         if command_expires_at > provider_expires_at:
             raise RuntimeError("upload command cannot outlive provider evidence")
