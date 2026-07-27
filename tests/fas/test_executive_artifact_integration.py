@@ -29,6 +29,8 @@ def inputs() -> dict[str, dict]:
                 "engine_build_digest": engine_build_digest,
                 "comparison_id": "comparison-1",
                 "comparison_evidence_digest": comparison_digest,
+                "comparison_reviewed_by": "reviewer-1",
+                "comparison_reviewed_at": "2026-07-26T12:00:00Z",
             },
             "plan": [{"capability_id": "artifact.upload"}],
         },
@@ -44,6 +46,8 @@ def inputs() -> dict[str, dict]:
             "engine_build_digest": engine_build_digest,
             "comparison_id": "comparison-1",
             "comparison_evidence_digest": comparison_digest,
+            "comparison_reviewed_by": "reviewer-1",
+            "comparison_reviewed_at": "2026-07-26T12:00:00Z",
             "final_confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
         },
@@ -55,6 +59,8 @@ def inputs() -> dict[str, dict]:
             "engine_build_digest": engine_build_digest,
             "comparison_id": "comparison-1",
             "comparison_evidence_digest": comparison_digest,
+            "reviewed_by": "reviewer-1",
+            "reviewed_at": "2026-07-26T12:00:00Z",
             "ready_for_live_checks": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,
@@ -91,6 +97,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
     assert request["payload"]["engine_source_digest"] == "d" * 64
     assert request["payload"]["engine_build_digest"] == "e" * 64
     assert request["payload"]["comparison_evidence_digest"] == "f" * 64
+    assert request["payload"]["comparison_reviewed_by"] == "reviewer-1"
     assert "confirmation_token" not in request["payload"]
 
 
@@ -102,6 +109,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
         ("job", "profile_digest", "d" * 64),
         ("job", "engine_build_digest", "f" * 64),
         ("job", "comparison_evidence_digest", "a" * 64),
+        ("job", "comparison_reviewed_by", "other-reviewer"),
         ("acceptance", "can_upload", True),
         ("acceptance", "preflight_verified", False),
         ("acceptance", "pair_preflight_verified", False),

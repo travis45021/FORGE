@@ -137,6 +137,8 @@ class PrintJobLifecycle:
             "comparison_id"
         ):
             raise JobLifecycleError("accepted comparison does not match the job")
+        if not acceptance.get("reviewed_by") or not acceptance.get("reviewed_at"):
+            raise JobLifecycleError("accepted comparison lacks click-three attribution")
         for field in (
             "comparison_evidence_digest",
             "input_digest",
@@ -185,6 +187,8 @@ class PrintJobLifecycle:
         )
         job["artifact_preflight_verified"] = True
         job["artifact_pair_preflight_verified"] = True
+        job["comparison_reviewed_by"] = acceptance["reviewed_by"]
+        job["comparison_reviewed_at"] = acceptance["reviewed_at"]
         return deepcopy(job)
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:

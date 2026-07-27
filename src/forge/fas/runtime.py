@@ -269,6 +269,10 @@ class ForgeRuntime:
             raise RuntimeError("upload handoff requires coordinated pair preflight")
         if not handoff.get("comparison_id"):
             raise RuntimeError("upload handoff requires reviewed comparison identity")
+        if not handoff.get("comparison_reviewed_by") or not handoff.get(
+            "comparison_reviewed_at"
+        ):
+            raise RuntimeError("upload handoff requires click-three attribution")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")
@@ -319,6 +323,8 @@ class ForgeRuntime:
                 "artifact_digest": artifact_digest,
                 "comparison_id": handoff.get("comparison_id"),
                 "comparison_evidence_digest": handoff["comparison_evidence_digest"],
+                "comparison_reviewed_by": handoff["comparison_reviewed_by"],
+                "comparison_reviewed_at": handoff["comparison_reviewed_at"],
                 "input_digest": handoff["input_digest"],
                 "profile_digest": handoff["profile_digest"],
                 "engine_source_digest": handoff["engine_source_digest"],

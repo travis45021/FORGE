@@ -177,6 +177,10 @@ class HardwareTransportRegistry:
             raise TransportError("coordinated pair preflight is required")
         if not item.get("comparison_id"):
             raise TransportError("reviewed comparison identity is required")
+        if not item.get("comparison_reviewed_by") or not item.get(
+            "comparison_reviewed_at"
+        ):
+            raise TransportError("click-three review attribution is required")
         confirmation_token = item.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise TransportError("fresh final-confirmation token is required")
@@ -211,6 +215,8 @@ class HardwareTransportRegistry:
             "artifact_digest": artifact_digest,
             "comparison_id": item.get("comparison_id"),
             "comparison_evidence_digest": item["comparison_evidence_digest"],
+            "comparison_reviewed_by": item["comparison_reviewed_by"],
+            "comparison_reviewed_at": item["comparison_reviewed_at"],
             "input_digest": item["input_digest"],
             "profile_digest": item["profile_digest"],
             "engine_source_digest": item["engine_source_digest"],

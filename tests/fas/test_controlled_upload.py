@@ -36,6 +36,8 @@ class ControlledUploadTests(unittest.TestCase):
             "engine_build_digest": "e" * 64,
             "comparison_id": "comparison-1",
             "comparison_evidence_digest": "f" * 64,
+            "comparison_reviewed_by": "reviewer-1",
+            "comparison_reviewed_at": "2026-07-26T12:00:00Z",
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
         }
@@ -56,6 +58,7 @@ class ControlledUploadTests(unittest.TestCase):
         self.assertEqual(result["profile_digest"], "c" * 64)
         self.assertEqual(result["engine_build_digest"], "e" * 64)
         self.assertEqual(result["comparison_evidence_digest"], "f" * 64)
+        self.assertEqual(result["comparison_reviewed_by"], "reviewer-1")
         self.assertFalse(result["physical_dispatch_allowed"])
 
     def test_rejects_job_before_final_confirmation(self) -> None:
@@ -100,6 +103,11 @@ class ControlledUploadTests(unittest.TestCase):
     def test_rejects_job_without_reviewed_comparison(self) -> None:
         self.job.pop("comparison_evidence_digest")
         with self.assertRaisesRegex(TransportError, "comparison evidence digest"):
+            self.prepare()
+
+    def test_rejects_job_without_review_attribution(self) -> None:
+        self.job.pop("comparison_reviewed_at")
+        with self.assertRaisesRegex(TransportError, "review attribution"):
             self.prepare()
 
 

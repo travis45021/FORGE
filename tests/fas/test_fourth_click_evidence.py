@@ -48,6 +48,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "engine_build_digest": self.engine_build_digest,
             "comparison_id": "comparison-1",
             "comparison_evidence_digest": self.comparison_digest,
+            "reviewed_by": "reviewer-1",
+            "reviewed_at": "2026-07-26T12:00:00Z",
             "final_confirmation_required": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,
@@ -78,6 +80,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
         self.assertEqual(job["final_confirmed_by"], "user-1")
         self.assertTrue(job["artifact_preflight_verified"])
         self.assertTrue(job["artifact_pair_preflight_verified"])
+        self.assertEqual(job["comparison_reviewed_by"], "reviewer-1")
+        self.assertEqual(job["final_confirmed_by"], "user-1")
 
     def test_rejects_stale_artifact_checks(self) -> None:
         self.live["artifact_digest"] = "b" * 64
@@ -107,6 +111,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
     def test_rejects_acceptance_from_different_engine_build(self) -> None:
         self.acceptance["engine_build_digest"] = "f" * 64
         with self.assertRaisesRegex(JobLifecycleError, "engine build digest"):
+            self.confirm()
+
+    def test_rejects_acceptance_without_review_attribution(self) -> None:
+        self.acceptance["reviewed_by"] = ""
+        with self.assertRaisesRegex(JobLifecycleError, "click-three attribution"):
             self.confirm()
 
 

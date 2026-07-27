@@ -128,7 +128,9 @@ release is distributed until the applicable items in this gate are complete.
   review, and that digest is required through fourth-click dispatch so warnings
   or evidence cannot change silently. Acceptance requires a named, timestamped
   click-three review receipt bound to that digest; a boolean review shortcut is
-  rejected. Real engine artifact evidence remains open.
+  rejected. The click-three reviewer and time remain distinct from, and are
+  preserved alongside, the fourth-click confirmer through Executive, transport,
+  and Runtime. Real engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

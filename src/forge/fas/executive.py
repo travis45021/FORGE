@@ -112,6 +112,13 @@ class ForgeExecutive:
         ):
             raise ExecutiveError("job and reviewed comparison do not match")
         if (
+            job.get("comparison_reviewed_by") != acceptance.get("reviewed_by")
+            or job.get("comparison_reviewed_at") != acceptance.get("reviewed_at")
+            or not acceptance.get("reviewed_by")
+            or not acceptance.get("reviewed_at")
+        ):
+            raise ExecutiveError("job and click-three review attribution do not match")
+        if (
             job.get("input_digest") != input_digest
             or job.get("profile_digest") != profile_digest
             or job.get("engine_source_digest") != engine_source_digest
@@ -138,6 +145,8 @@ class ForgeExecutive:
             or context.get("engine_build_digest") != engine_build_digest
             or context.get("comparison_id") != acceptance.get("comparison_id")
             or context.get("comparison_evidence_digest") != comparison_evidence_digest
+            or context.get("comparison_reviewed_by") != acceptance.get("reviewed_by")
+            or context.get("comparison_reviewed_at") != acceptance.get("reviewed_at")
         ):
             raise ExecutiveError("Mission context does not match the confirmed job")
 
@@ -152,6 +161,8 @@ class ForgeExecutive:
                 "engine_build_digest": engine_build_digest,
                 "comparison_id": acceptance["comparison_id"],
                 "comparison_evidence_digest": comparison_evidence_digest,
+                "comparison_reviewed_by": acceptance["reviewed_by"],
+                "comparison_reviewed_at": acceptance["reviewed_at"],
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
                 "artifact_preflight_verified": True,
