@@ -1,16 +1,15 @@
 """FORGE Assurance Services reference components."""
 
-from .authorization import AuthorizationEngine, EvaluationError
 from .assurance import AssuranceError, AssuranceService, context_fingerprint
+from .authorization import AuthorizationEngine, EvaluationError
 from .capabilities import CapabilityError, CapabilityRegistry
 from .configuration import ConfigurationError, ConfigurationManager
 from .design_review import DesignReviewError, MotionDesignReview
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .health import HEALTH_STATES, HealthError, HealthService
-from .interactions import InteractionError, InteractionManager
 from .imports import ImportAssessmentError, ImportQuarantine
-from .job_lifecycle import JobLifecycleError, PrintJobLifecycle
+from .interactions import InteractionError, InteractionManager
 from .interfaces import (
     CONTENT_KINDS,
     INTERFACE_MODES,
@@ -18,21 +17,26 @@ from .interfaces import (
     InterfaceError,
     InterfaceGateway,
 )
+from .job_lifecycle import JobLifecycleError, PrintJobLifecycle
 from .knowledge import KnowledgeCore, KnowledgeError
 from .lifecycle import LifecycleError, ServiceLifecycle
-from .missions import MissionLifecycle, MissionTransitionError
+from .manufacturing_intent import ManufacturingIntentError, ManufacturingIntentService
 from .material_review import MaterialDesignReview, MaterialReviewError
+from .missions import MissionLifecycle, MissionTransitionError
 from .objects import ObjectSystem, ObjectSystemError
 from .onboarding import OnboardingError, OnboardingService
-from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .persistence import DataRecoveryService, PersistenceError
 from .plugins import PluginError, PluginRegistry, custom_component_manifest
+from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .preflight import ArtifactPreflight, PreflightError
-from .scheduler import MissionScheduler, SchedulingError
-from .runtime import ForgeRuntime, RuntimeError
 from .release_gate import REQUIRED_GATES, ReleaseGate, ReleaseGateError
+from .runtime import ForgeRuntime, RuntimeError
 from .safety_review import SafetyDesignReview, SafetyReviewError
+from .scheduler import MissionScheduler, SchedulingError
 from .slicing import SlicerContractBoundary, SlicerContractError
+from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
+from .thermal_review import ThermalDesignReview, ThermalReviewError
+from .transport import HardwareTransportRegistry, TransportError
 from .trust import (
     TrustError,
     TrustService,
@@ -41,84 +45,83 @@ from .trust import (
     payload_digest,
 )
 from .updates import UpdateError, UpdateManager
-from .thermal_review import ThermalDesignReview, ThermalReviewError
 from .vision_review import VisionDesignReview, VisionReviewError
-from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
-from .transport import HardwareTransportRegistry, TransportError
 
 __all__ = [
-    "AuthorizationEngine",
+    "CONTENT_KINDS",
+    "HEALTH_STATES",
+    "INTERFACE_MODES",
+    "LOCAL_API_VERSION",
+    "REQUIRED_GATES",
+    "TEST_LAYERS",
+    "ArtifactPreflight",
     "AssuranceError",
     "AssuranceService",
+    "AuthorizationEngine",
     "CapabilityError",
     "CapabilityRegistry",
     "ConfigurationError",
     "ConfigurationManager",
+    "DataRecoveryService",
     "DesignReviewError",
-    "MotionDesignReview",
     "EvaluationError",
     "EventError",
     "ExecutiveError",
     "ForgeExecutive",
     "ForgeRuntime",
-    "HEALTH_STATES",
+    "HardwareTransportRegistry",
     "HealthError",
     "HealthService",
     "IdempotentConsumer",
-    "InteractionError",
-    "InteractionManager",
     "ImportAssessmentError",
     "ImportQuarantine",
-    "JobLifecycleError",
-    "PrintJobLifecycle",
-    "CONTENT_KINDS",
-    "INTERFACE_MODES",
-    "LOCAL_API_VERSION",
+    "InteractionError",
+    "InteractionManager",
     "InterfaceError",
     "InterfaceGateway",
+    "JobLifecycleError",
     "KnowledgeCore",
     "KnowledgeError",
     "LifecycleError",
-    "ServiceLifecycle",
+    "ManufacturingIntentError",
+    "ManufacturingIntentService",
+    "MaterialDesignReview",
+    "MaterialReviewError",
     "MissionLifecycle",
     "MissionScheduler",
     "MissionTransitionError",
-    "MaterialDesignReview",
-    "MaterialReviewError",
+    "MotionDesignReview",
     "ObjectSystem",
     "ObjectSystemError",
     "OnboardingError",
     "OnboardingService",
-    "PolicyBundleError",
-    "PolicyBundleRegistry",
-    "DataRecoveryService",
     "PersistenceError",
     "PluginError",
     "PluginRegistry",
-    "ArtifactPreflight",
+    "PolicyBundleError",
+    "PolicyBundleRegistry",
     "PreflightError",
-    "SchedulingError",
-    "RuntimeError",
-    "REQUIRED_GATES",
+    "PrintJobLifecycle",
     "ReleaseGate",
     "ReleaseGateError",
+    "RuntimeError",
     "SafetyDesignReview",
     "SafetyReviewError",
+    "SchedulingError",
+    "ServiceLifecycle",
     "SlicerContractBoundary",
     "SlicerContractError",
+    "TestAssuranceError",
+    "TestAssuranceService",
+    "ThermalDesignReview",
+    "ThermalReviewError",
+    "TransportError",
     "TrustError",
     "TrustService",
     "UpdateError",
     "UpdateManager",
-    "ThermalDesignReview",
-    "ThermalReviewError",
     "VisionDesignReview",
     "VisionReviewError",
-    "TEST_LAYERS",
-    "TestAssuranceError",
-    "TestAssuranceService",
-    "HardwareTransportRegistry",
-    "TransportError",
     "content_digest",
     "context_fingerprint",
     "custom_component_manifest",

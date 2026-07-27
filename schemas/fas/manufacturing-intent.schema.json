@@ -19,6 +19,7 @@
         "context_confirmed": {"const": true},
         "mission_reviewed": {"const": true}
       }
-    }
+    },
+    "can_authorize_production": {"const": false}
   }
 }
