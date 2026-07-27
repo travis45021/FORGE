@@ -49,6 +49,8 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "job_id": "job-1",
             "artifact_digest": "a" * 64,
             "confirmed_by": "user-1",
+            "confirmation_token": "confirmation-" + ("x" * 32),
+            "historical_replay_allowed": False,
             "physical_dispatch_allowed": False,
             "requires_runtime_dispatcher": True,
             "fourth_click_satisfied": True,
@@ -76,6 +78,31 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.handoff["fourth_click_satisfied"] = False
         with self.assertRaises(RuntimeError):
             self.dispatch()
+
+    def test_rejects_duplicate_live_handoff(self) -> None:
+        self.dispatch()
+        with self.assertRaises(RuntimeError):
+            self.dispatch()
+
+    def test_rejects_historical_replay_before_dispatch(self) -> None:
+        with self.assertRaises(RuntimeError):
+            self.runtime.dispatch_artifact_upload(
+                self.context["context_id"],
+                self.handoff,
+                command_id="command:replayed-upload",
+                resource_ids=self.context["reserved_resources"],
+                expires_at="2026-07-25T21:30:00Z",
+                evaluated_at="2026-07-25T21:00:00Z",
+                provider_healthy=True,
+                current_state_allows=True,
+                historical_replay=True,
+            )
+        self.assertFalse(
+            any(
+                event["event_type"] == "runtime.command.dispatched"
+                for event in self.runtime.history()
+            )
+        )
 
 
 if __name__ == "__main__":

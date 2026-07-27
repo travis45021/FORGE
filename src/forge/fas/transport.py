@@ -117,6 +117,9 @@ class HardwareTransportRegistry:
             raise TransportError("job must pass final confirmation before upload")
         if item.get("click_count") != 3 or not item.get("final_confirmed_by"):
             raise TransportError("evidence-backed fourth click is required")
+        confirmation_token = item.get("confirmation_token")
+        if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
+            raise TransportError("fresh final-confirmation token is required")
         artifact_digest = item.get("artifact_digest")
         if (
             not isinstance(artifact_digest, str)
@@ -131,6 +134,8 @@ class HardwareTransportRegistry:
             "job_id": item["job_id"],
             "artifact_digest": artifact_digest,
             "confirmed_by": item["final_confirmed_by"],
+            "confirmation_token": confirmation_token,
+            "historical_replay_allowed": False,
             "physical_dispatch_allowed": False,
             "requires_runtime_dispatcher": True,
             "fourth_click_satisfied": True,

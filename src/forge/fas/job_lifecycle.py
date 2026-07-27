@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from secrets import token_urlsafe
 from typing import Any
 
 
@@ -110,6 +111,7 @@ class PrintJobLifecycle:
             {
                 "state": "upload_pending",
                 "final_confirmed_by": actor,
+                "confirmation_token": token_urlsafe(32),
                 "live_checks_passed": True,
             }
         )

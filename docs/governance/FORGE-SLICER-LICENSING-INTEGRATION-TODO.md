@@ -132,7 +132,7 @@ release is distributed until the applicable items in this gate are complete.
 - [ ] Test worker crashes, timeouts, resource exhaustion, cancellation, and
   stale context.
 - [x] Prove that twin evidence cannot authorize production.
-- [ ] Prove that historical replay cannot upload or start a print.
+- [x] Prove that historical replay cannot upload or start a print.
 - [x] Prove that no v1 path skips the fourth click for every implemented
   contract path.
 - [ ] Verify that shipped binaries correspond to the published complete source.

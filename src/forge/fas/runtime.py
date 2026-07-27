@@ -54,6 +54,7 @@ class ForgeRuntime:
     def __init__(self) -> None:
         self._contexts: dict[str, dict[str, Any]] = {}
         self._leases: dict[str, dict[str, Any]] = {}
+        self._consumed_confirmation_tokens: set[str] = set()
         self._history: list[dict[str, Any]] = []
 
     def create_context(self, context: Mapping[str, Any]) -> dict[str, Any]:
@@ -246,15 +247,27 @@ class ForgeRuntime:
         evaluated_at: str,
         provider_healthy: bool,
         current_state_allows: bool,
+        historical_replay: bool = False,
     ) -> dict[str, Any]:
         """Dispatch a fourth-click upload handoff through the recorded runtime."""
         handoff = deepcopy(dict(prepared))
+        if historical_replay:
+            raise RuntimeError("historical replay cannot dispatch an artifact upload")
+        if handoff.get("historical_replay_allowed") is not False:
+            raise RuntimeError(
+                "upload handoff must explicitly prohibit historical replay"
+            )
         if handoff.get("physical_dispatch_allowed") is not False:
             raise RuntimeError("upload handoff must not self-authorize dispatch")
         if handoff.get("requires_runtime_dispatcher") is not True:
             raise RuntimeError("upload handoff must require the runtime dispatcher")
         if handoff.get("fourth_click_satisfied") is not True:
             raise RuntimeError("upload handoff requires the fourth user click")
+        confirmation_token = handoff.get("confirmation_token")
+        if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
+            raise RuntimeError("upload handoff requires a fresh confirmation token")
+        if confirmation_token in self._consumed_confirmation_tokens:
+            raise RuntimeError("final-confirmation token has already been consumed")
         artifact_digest = handoff.get("artifact_digest")
         if (
             not isinstance(artifact_digest, str)
@@ -277,6 +290,7 @@ class ForgeRuntime:
             provider_healthy=provider_healthy,
             current_state_allows=current_state_allows,
         )
+        self._consumed_confirmation_tokens.add(confirmation_token)
         result.update(
             {
                 "job_id": handoff.get("job_id"),

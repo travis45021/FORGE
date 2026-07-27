@@ -28,6 +28,7 @@ class ControlledUploadTests(unittest.TestCase):
             "state": "upload_pending",
             "click_count": 3,
             "final_confirmed_by": "user-1",
+            "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_digest": "a" * 64,
         }
 
@@ -57,6 +58,11 @@ class ControlledUploadTests(unittest.TestCase):
                 runtime_lease_active=False,
                 authorization_verified=True,
             )
+
+    def test_rejects_job_without_fresh_confirmation_token(self) -> None:
+        self.job.pop("confirmation_token")
+        with self.assertRaises(TransportError):
+            self.prepare()
 
 
 if __name__ == "__main__":
