@@ -11,6 +11,16 @@ class UpdateError(ValueError):
     """Raised when an update cannot pass compatibility or rollback gates."""
 
 
+def _version(value: str) -> tuple[int, ...]:
+    if (
+        not isinstance(value, str)
+        or not value
+        or any(not part.isdigit() for part in value.split("."))
+    ):
+        raise UpdateError("versions must be numeric dotted values")
+    return tuple(int(part) for part in value.split("."))
+
+
 class UpdateManager:
     """Plan updates without installing or restarting trusted services."""
 
@@ -36,9 +46,29 @@ class UpdateManager:
         missing = sorted(required - item.keys())
         if missing:
             raise UpdateError(f"update manifest missing: {', '.join(missing)}")
-        if not approval_reference or item["version"] == current_version:
+        for field in ("update_id", "component", "version", "rollback_version"):
+            if not isinstance(item[field], str) or not item[field].strip():
+                raise UpdateError(f"update {field} must be a non-empty string")
+        current = _version(current_version)
+        target = _version(item["version"])
+        rollback = _version(item["rollback_version"])
+        _version(item["minimum_runtime"])
+        if (
+            not isinstance(approval_reference, str)
+            or not approval_reference.strip()
+            or target == current
+        ):
             raise UpdateError("update requires explicit approval and a version change")
-        if not item["digest"].startswith("sha256:"):
+        if target <= current or rollback >= target:
+            raise UpdateError("update versions must advance and have an older rollback")
+        if (
+            not isinstance(item["digest"], str)
+            or len(item["digest"]) != 71
+            or not item["digest"].startswith("sha256:")
+            or any(
+                character not in "0123456789abcdef" for character in item["digest"][7:]
+            )
+        ):
             raise UpdateError("update digest must be sha256")
         plan = {
             "update_id": item["update_id"],
@@ -48,7 +78,7 @@ class UpdateManager:
             "rollback_version": item["rollback_version"],
             "minimum_runtime": item["minimum_runtime"],
             "digest": item["digest"],
-            "approval_reference": approval_reference,
+            "approval_reference": approval_reference.strip(),
             "status": "planned",
             "install_authorized": False,
             "physical_execution_allowed": False,
@@ -66,7 +96,7 @@ class UpdateManager:
     ) -> dict[str, Any]:
         plan = self._require(update_id)
         compatible = (
-            runtime_version >= plan["minimum_runtime"]
+            _version(runtime_version) >= _version(plan["minimum_runtime"])
             and backup_verified is True
             and tests_passed is True
         )

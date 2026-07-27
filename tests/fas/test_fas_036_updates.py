@@ -58,6 +58,24 @@ class Fas036UpdateTests(unittest.TestCase):
         )
         self.assertEqual("rollback_planned", result["status"])
 
+    def test_update_manifest_and_runtime_versions_are_strict(self):
+        invalid = dict(self.manifest)
+        invalid["digest"] = "sha256:short"
+        with self.assertRaisesRegex(UpdateError, "digest"):
+            self.manager.plan(
+                invalid, current_version="1.0.0", approval_reference="decision:update"
+            )
+        self.manager.plan(
+            self.manifest, current_version="1.0.0", approval_reference="decision:update"
+        )
+        with self.assertRaisesRegex(UpdateError, "versions"):
+            self.manager.compatibility(
+                "update:001",
+                runtime_version="not-a-version",
+                backup_verified=True,
+                tests_passed=True,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
