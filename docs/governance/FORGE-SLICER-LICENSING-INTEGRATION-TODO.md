@@ -180,7 +180,9 @@ release is distributed until the applicable items in this gate are complete.
   contract is implemented; application rendering remains open.
 - [ ] Show live printer checks and the mandatory **Yes, Print** action before
   controlled upload/start. A plain-language, accessible, fail-closed click-four
-  presentation contract is implemented; application rendering remains open.
+  presentation contract is implemented. A post-click status contract now
+  distinguishes an upload command from printer receipt or print start and
+  keeps start disabled; application rendering remains open.
 - [ ] Meet FAS-024 accessibility, structured error, and interface parity
   requirements. Mode-parity screens, keyboard and screen-reader semantics,
   non-color cues, and actionable structured errors are implemented as

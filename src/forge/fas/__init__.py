@@ -6,6 +6,7 @@ from .capabilities import CapabilityError, CapabilityRegistry
 from .configuration import ConfigurationError, ConfigurationManager
 from .context_presentation import ContextPresentationError, PrintContextPresenter
 from .design_review import DesignReviewError, MotionDesignReview
+from .dispatch_presentation import DispatchOutcomePresenter, DispatchPresentationError
 from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .final_confirmation_policy import (
@@ -102,6 +103,8 @@ __all__ = [
     "ContextPresentationError",
     "DataRecoveryService",
     "DesignReviewError",
+    "DispatchOutcomePresenter",
+    "DispatchPresentationError",
     "EvaluationError",
     "EventError",
     "ExecutiveError",

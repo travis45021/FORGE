@@ -19,6 +19,7 @@ PRINT_WORKFLOW_SCREENS = {
     "confirm_context",
     "create_print_mission",
     "yes_print",
+    "print_dispatch_status",
 }
 
 

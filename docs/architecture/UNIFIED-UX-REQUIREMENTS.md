@@ -14,6 +14,10 @@ slicer application or write code to use supported or custom hardware.
   limitations, and provenance before creating the verified Print Mission.
 - **Step 4 — Yes, Print:** show live printer checks and require the explicit
   final confirmation immediately before controlled upload/start.
+- **After click four — Dispatch status:** distinguish the upload command being
+  sent from printer receipt, print start, and confirmed physical outcome.
+  Until provider evidence proves those later states, show them as unconfirmed
+  and keep the print-start control disabled.
 
 Unavailable capabilities must be explained in plain language with next steps.
 The UI must never imply that an inferred brand profile is a compatibility
