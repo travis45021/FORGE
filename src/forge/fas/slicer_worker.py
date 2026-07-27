@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from copy import deepcopy
 from pathlib import PurePosixPath
 from typing import Any, ClassVar
@@ -38,8 +38,21 @@ class SlicerWorkerBoundary:
         missing = sorted(required - item.keys())
         if missing:
             raise SlicerWorkerError(f"worker manifest missing: {', '.join(missing)}")
-        if not item["worker_id"] or item["context"] not in {"production", "twin"}:
+        allowed = required | {"can_control_hardware"}
+        unexpected = sorted(item.keys() - allowed)
+        if unexpected:
+            raise SlicerWorkerError(
+                f"worker manifest has unknown fields: {', '.join(unexpected)}"
+            )
+        if "can_control_hardware" in item and item["can_control_hardware"] is not False:
+            raise SlicerWorkerError("worker cannot claim hardware control")
+        if (
+            not isinstance(item["worker_id"], str)
+            or not item["worker_id"].strip()
+            or item["context"] not in {"production", "twin"}
+        ):
             raise SlicerWorkerError("worker identity or context is invalid")
+        item["worker_id"] = item["worker_id"].strip()
 
         workspace = item["workspace"]
         if not isinstance(workspace, Mapping):
@@ -67,6 +80,8 @@ class SlicerWorkerBoundary:
         limits = item["limits"]
         if not isinstance(limits, Mapping):
             raise SlicerWorkerError("worker limits must be an object")
+        if set(limits) != {"timeout_seconds", "memory_bytes", "disk_bytes"}:
+            raise SlicerWorkerError("worker limit fields are invalid")
         for key in ("timeout_seconds", "memory_bytes", "disk_bytes"):
             limit = limits.get(key)
             if not isinstance(limit, int) or isinstance(limit, bool) or limit <= 0:
@@ -74,11 +89,13 @@ class SlicerWorkerBoundary:
 
         forbidden = item["forbidden_capabilities"]
         if (
-            not isinstance(forbidden, Sequence)
-            or isinstance(forbidden, (str, bytes))
+            not isinstance(forbidden, list)
+            or any(not isinstance(value, str) or not value for value in forbidden)
+            or len(forbidden) != len(set(forbidden))
             or not REQUIRED_FORBIDDEN.issubset(forbidden)
         ):
             raise SlicerWorkerError("worker forbidden capabilities are incomplete")
+        item["forbidden_capabilities"] = sorted(forbidden)
         item["can_control_hardware"] = False
         return item
 

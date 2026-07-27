@@ -44,11 +44,34 @@ class SlicerWorkerTests(unittest.TestCase):
         self.assertFalse(production["can_control_hardware"])
         self.assertFalse(twin["can_control_hardware"])
 
-    def test_rejects_missing_forbidden_capability(self) -> None:
-        item = manifest("production", "work/production")
-        item["forbidden_capabilities"].remove("printer_control")
-        with self.assertRaises(SlicerWorkerError):
-            self.boundary.validate(item)
+    def test_rejects_each_missing_forbidden_capability(self) -> None:
+        for capability in sorted(REQUIRED_FORBIDDEN):
+            item = manifest("production", "work/production")
+            item["forbidden_capabilities"].remove(capability)
+            with (
+                self.subTest(capability=capability),
+                self.assertRaises(SlicerWorkerError),
+            ):
+                self.boundary.validate(item)
+
+    def test_rejects_hardware_claim_unknown_fields_and_duplicate_forbidden(
+        self,
+    ) -> None:
+        cases = (
+            {"can_control_hardware": True},
+            {"network_endpoint": "printer.local"},
+            {
+                "forbidden_capabilities": [
+                    *sorted(REQUIRED_FORBIDDEN),
+                    "printer_control",
+                ]
+            },
+        )
+        for changes in cases:
+            item = manifest("production", "work/production")
+            item.update(changes)
+            with self.subTest(changes=changes), self.assertRaises(SlicerWorkerError):
+                self.boundary.validate(item)
 
     def test_rejects_overlapping_pair(self) -> None:
         with self.assertRaises(SlicerWorkerError):

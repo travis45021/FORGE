@@ -39,7 +39,14 @@
     },
     "forbidden_capabilities": {
       "type": "array",
-      "contains": {"const": "printer_control"},
+      "uniqueItems": true,
+      "allOf": [
+        {"contains": {"const": "printer_control"}},
+        {"contains": {"const": "printer_discovery"}},
+        {"contains": {"const": "cloud_access"}},
+        {"contains": {"const": "telemetry"}},
+        {"contains": {"const": "self_update"}}
+      ],
       "items": {"type": "string"}
     },
     "can_control_hardware": {"const": false}

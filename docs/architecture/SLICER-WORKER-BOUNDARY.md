@@ -25,6 +25,11 @@ paths are outside the worker contract. The worker returns evidence and derived
 artifacts; FORGE authorization and the mandatory final user confirmation stay
 in the Executive/runtime path.
 
+Every manifest must uniquely declare all five forbidden capability classes:
+printer control, printer discovery, cloud access, telemetry, and self-update.
+Unknown fields, duplicate declarations, and any positive hardware-control
+claim are rejected rather than silently rewritten.
+
 This manifest is a contract-only artifact. It does not authorize Orca source
 import or a production build while Gate 1 remains open.
 
