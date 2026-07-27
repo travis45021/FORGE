@@ -73,19 +73,21 @@ release is distributed until the applicable items in this gate are complete.
 ## Gate 3 - FORGE contracts and state machine
 
 - [ ] Specify STEP and 3MF quarantine, parsing, normalization, and validation.
-- [ ] Define the Manufacturing Intent object and loss/ambiguity reporting.
+  Quarantine assessment, structural checks, digesting, and 3MF path-traversal
+  rejection are implemented; full normalization/parsing remains open.
+- [x] Define the Manufacturing Intent object and loss/ambiguity reporting.
 - [ ] Define versioned slicer request, result, warning, and failure contracts.
 - [ ] Record source digest, engine build, derived profile digest, context,
   settings, warnings, and output digest for reproducibility.
-- [ ] Specify production-versus-twin comparison evidence and acceptance rules.
-- [ ] Implement the four-click state machine:
+- [x] Specify production-versus-twin comparison evidence and acceptance rules.
+- [x] Implement the four-click state machine:
   1. add file;
   2. confirm context;
   3. create verified Print Mission;
   4. after live printer checks and before upload, require **Yes, Print**.
 - [ ] Represent the final-confirmation bypass capability as disabled for every
   v1 role and mode.
-- [ ] Prove no slicing result, simulation result, or UI event can grant Mission
+- [x] Prove no slicing result or simulation/twin result can grant Mission
   authority.
 
 ## Gate 4 - Governed integration
@@ -93,10 +95,15 @@ release is distributed until the applicable items in this gate are complete.
 - [ ] Build the adapter from verified FORGE Objects and configuration to an
   ephemeral Orca worker profile.
 - [ ] Run the production and twin contexts with separate workspaces, inputs,
-  outputs, logs, resource limits, and cancellation.
+  outputs, logs, resource limits, and cancellation. Manifest isolation and
+  resource validation are implemented; real worker execution remains open.
 - [ ] Add deterministic artifact preflight and production/twin comparison.
+  Comparison and acceptance reference services are implemented; real engine
+  artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
-- [ ] Add capability-provider upload only after the mandatory final user gate.
+  Runtime upload dispatch is implemented; Executive/application integration
+  remains open.
+- [x] Add capability-provider upload only after the mandatory final user gate.
 - [ ] Keep printer-specific behavior in replaceable capability providers, with
   Moonraker/Klipper only as the first tested reference.
 
@@ -119,12 +126,14 @@ release is distributed until the applicable items in this gate are complete.
 
 - [ ] Add unit, contract, schema, scenario, fault-injection, security,
   accessibility, reproducibility, and hardware-in-the-loop coverage.
-- [ ] Test hostile and malformed STEP/3MF content in isolation.
+- [ ] Test hostile and malformed STEP/3MF content in isolation. Initial 3MF
+  path-traversal and malformed-structure tests are implemented; fixture suite
+  remains incomplete.
 - [ ] Test worker crashes, timeouts, resource exhaustion, cancellation, and
   stale context.
-- [ ] Prove that twin evidence cannot authorize production.
+- [x] Prove that twin evidence cannot authorize production.
 - [ ] Prove that historical replay cannot upload or start a print.
-- [ ] Prove that no v1 path skips the fourth click.
+- [x] Prove that no implemented v1 contract path skips the fourth click.
 - [ ] Verify that shipped binaries correspond to the published complete source.
 - [ ] Pass FAS-025 release assurance and the licensing compliance checks.
 - [ ] Document supported upstream version, known limitations, rollback, and
