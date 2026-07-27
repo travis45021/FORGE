@@ -275,6 +275,13 @@ class ForgeRuntime:
             raise RuntimeError("upload handoff requires click-three attribution")
         if not handoff.get("confirmed_by") or not handoff.get("confirmed_at"):
             raise RuntimeError("upload handoff requires fourth-click attribution")
+        reviewed_at = _utc(handoff["comparison_reviewed_at"])
+        confirmed_at = _utc(handoff["confirmed_at"])
+        dispatch_at = _utc(evaluated_at)
+        if reviewed_at > confirmed_at:
+            raise RuntimeError("click-three review occurred after final confirmation")
+        if confirmed_at > dispatch_at:
+            raise RuntimeError("final confirmation cannot be in the dispatch future")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")

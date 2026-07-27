@@ -131,7 +131,9 @@ release is distributed until the applicable items in this gate are complete.
   rejected. The click-three reviewer and time remain distinct from, and are
   preserved alongside, the fourth-click confirmer through Executive, transport,
   and Runtime. The fourth click also requires and preserves its own explicit
-  confirmation timestamp. Real engine artifact evidence remains open.
+  confirmation timestamp. Both timestamps must be valid UTC, click three must
+  precede click four, and Runtime rejects future confirmation evidence. Real
+  engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

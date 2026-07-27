@@ -4,12 +4,22 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from secrets import token_urlsafe
 from typing import Any
 
 
 class JobLifecycleError(ValueError):
     """Raised when a print job transition violates user-control boundaries."""
+
+
+def _utc(value: str) -> datetime:
+    if not isinstance(value, str) or not value.endswith("Z"):
+        raise JobLifecycleError("confirmation timestamps must be UTC and end in Z")
+    try:
+        return datetime.fromisoformat(value[:-1] + "+00:00")
+    except ValueError as exc:
+        raise JobLifecycleError(f"invalid confirmation timestamp: {value}") from exc
 
 
 STATES = {
@@ -95,6 +105,7 @@ class PrintJobLifecycle:
         authorization_verified: bool,
     ) -> dict[str, Any]:
         job = self._require(job_id)
+        _utc(confirmed_at)
         if job["state"] != "final_confirmation_required" or job["click_count"] != 3:
             raise JobLifecycleError(
                 "final confirmation requires exactly three preparation clicks"
@@ -143,6 +154,10 @@ class PrintJobLifecycle:
             raise JobLifecycleError("accepted comparison does not match the job")
         if not acceptance.get("reviewed_by") or not acceptance.get("reviewed_at"):
             raise JobLifecycleError("accepted comparison lacks click-three attribution")
+        if _utc(acceptance["reviewed_at"]) > _utc(confirmed_at):
+            raise JobLifecycleError(
+                "click-three review cannot occur after final confirmation"
+            )
         for field in (
             "comparison_evidence_digest",
             "input_digest",

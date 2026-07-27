@@ -59,6 +59,19 @@ class Fas034JobLifecycleTests(unittest.TestCase):
                 authorization_verified=True,
             )
 
+    def test_final_confirmation_requires_valid_utc_time(self):
+        for action in ("configure", "review", "upload"):
+            self.service.click("job:001", action=action, actor="forge-user:local")
+        with self.assertRaisesRegex(JobLifecycleError, "UTC"):
+            self.service.final_confirm(
+                "job:001",
+                actor="forge-user:local",
+                confirmed_at="not-a-time",
+                confirmation=True,
+                live_checks_passed=True,
+                authorization_verified=True,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

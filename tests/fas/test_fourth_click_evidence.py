@@ -120,6 +120,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
         with self.assertRaisesRegex(JobLifecycleError, "click-three attribution"):
             self.confirm()
 
+    def test_rejects_review_timestamp_after_final_confirmation(self) -> None:
+        self.acceptance["reviewed_at"] = "2026-07-26T12:06:00Z"
+        with self.assertRaisesRegex(JobLifecycleError, "after final confirmation"):
+            self.confirm()
+
 
 if __name__ == "__main__":
     unittest.main()
