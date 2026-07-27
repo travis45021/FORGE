@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/twin-comparison.schema.json",
+  "title": "FORGE Production/Twin Comparison",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["comparison_id", "input_digest", "production", "twin", "differences", "acceptance"],
+  "properties": {
+    "comparison_id": {"type": "string", "minLength": 1},
+    "input_digest": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "production": {"$ref": "slicer-result.schema.json"},
+    "twin": {"$ref": "slicer-result.schema.json"},
+    "differences": {"type": "array", "items": {"type": "string"}},
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "reviewed_by_user"],
+      "properties": {
+        "status": {"enum": ["matching", "different", "inconclusive", "rejected"]},
+        "reviewed_by_user": {"type": "boolean"}
+      }
+    },
+    "can_authorize_production": {"const": false}
+  }
+}
