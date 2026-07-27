@@ -89,6 +89,7 @@ class PrintJobLifecycle:
         job_id: str,
         *,
         actor: str,
+        confirmed_at: str,
         confirmation: bool,
         live_checks_passed: bool,
         authorization_verified: bool,
@@ -100,6 +101,7 @@ class PrintJobLifecycle:
             )
         if (
             not actor
+            or not confirmed_at
             or confirmation is not True
             or live_checks_passed is not True
             or authorization_verified is not True
@@ -111,6 +113,7 @@ class PrintJobLifecycle:
             {
                 "state": "upload_pending",
                 "final_confirmed_by": actor,
+                "final_confirmed_at": confirmed_at,
                 "confirmation_token": token_urlsafe(32),
                 "live_checks_passed": True,
             }
@@ -123,6 +126,7 @@ class PrintJobLifecycle:
         job_id: str,
         *,
         actor: str,
+        confirmed_at: str,
         confirmation: bool,
         acceptance: Mapping[str, Any],
         live_checks: Mapping[str, Any],
@@ -181,6 +185,7 @@ class PrintJobLifecycle:
         self.final_confirm(
             job_id,
             actor=actor,
+            confirmed_at=confirmed_at,
             confirmation=confirmation,
             live_checks_passed=True,
             authorization_verified=authorization_verified,

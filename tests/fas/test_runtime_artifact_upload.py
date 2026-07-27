@@ -57,6 +57,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "comparison_reviewed_by": "reviewer-1",
             "comparison_reviewed_at": "2026-07-26T12:00:00Z",
             "confirmed_by": "user-1",
+            "confirmed_at": "2026-07-26T12:05:00Z",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
@@ -88,10 +89,16 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["engine_build_digest"], "e" * 64)
         self.assertEqual(result["comparison_evidence_digest"], "f" * 64)
         self.assertEqual(result["comparison_reviewed_by"], "reviewer-1")
+        self.assertEqual(result["confirmed_at"], "2026-07-26T12:05:00Z")
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
         with self.assertRaises(RuntimeError):
+            self.dispatch()
+
+    def test_rejects_missing_fourth_click_time(self) -> None:
+        self.handoff["confirmed_at"] = ""
+        with self.assertRaisesRegex(RuntimeError, "fourth-click attribution"):
             self.dispatch()
 
     def test_rejects_duplicate_live_handoff(self) -> None:

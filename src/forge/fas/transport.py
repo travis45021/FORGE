@@ -169,7 +169,11 @@ class HardwareTransportRegistry:
             raise TransportError("job provider does not match upload provider")
         if item.get("state") != "upload_pending":
             raise TransportError("job must pass final confirmation before upload")
-        if item.get("click_count") != 3 or not item.get("final_confirmed_by"):
+        if (
+            item.get("click_count") != 3
+            or not item.get("final_confirmed_by")
+            or not item.get("final_confirmed_at")
+        ):
             raise TransportError("evidence-backed fourth click is required")
         if item.get("artifact_preflight_verified") is not True:
             raise TransportError("deterministic artifact preflight is required")
@@ -222,6 +226,7 @@ class HardwareTransportRegistry:
             "engine_source_digest": item["engine_source_digest"],
             "engine_build_digest": item["engine_build_digest"],
             "confirmed_by": item["final_confirmed_by"],
+            "confirmed_at": item["final_confirmed_at"],
             "confirmation_token": confirmation_token,
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,

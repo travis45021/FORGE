@@ -28,6 +28,7 @@ class ControlledUploadTests(unittest.TestCase):
             "state": "upload_pending",
             "click_count": 3,
             "final_confirmed_by": "user-1",
+            "final_confirmed_at": "2026-07-26T12:05:00Z",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_digest": "a" * 64,
             "input_digest": "b" * 64,
@@ -59,11 +60,17 @@ class ControlledUploadTests(unittest.TestCase):
         self.assertEqual(result["engine_build_digest"], "e" * 64)
         self.assertEqual(result["comparison_evidence_digest"], "f" * 64)
         self.assertEqual(result["comparison_reviewed_by"], "reviewer-1")
+        self.assertEqual(result["confirmed_at"], "2026-07-26T12:05:00Z")
         self.assertFalse(result["physical_dispatch_allowed"])
 
     def test_rejects_job_before_final_confirmation(self) -> None:
         self.job["state"] = "final_confirmation_required"
         with self.assertRaises(TransportError):
+            self.prepare()
+
+    def test_rejects_job_without_final_confirmation_time(self) -> None:
+        self.job["final_confirmed_at"] = ""
+        with self.assertRaisesRegex(TransportError, "fourth click"):
             self.prepare()
 
     def test_rejects_missing_runtime_lease(self) -> None:

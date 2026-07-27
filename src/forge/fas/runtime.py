@@ -273,6 +273,8 @@ class ForgeRuntime:
             "comparison_reviewed_at"
         ):
             raise RuntimeError("upload handoff requires click-three attribution")
+        if not handoff.get("confirmed_by") or not handoff.get("confirmed_at"):
+            raise RuntimeError("upload handoff requires fourth-click attribution")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")
@@ -330,6 +332,7 @@ class ForgeRuntime:
                 "engine_source_digest": handoff["engine_source_digest"],
                 "engine_build_digest": handoff["engine_build_digest"],
                 "confirmed_by": handoff.get("confirmed_by"),
+                "confirmed_at": handoff.get("confirmed_at"),
             }
         )
         return result

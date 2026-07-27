@@ -49,6 +49,7 @@ def inputs() -> dict[str, dict]:
             "comparison_reviewed_by": "reviewer-1",
             "comparison_reviewed_at": "2026-07-26T12:00:00Z",
             "final_confirmed_by": "user-1",
+            "final_confirmed_at": "2026-07-26T12:05:00Z",
             "confirmation_token": "confirmation-" + ("x" * 32),
         },
         "acceptance": {
@@ -98,6 +99,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
     assert request["payload"]["engine_build_digest"] == "e" * 64
     assert request["payload"]["comparison_evidence_digest"] == "f" * 64
     assert request["payload"]["comparison_reviewed_by"] == "reviewer-1"
+    assert request["payload"]["final_confirmed_at"] == "2026-07-26T12:05:00Z"
     assert "confirmation_token" not in request["payload"]
 
 
@@ -110,6 +112,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
         ("job", "engine_build_digest", "f" * 64),
         ("job", "comparison_evidence_digest", "a" * 64),
         ("job", "comparison_reviewed_by", "other-reviewer"),
+        ("job", "final_confirmed_at", ""),
         ("acceptance", "can_upload", True),
         ("acceptance", "preflight_verified", False),
         ("acceptance", "pair_preflight_verified", False),

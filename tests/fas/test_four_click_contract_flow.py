@@ -175,6 +175,7 @@ class FourClickContractFlowTests(unittest.TestCase):
         job = lifecycle.final_confirm_with_evidence(
             "job-1",
             actor="user-1",
+            confirmed_at="2026-07-26T12:05:00Z",
             confirmation=True,
             acceptance=acceptance,
             live_checks=live,

@@ -130,6 +130,7 @@ class ForgeExecutive:
         token = job.get("confirmation_token")
         if (
             not job.get("final_confirmed_by")
+            or not job.get("final_confirmed_at")
             or not isinstance(token, str)
             or len(token) < 32
         ):
@@ -165,6 +166,8 @@ class ForgeExecutive:
                 "comparison_reviewed_at": acceptance["reviewed_at"],
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
+                "final_confirmed_by": job["final_confirmed_by"],
+                "final_confirmed_at": job["final_confirmed_at"],
                 "artifact_preflight_verified": True,
                 "artifact_pair_preflight_verified": True,
                 "physical_dispatch_allowed": False,

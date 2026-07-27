@@ -31,6 +31,7 @@ class Fas034JobLifecycleTests(unittest.TestCase):
             self.service.final_confirm(
                 "job:001",
                 actor="forge-user:local",
+                confirmed_at="2026-07-26T12:05:00Z",
                 confirmation=True,
                 live_checks_passed=False,
                 authorization_verified=True,
@@ -38,11 +39,13 @@ class Fas034JobLifecycleTests(unittest.TestCase):
         result = self.service.final_confirm(
             "job:001",
             actor="forge-user:local",
+            confirmed_at="2026-07-26T12:05:00Z",
             confirmation=True,
             live_checks_passed=True,
             authorization_verified=True,
         )
         self.assertEqual("upload_pending", result["state"])
+        self.assertEqual("2026-07-26T12:05:00Z", result["final_confirmed_at"])
 
     def test_final_confirmation_requires_three_clicks(self):
         self.service.click("job:001", action="review", actor="forge-user:local")
@@ -50,6 +53,7 @@ class Fas034JobLifecycleTests(unittest.TestCase):
             self.service.final_confirm(
                 "job:001",
                 actor="forge-user:local",
+                confirmed_at="2026-07-26T12:05:00Z",
                 confirmation=True,
                 live_checks_passed=True,
                 authorization_verified=True,
