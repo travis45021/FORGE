@@ -51,6 +51,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
+            "artifact_pair_preflight_verified": True,
             "historical_replay_allowed": False,
             "physical_dispatch_allowed": False,
             "requires_runtime_dispatcher": True,
@@ -108,6 +109,11 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
     def test_rejects_handoff_without_artifact_preflight(self) -> None:
         self.handoff["artifact_preflight_verified"] = False
         with self.assertRaises(RuntimeError):
+            self.dispatch()
+
+    def test_rejects_handoff_without_pair_preflight(self) -> None:
+        self.handoff["artifact_pair_preflight_verified"] = False
+        with self.assertRaisesRegex(RuntimeError, "coordinated pair"):
             self.dispatch()
 
 

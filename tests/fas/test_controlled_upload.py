@@ -31,6 +31,7 @@ class ControlledUploadTests(unittest.TestCase):
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_digest": "a" * 64,
             "artifact_preflight_verified": True,
+            "artifact_pair_preflight_verified": True,
         }
 
     def prepare(self) -> dict:
@@ -44,6 +45,7 @@ class ControlledUploadTests(unittest.TestCase):
     def test_prepares_non_dispatching_handoff_after_fourth_click(self) -> None:
         result = self.prepare()
         self.assertTrue(result["fourth_click_satisfied"])
+        self.assertTrue(result["artifact_pair_preflight_verified"])
         self.assertFalse(result["physical_dispatch_allowed"])
 
     def test_rejects_job_before_final_confirmation(self) -> None:
@@ -68,6 +70,11 @@ class ControlledUploadTests(unittest.TestCase):
     def test_rejects_job_without_artifact_preflight(self) -> None:
         self.job["artifact_preflight_verified"] = False
         with self.assertRaises(TransportError):
+            self.prepare()
+
+    def test_rejects_job_without_pair_preflight(self) -> None:
+        self.job["artifact_pair_preflight_verified"] = False
+        with self.assertRaisesRegex(TransportError, "coordinated pair"):
             self.prepare()
 
 

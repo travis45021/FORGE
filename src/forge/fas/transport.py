@@ -173,6 +173,8 @@ class HardwareTransportRegistry:
             raise TransportError("evidence-backed fourth click is required")
         if item.get("artifact_preflight_verified") is not True:
             raise TransportError("deterministic artifact preflight is required")
+        if item.get("artifact_pair_preflight_verified") is not True:
+            raise TransportError("coordinated pair preflight is required")
         confirmation_token = item.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise TransportError("fresh final-confirmation token is required")
@@ -192,6 +194,7 @@ class HardwareTransportRegistry:
             "confirmed_by": item["final_confirmed_by"],
             "confirmation_token": confirmation_token,
             "artifact_preflight_verified": True,
+            "artifact_pair_preflight_verified": True,
             "historical_replay_allowed": False,
             "physical_dispatch_allowed": False,
             "requires_runtime_dispatcher": True,

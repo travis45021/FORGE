@@ -74,6 +74,8 @@ class ForgeExecutive:
             raise ExecutiveError("slicer artifact is not accepted")
         if acceptance.get("preflight_verified") is not True:
             raise ExecutiveError("slicer acceptance lacks deterministic preflight")
+        if acceptance.get("pair_preflight_verified") is not True:
+            raise ExecutiveError("slicer acceptance lacks coordinated pair preflight")
         if (
             acceptance.get("final_confirmation_required") is not True
             or acceptance.get("can_upload") is not False
@@ -112,6 +114,7 @@ class ForgeExecutive:
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
                 "artifact_preflight_verified": True,
+                "artifact_pair_preflight_verified": True,
                 "physical_dispatch_allowed": False,
                 "requires_runtime_dispatcher": True,
             }

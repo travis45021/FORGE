@@ -118,9 +118,9 @@ release is distributed until the applicable items in this gate are complete.
   digests against that outcome, and binds both results to the same reviewed
   engine before comparison. Comparison and acceptance now require and preserve
   the paired-preflight proof, closing the individually preflighted evidence
-  bypass. Fourth-click and Executive boundaries reject raw evidence.
-  Confirmed jobs, transport handoffs, and Runtime dispatch preserve and recheck
-  preflight. Real engine artifact evidence remains open.
+  bypass. Fourth-click, Executive, controlled transport, and Runtime boundaries
+  preserve and recheck both deterministic and coordinated-pair preflight proof.
+  Real engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

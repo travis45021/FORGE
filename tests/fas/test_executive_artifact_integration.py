@@ -31,6 +31,7 @@ def inputs() -> dict[str, dict]:
             "artifact_digest": digest,
             "ready_for_live_checks": True,
             "preflight_verified": True,
+            "pair_preflight_verified": True,
             "final_confirmation_required": True,
             "can_upload": False,
             "can_start_print": False,
@@ -69,6 +70,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
         ("job", "artifact_digest", "b" * 64),
         ("acceptance", "can_upload", True),
         ("acceptance", "preflight_verified", False),
+        ("acceptance", "pair_preflight_verified", False),
         ("mission", "state", "created"),
     ],
 )

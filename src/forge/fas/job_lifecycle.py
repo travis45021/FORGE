@@ -139,6 +139,10 @@ class PrintJobLifecycle:
             raise JobLifecycleError(
                 "slicer acceptance must include deterministic preflight"
             )
+        if acceptance.get("pair_preflight_verified") is not True:
+            raise JobLifecycleError(
+                "slicer acceptance must include coordinated pair preflight"
+            )
         if (
             acceptance.get("can_upload") is not False
             or acceptance.get("can_start_print") is not False
@@ -163,6 +167,7 @@ class PrintJobLifecycle:
             authorization_verified=authorization_verified,
         )
         job["artifact_preflight_verified"] = True
+        job["artifact_pair_preflight_verified"] = True
         return deepcopy(job)
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:

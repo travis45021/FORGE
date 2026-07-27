@@ -33,6 +33,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "artifact_digest": self.digest,
             "final_confirmation_required": True,
             "preflight_verified": True,
+            "pair_preflight_verified": True,
             "can_upload": False,
             "can_start_print": False,
         }
@@ -59,6 +60,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
         self.assertEqual(job["state"], "upload_pending")
         self.assertEqual(job["final_confirmed_by"], "user-1")
         self.assertTrue(job["artifact_preflight_verified"])
+        self.assertTrue(job["artifact_pair_preflight_verified"])
 
     def test_rejects_stale_artifact_checks(self) -> None:
         self.live["artifact_digest"] = "b" * 64
@@ -73,6 +75,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
     def test_rejects_acceptance_without_preflight(self) -> None:
         self.acceptance["preflight_verified"] = False
         with self.assertRaises(JobLifecycleError):
+            self.confirm()
+
+    def test_rejects_acceptance_without_pair_preflight(self) -> None:
+        self.acceptance["pair_preflight_verified"] = False
+        with self.assertRaisesRegex(JobLifecycleError, "coordinated pair"):
             self.confirm()
 
 
