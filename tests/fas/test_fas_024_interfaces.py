@@ -175,7 +175,7 @@ class InterfaceTests(unittest.TestCase):
         )
 
     def test_schema_and_example_validate(self):
-        from jsonschema import Draft202012Validator
+        from jsonschema import Draft202012Validator, ValidationError
 
         schema = json.loads(
             (ROOT / "schemas/fas/interface-request.schema.json").read_text()
@@ -184,7 +184,19 @@ class InterfaceTests(unittest.TestCase):
             (ROOT / "examples/fas/interface-request.example.json").read_text()
         )
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(schema).validate(example)
+        validator = Draft202012Validator(schema)
+        validator.validate(example)
+
+        nested_raw_command = {
+            **example,
+            "parameters": {
+                "provider": {
+                    "steps": [{"raw_hardware_command": "G28"}],
+                }
+            },
+        }
+        with self.assertRaises(ValidationError):
+            validator.validate(nested_raw_command)
 
 
 if __name__ == "__main__":
