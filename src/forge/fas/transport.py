@@ -96,6 +96,48 @@ class HardwareTransportRegistry:
         self._record("provider.command.prepared", provider_id)
         return prepared
 
+    def prepare_artifact_upload(
+        self,
+        provider_id: str,
+        job: Mapping[str, Any],
+        *,
+        runtime_lease_active: bool,
+        authorization_verified: bool,
+    ) -> dict[str, Any]:
+        """Prepare an artifact handoff only after the evidence-backed fourth click."""
+        provider = self._require(provider_id)
+        item = deepcopy(dict(job))
+        if provider["health"] != "healthy":
+            raise TransportError("provider is not healthy")
+        if "artifact.upload" not in provider["capabilities"]:
+            raise TransportError("provider does not offer controlled artifact upload")
+        if item.get("provider_id") != provider_id:
+            raise TransportError("job provider does not match upload provider")
+        if item.get("state") != "upload_pending":
+            raise TransportError("job must pass final confirmation before upload")
+        if item.get("click_count") != 3 or not item.get("final_confirmed_by"):
+            raise TransportError("evidence-backed fourth click is required")
+        artifact_digest = item.get("artifact_digest")
+        if (
+            not isinstance(artifact_digest, str)
+            or len(artifact_digest) != 64
+            or any(character not in "0123456789abcdef" for character in artifact_digest)
+        ):
+            raise TransportError("job artifact digest must be lowercase SHA-256")
+        if not runtime_lease_active or not authorization_verified:
+            raise TransportError("active runtime lease and authorization are required")
+        prepared = {
+            "provider_id": provider_id,
+            "job_id": item["job_id"],
+            "artifact_digest": artifact_digest,
+            "confirmed_by": item["final_confirmed_by"],
+            "physical_dispatch_allowed": False,
+            "requires_runtime_dispatcher": True,
+            "fourth_click_satisfied": True,
+        }
+        self._record("provider.artifact_upload.prepared", provider_id)
+        return prepared
+
     def provider(self, provider_id: str) -> dict[str, Any]:
         return deepcopy(self._require(provider_id))
 
