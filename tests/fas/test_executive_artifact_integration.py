@@ -5,6 +5,10 @@ from copy import deepcopy
 import pytest
 
 from forge.fas.executive import ExecutiveError, ForgeExecutive
+from forge.fas.job_lifecycle import (
+    final_confirmation_evidence,
+    final_confirmation_evidence_digest,
+)
 
 
 @pytest.fixture
@@ -15,7 +19,7 @@ def inputs() -> dict[str, dict]:
     engine_source_digest = "d" * 64
     engine_build_digest = "e" * 64
     comparison_digest = "f" * 64
-    return {
+    values = {
         "mission": {
             "mission_id": "mission:print-1",
             "state": "approved",
@@ -84,6 +88,10 @@ def inputs() -> dict[str, dict]:
             "provider_id": "provider:custom",
         },
     }
+    job = values["job"]
+    job["final_confirmation_evidence"] = final_confirmation_evidence(job)
+    job["final_confirmation_evidence_digest"] = final_confirmation_evidence_digest(job)
+    return values
 
 
 def prepare(inputs: dict[str, dict]) -> dict:
@@ -104,6 +112,7 @@ def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> 
     assert request["payload"]["comparison_evidence_digest"] == "f" * 64
     assert request["payload"]["comparison_reviewed_by"] == "reviewer-1"
     assert request["payload"]["final_confirmed_at"] == "2026-07-26T12:05:00Z"
+    assert len(request["payload"]["final_confirmation_evidence_digest"]) == 64
     assert request["payload"]["confirmation_expires_at"] == "2026-07-26T12:10:00Z"
     assert "confirmation_token" not in request["payload"]
 

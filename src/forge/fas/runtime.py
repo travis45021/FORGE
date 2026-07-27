@@ -7,6 +7,8 @@ from copy import deepcopy
 from datetime import datetime
 from typing import Any
 
+from .job_lifecycle import final_confirmation_evidence_digest
+
 
 class RuntimeError(ValueError):
     """Raised when runtime execution violates FAS-022."""
@@ -275,6 +277,25 @@ class ForgeRuntime:
             raise RuntimeError("upload handoff requires click-three attribution")
         if not handoff.get("confirmed_by") or not handoff.get("confirmed_at"):
             raise RuntimeError("upload handoff requires fourth-click attribution")
+        receipt = handoff.get("final_confirmation_evidence")
+        receipt_digest = handoff.get("final_confirmation_evidence_digest")
+        if (
+            not isinstance(receipt, Mapping)
+            or receipt_digest != final_confirmation_evidence_digest(receipt)
+            or receipt.get("job_id") != handoff.get("job_id")
+            or receipt.get("provider_id") != handoff.get("provider_id")
+            or receipt.get("artifact_digest") != handoff.get("artifact_digest")
+            or receipt.get("confirmation_token") != handoff.get("confirmation_token")
+            or receipt.get("final_confirmed_by") != handoff.get("confirmed_by")
+            or receipt.get("final_confirmed_at") != handoff.get("confirmed_at")
+            or receipt.get("confirmation_expires_at")
+            != handoff.get("confirmation_expires_at")
+            or receipt.get("comparison_evidence_digest")
+            != handoff.get("comparison_evidence_digest")
+            or receipt.get("live_checks_evidence_digest")
+            != handoff.get("live_checks_evidence_digest")
+        ):
+            raise RuntimeError("final-confirmation evidence binding is invalid")
         reviewed_at = _utc(handoff["comparison_reviewed_at"])
         confirmed_at = _utc(handoff["confirmed_at"])
         confirmation_expires_at = _utc(handoff.get("confirmation_expires_at"))
@@ -353,6 +374,7 @@ class ForgeRuntime:
                 "confirmed_by": handoff.get("confirmed_by"),
                 "confirmed_at": handoff.get("confirmed_at"),
                 "confirmation_expires_at": handoff.get("confirmation_expires_at"),
+                "final_confirmation_evidence_digest": receipt_digest,
                 "live_checks_checked_at": handoff.get("live_checks_checked_at"),
                 "live_checks_expires_at": handoff.get("live_checks_expires_at"),
                 "live_checks_evidence_digest": handoff["live_checks_evidence_digest"],

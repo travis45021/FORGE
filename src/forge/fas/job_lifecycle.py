@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
+from hashlib import sha256
 from secrets import token_urlsafe
 from typing import Any
 
@@ -22,6 +24,44 @@ def _utc(value: str) -> datetime:
         return datetime.fromisoformat(value[:-1] + "+00:00")
     except ValueError as exc:
         raise JobLifecycleError(f"invalid confirmation timestamp: {value}") from exc
+
+
+FINAL_CONFIRMATION_FIELDS = (
+    "job_id",
+    "provider_id",
+    "artifact_digest",
+    "input_digest",
+    "profile_digest",
+    "engine_source_digest",
+    "engine_build_digest",
+    "comparison_id",
+    "comparison_evidence_digest",
+    "comparison_reviewed_by",
+    "comparison_reviewed_at",
+    "live_checks_checked_at",
+    "live_checks_expires_at",
+    "live_checks_evidence_digest",
+    "final_confirmed_by",
+    "final_confirmed_at",
+    "confirmation_expires_at",
+    "confirmation_token",
+)
+
+
+def final_confirmation_evidence(value: Mapping[str, Any]) -> dict[str, Any]:
+    """Select the immutable fourth-click receipt fields."""
+    return {field: deepcopy(value.get(field)) for field in FINAL_CONFIRMATION_FIELDS}
+
+
+def final_confirmation_evidence_digest(value: Mapping[str, Any]) -> str:
+    """Hash the fourth-click receipt so its token cannot be transplanted."""
+    canonical = json.dumps(
+        final_confirmation_evidence(value),
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
+    return sha256(canonical).hexdigest()
 
 
 STATES = {
@@ -236,6 +276,10 @@ class PrintJobLifecycle:
         job["live_checks_checked_at"] = live_checks["checked_at"]
         job["live_checks_expires_at"] = live_checks["expires_at"]
         job["live_checks_evidence_digest"] = live_evidence_digest
+        job["final_confirmation_evidence"] = final_confirmation_evidence(job)
+        job["final_confirmation_evidence_digest"] = final_confirmation_evidence_digest(
+            job
+        )
         return deepcopy(job)
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:

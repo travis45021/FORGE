@@ -9,6 +9,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
+from forge.fas.job_lifecycle import (
+    final_confirmation_evidence,
+    final_confirmation_evidence_digest,
+)
 from forge.fas.runtime import ForgeRuntime, RuntimeError
 
 
@@ -70,6 +74,17 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "requires_runtime_dispatcher": True,
             "fourth_click_satisfied": True,
         }
+        receipt_source = {
+            **self.handoff,
+            "final_confirmed_by": self.handoff["confirmed_by"],
+            "final_confirmed_at": self.handoff["confirmed_at"],
+        }
+        self.handoff["final_confirmation_evidence"] = final_confirmation_evidence(
+            receipt_source
+        )
+        self.handoff["final_confirmation_evidence_digest"] = (
+            final_confirmation_evidence_digest(receipt_source)
+        )
 
     def dispatch(self) -> dict:
         return self.runtime.dispatch_artifact_upload(
@@ -81,6 +96,19 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             evaluated_at="2026-07-25T21:00:00Z",
             provider_healthy=True,
             current_state_allows=True,
+        )
+
+    def rebind(self) -> None:
+        receipt_source = {
+            **self.handoff,
+            "final_confirmed_by": self.handoff.get("confirmed_by"),
+            "final_confirmed_at": self.handoff.get("confirmed_at"),
+        }
+        self.handoff["final_confirmation_evidence"] = final_confirmation_evidence(
+            receipt_source
+        )
+        self.handoff["final_confirmation_evidence_digest"] = (
+            final_confirmation_evidence_digest(receipt_source)
         )
 
     def test_dispatches_only_through_runtime(self) -> None:
@@ -97,6 +125,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["confirmation_expires_at"], "2026-07-25T21:05:00Z")
         self.assertEqual(result["live_checks_expires_at"], "2026-07-25T21:03:00Z")
         self.assertEqual(result["live_checks_evidence_digest"], "9" * 64)
+        self.assertEqual(len(result["final_confirmation_evidence_digest"]), 64)
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
@@ -110,6 +139,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
 
     def test_rejects_future_fourth_click(self) -> None:
         self.handoff["confirmed_at"] = "2026-07-26T12:05:00Z"
+        self.rebind()
         with self.assertRaisesRegex(RuntimeError, "dispatch future"):
             self.dispatch()
 
@@ -120,12 +150,18 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
 
     def test_rejects_expired_final_confirmation(self) -> None:
         self.handoff["confirmation_expires_at"] = "2026-07-25T21:00:00Z"
+        self.rebind()
         with self.assertRaisesRegex(RuntimeError, "expired"):
             self.dispatch()
 
     def test_rejects_expired_live_printer_checks(self) -> None:
         self.handoff["live_checks_expires_at"] = "2026-07-25T21:00:00Z"
         with self.assertRaisesRegex(RuntimeError, "live printer checks expired"):
+            self.dispatch()
+
+    def test_rejects_transplanted_confirmation_token(self) -> None:
+        self.handoff["confirmation_token"] = "confirmation-" + ("y" * 32)
+        with self.assertRaisesRegex(RuntimeError, "evidence binding"):
             self.dispatch()
 
     def test_rejects_duplicate_live_handoff(self) -> None:

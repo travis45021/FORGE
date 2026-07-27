@@ -138,7 +138,10 @@ release is distributed until the applicable items in this gate are complete.
   timestamps and expiry, must precede confirmation, and must remain fresh
   through Runtime dispatch. The complete provider-neutral live-check record is
   canonically hashed and that digest is preserved through dispatch, preventing
-  silent mutation after collection. Real engine artifact evidence remains open.
+  silent mutation after collection. The final-confirmation token is also hashed
+  with the exact job, artifact lineage, comparison, live checks, actor, and
+  validity window; token transplantation fails closed. Real engine artifact
+  evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

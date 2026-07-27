@@ -7,6 +7,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
+from forge.fas.job_lifecycle import (
+    final_confirmation_evidence,
+    final_confirmation_evidence_digest,
+)
 from forge.fas.transport import HardwareTransportRegistry, TransportError
 
 
@@ -46,6 +50,10 @@ class ControlledUploadTests(unittest.TestCase):
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
         }
+        self.job["final_confirmation_evidence"] = final_confirmation_evidence(self.job)
+        self.job["final_confirmation_evidence_digest"] = (
+            final_confirmation_evidence_digest(self.job)
+        )
 
     def prepare(self) -> dict:
         return self.registry.prepare_artifact_upload(
@@ -53,6 +61,12 @@ class ControlledUploadTests(unittest.TestCase):
             self.job,
             runtime_lease_active=True,
             authorization_verified=True,
+        )
+
+    def rebind(self) -> None:
+        self.job["final_confirmation_evidence"] = final_confirmation_evidence(self.job)
+        self.job["final_confirmation_evidence_digest"] = (
+            final_confirmation_evidence_digest(self.job)
         )
 
     def test_prepares_non_dispatching_handoff_after_fourth_click(self) -> None:
@@ -69,6 +83,7 @@ class ControlledUploadTests(unittest.TestCase):
         self.assertEqual(result["live_checks_expires_at"], "2026-07-26T12:09:00Z")
         self.assertEqual(result["live_checks_evidence_digest"], "9" * 64)
         self.assertFalse(result["physical_dispatch_allowed"])
+        self.assertEqual(len(result["final_confirmation_evidence_digest"]), 64)
 
     def test_rejects_job_before_final_confirmation(self) -> None:
         self.job["state"] = "final_confirmation_required"
@@ -106,22 +121,30 @@ class ControlledUploadTests(unittest.TestCase):
 
     def test_rejects_job_without_profile_lineage(self) -> None:
         self.job.pop("profile_digest")
+        self.rebind()
         with self.assertRaisesRegex(TransportError, "profile digest"):
             self.prepare()
 
     def test_rejects_job_without_engine_build_provenance(self) -> None:
         self.job.pop("engine_build_digest")
+        self.rebind()
         with self.assertRaisesRegex(TransportError, "engine build digest"):
             self.prepare()
 
     def test_rejects_job_without_reviewed_comparison(self) -> None:
         self.job.pop("comparison_evidence_digest")
+        self.rebind()
         with self.assertRaisesRegex(TransportError, "comparison evidence digest"):
             self.prepare()
 
     def test_rejects_job_without_review_attribution(self) -> None:
         self.job.pop("comparison_reviewed_at")
         with self.assertRaisesRegex(TransportError, "review attribution"):
+            self.prepare()
+
+    def test_rejects_transplanted_confirmation_token(self) -> None:
+        self.job["confirmation_token"] = "confirmation-" + ("y" * 32)
+        with self.assertRaisesRegex(TransportError, "evidence binding"):
             self.prepare()
 
 

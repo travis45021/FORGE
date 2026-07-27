@@ -7,6 +7,11 @@ from copy import deepcopy
 from hashlib import sha256
 from typing import Any
 
+from .job_lifecycle import (
+    final_confirmation_evidence,
+    final_confirmation_evidence_digest,
+)
+
 
 class ExecutiveError(ValueError):
     """Raised when an orchestration gate blocks execution."""
@@ -139,6 +144,14 @@ class ForgeExecutive:
             or len(token) < 32
         ):
             raise ExecutiveError("fresh final-confirmation evidence is required")
+        receipt = job.get("final_confirmation_evidence")
+        receipt_digest = job.get("final_confirmation_evidence_digest")
+        if (
+            not isinstance(receipt, Mapping)
+            or dict(receipt) != final_confirmation_evidence(job)
+            or receipt_digest != final_confirmation_evidence_digest(job)
+        ):
+            raise ExecutiveError("final-confirmation evidence binding is invalid")
         context = mission.get("context")
         if (
             not isinstance(context, Mapping)
@@ -170,6 +183,7 @@ class ForgeExecutive:
                 "comparison_reviewed_at": acceptance["reviewed_at"],
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
+                "final_confirmation_evidence_digest": receipt_digest,
                 "final_confirmed_by": job["final_confirmed_by"],
                 "final_confirmed_at": job["final_confirmed_at"],
                 "confirmation_expires_at": job["confirmation_expires_at"],

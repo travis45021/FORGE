@@ -6,6 +6,11 @@ from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any
 
+from .job_lifecycle import (
+    final_confirmation_evidence,
+    final_confirmation_evidence_digest,
+)
+
 
 class TransportError(ValueError):
     """Raised when a hardware provider contract is invalid or unsafe."""
@@ -188,6 +193,14 @@ class HardwareTransportRegistry:
             "comparison_reviewed_at"
         ):
             raise TransportError("click-three review attribution is required")
+        receipt = item.get("final_confirmation_evidence")
+        receipt_digest = item.get("final_confirmation_evidence_digest")
+        if (
+            not isinstance(receipt, Mapping)
+            or dict(receipt) != final_confirmation_evidence(item)
+            or receipt_digest != final_confirmation_evidence_digest(item)
+        ):
+            raise TransportError("final-confirmation evidence binding is invalid")
         confirmation_token = item.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise TransportError("fresh final-confirmation token is required")
@@ -236,6 +249,8 @@ class HardwareTransportRegistry:
             "live_checks_expires_at": item["live_checks_expires_at"],
             "live_checks_evidence_digest": item["live_checks_evidence_digest"],
             "confirmation_token": confirmation_token,
+            "final_confirmation_evidence": deepcopy(dict(receipt)),
+            "final_confirmation_evidence_digest": receipt_digest,
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
             "historical_replay_allowed": False,
