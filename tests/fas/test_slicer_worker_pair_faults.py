@@ -9,6 +9,7 @@ from forge.fas.slicer_worker import SlicerWorkerError, SlicerWorkerSupervisor
 
 def worker_assignment(context: str) -> dict:
     return {
+        "schema_version": "1.0.0",
         "worker_id": f"worker:{context}",
         "request_id": f"request:{context}",
         "context": context,
@@ -18,7 +19,11 @@ def worker_assignment(context: str) -> dict:
             "output": f"work/{context}/output",
             "logs": f"work/{context}/logs",
         },
-        "limits": {},
+        "limits": {
+            "timeout_seconds": 300,
+            "memory_bytes": 1_000_000,
+            "disk_bytes": 10_000_000,
+        },
         "single_use": True,
         "profile_delete_after_result": True,
         "can_control_hardware": False,
@@ -29,6 +34,7 @@ def worker_assignment(context: str) -> dict:
 
 def pair_assignment() -> dict:
     return {
+        "schema_version": "1.0.0",
         "engine": {
             "name": "reviewed-engine",
             "version": "pinned",
@@ -115,6 +121,26 @@ def test_rejects_pair_assignment_that_claims_authority() -> None:
     assignment["can_upload"] = True
 
     with pytest.raises(SlicerWorkerError, match="not trusted"):
+        assess(outcome("production"), outcome("twin"), assignment)
+
+
+@pytest.mark.parametrize(
+    ("path", "value"),
+    [
+        (("production", "profile_digest"), "f" * 64),
+        (("production", "limits", "disk_bytes"), 0),
+        (("twin", "workspace", "input"), "work/production/input"),
+        (("engine", "build_digest"), "not-a-digest"),
+    ],
+)
+def test_rejects_tampered_pair_assignment(path: tuple[str, ...], value: object) -> None:
+    assignment = deepcopy(pair_assignment())
+    target = assignment
+    for key in path[:-1]:
+        target = target[key]
+    target[path[-1]] = value
+
+    with pytest.raises(SlicerWorkerError):
         assess(outcome("production"), outcome("twin"), assignment)
 
 

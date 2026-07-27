@@ -222,6 +222,126 @@ class SlicerWorkerBoundary:
             "can_start_print": False,
         }
 
+    def validate_pair_assignment(self, assignment: Mapping[str, Any]) -> dict[str, Any]:
+        """Revalidate a sanitized pair before supervisor composition."""
+        pair = deepcopy(dict(assignment))
+        required = {
+            "schema_version",
+            "engine",
+            "input_digest",
+            "profile_digest",
+            "production",
+            "twin",
+            "workspaces_isolated",
+            "same_engine_build",
+            "same_input",
+            "same_profile",
+            "can_control_hardware",
+            "can_upload",
+            "can_start_print",
+        }
+        if set(pair) != required or pair.get("schema_version") != "1.0.0":
+            raise SlicerWorkerError("worker pair assignment fields are invalid")
+        for field in (
+            "workspaces_isolated",
+            "same_engine_build",
+            "same_input",
+            "same_profile",
+        ):
+            if pair[field] is not True:
+                raise SlicerWorkerError("worker pair assignment is not trusted")
+        for field in ("can_control_hardware", "can_upload", "can_start_print"):
+            if pair[field] is not False:
+                raise SlicerWorkerError("worker pair assignment is not trusted")
+        self._digest(pair["input_digest"], "pair input digest")
+        self._digest(pair["profile_digest"], "pair profile digest")
+
+        engine = pair["engine"]
+        engine_fields = {"name", "version", "source_digest", "build_digest"}
+        if (
+            not isinstance(engine, Mapping)
+            or set(engine) != engine_fields
+            or any(
+                not isinstance(engine[field], str) or not engine[field]
+                for field in ("name", "version")
+            )
+        ):
+            raise SlicerWorkerError("worker pair engine is invalid")
+        self._digest(engine["source_digest"], "engine source digest")
+        self._digest(engine["build_digest"], "engine build digest")
+
+        roots = []
+        for context in ("production", "twin"):
+            worker = pair[context]
+            worker_fields = {
+                "schema_version",
+                "worker_id",
+                "request_id",
+                "context",
+                "profile_digest",
+                "workspace",
+                "limits",
+                "single_use",
+                "profile_delete_after_result",
+                "can_control_hardware",
+                "can_upload",
+                "can_start_print",
+            }
+            if (
+                not isinstance(worker, Mapping)
+                or set(worker) != worker_fields
+                or worker.get("schema_version") != "1.0.0"
+                or worker.get("context") != context
+                or not isinstance(worker.get("worker_id"), str)
+                or not worker["worker_id"]
+                or not isinstance(worker.get("request_id"), str)
+                or not worker["request_id"]
+                or worker.get("profile_digest") != pair["profile_digest"]
+                or worker.get("single_use") is not True
+                or worker.get("profile_delete_after_result") is not True
+                or worker.get("can_control_hardware") is not False
+                or worker.get("can_upload") is not False
+                or worker.get("can_start_print") is not False
+            ):
+                raise SlicerWorkerError(f"{context} worker assignment is invalid")
+            workspace = worker["workspace"]
+            if not isinstance(workspace, Mapping) or set(workspace) != {
+                "input",
+                "output",
+                "logs",
+            }:
+                raise SlicerWorkerError(f"{context} worker workspace is invalid")
+            paths = {
+                name: self._workspace_path(value)
+                for name, value in workspace.items()
+                if isinstance(value, str)
+            }
+            if (
+                set(paths) != {"input", "output", "logs"}
+                or any(paths[name].name != name for name in paths)
+                or len({path.parent for path in paths.values()}) != 1
+            ):
+                raise SlicerWorkerError(f"{context} worker workspace is invalid")
+            roots.append(paths["input"].parent)
+            limits = worker["limits"]
+            if (
+                not isinstance(limits, Mapping)
+                or set(limits)
+                != {
+                    "timeout_seconds",
+                    "memory_bytes",
+                    "disk_bytes",
+                }
+                or any(
+                    not isinstance(value, int) or isinstance(value, bool) or value <= 0
+                    for value in limits.values()
+                )
+            ):
+                raise SlicerWorkerError(f"{context} worker limits are invalid")
+        if self._contains(roots[0], roots[1]) or self._contains(roots[1], roots[0]):
+            raise SlicerWorkerError("production and twin workspaces must not overlap")
+        return pair
+
     @staticmethod
     def _digest(value: Any, label: str) -> None:
         if (
@@ -323,17 +443,7 @@ class SlicerWorkerSupervisor:
         twin: Mapping[str, Any],
     ) -> dict[str, Any]:
         """Fail the whole pair when either isolated worker is not successful."""
-        pair = dict(assignment)
-        if (
-            pair.get("workspaces_isolated") is not True
-            or pair.get("same_engine_build") is not True
-            or pair.get("same_input") is not True
-            or pair.get("same_profile") is not True
-            or pair.get("can_control_hardware") is not False
-            or pair.get("can_upload") is not False
-            or pair.get("can_start_print") is not False
-        ):
-            raise SlicerWorkerError("worker pair assignment is not trusted")
+        pair = SlicerWorkerBoundary().validate_pair_assignment(assignment)
         production_item = self._pair_outcome(
             production, pair.get("production"), "production"
         )

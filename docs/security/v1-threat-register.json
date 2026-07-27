@@ -118,6 +118,7 @@
         "disk-bounded stable-file preflight hashing",
         "outcome-bound artifact digest claims",
         "strict supervisor outcome composition",
+        "pair assignment revalidation",
         "supervisor fault-injection contracts",
         "digest-bound result contract"
       ],

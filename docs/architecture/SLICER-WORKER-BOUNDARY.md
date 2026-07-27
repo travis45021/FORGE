@@ -21,6 +21,9 @@ identity, size, or modification time changes during hashing.
 Pair composition accepts only the complete supervisor outcome shape. Success
 and failure reasons, artifact acceptance, retry, cleanup, reuse, and authority
 flags must be internally consistent; unknown fields cannot cross the boundary.
+The pair assignment is also fully revalidated at composition: engine and input
+digests, profile binding, worker identities and contexts, single-use flags,
+limits, authority denials, and non-overlapping workspaces must all still match.
 
 The worker must declare `printer_control` among its forbidden capabilities.
 Printer discovery, cloud access, upload, update, telemetry, and print-start
