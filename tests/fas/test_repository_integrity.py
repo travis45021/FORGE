@@ -12,8 +12,14 @@ class RepositoryIntegrityTests(unittest.TestCase):
         expected_files = {
             ".gitignore",
             "CONSTITUTION.md",
+            "CONTRIBUTING.md",
             "LICENSE-STATUS.md",
+            "NOTICE",
+            "PRIVACY.md",
             "README.md",
+            "SOURCE-OFFER.md",
+            "TRADEMARKS.md",
+            "USER-DATA-TERMS.md",
             "pyproject.toml",
         }
         actual_files = {
@@ -28,6 +34,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
             "docs",
             "examples",
             "schemas",
+            "scripts",
             "src",
             "tests",
         }
