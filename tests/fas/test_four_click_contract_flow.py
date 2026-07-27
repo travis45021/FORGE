@@ -75,11 +75,27 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "authority": {"can_upload": False, "can_start_print": False},
             }
 
-        comparison = TwinComparisonService().compare(
+        def preflight(request: dict) -> dict:
+            slicer_result = result(request)
+            return {
+                "request_id": slicer_result["request_id"],
+                "context": slicer_result["context"],
+                "artifact_digest": slicer_result["artifact_digest"],
+                "engine": slicer_result["engine"],
+                "warnings": slicer_result["warnings"],
+                "status": "passed",
+                "result_contract_validated": True,
+                "output_digest_verified": True,
+                "can_authorize_production": False,
+                "can_upload": False,
+                "can_start_print": False,
+            }
+
+        comparison = TwinComparisonService().compare_preflighted(
             comparison_id="comparison-1",
             input_digest=assessment["source_digest"],
-            production=result(production_request),
-            twin=result(twin_request),
+            production=preflight(production_request),
+            twin=preflight(twin_request),
             reviewed_by_user=True,
         )
         acceptance = SlicerArtifactAcceptance().accept(comparison)

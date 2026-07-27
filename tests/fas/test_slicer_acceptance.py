@@ -20,13 +20,19 @@ def comparison() -> dict:
             "context": "production",
             "status": "succeeded",
             "artifact_digest": "d" * 64,
+            "preflight_verified": True,
         },
         "twin": {
             "context": "twin",
             "status": "succeeded",
             "artifact_digest": "d" * 64,
+            "preflight_verified": True,
         },
-        "acceptance": {"status": "matching", "reviewed_by_user": True},
+        "acceptance": {
+            "status": "matching",
+            "reviewed_by_user": True,
+            "preflight_evidence_required": True,
+        },
         "can_authorize_production": False,
     }
 
@@ -51,6 +57,13 @@ class SlicerAcceptanceTests(unittest.TestCase):
     def test_rejects_different_results(self) -> None:
         value = comparison()
         value["acceptance"]["status"] = "different"
+        with self.assertRaises(SlicerAcceptanceError):
+            self.service.accept(value)
+
+    def test_rejects_raw_comparison_without_preflight(self) -> None:
+        value = comparison()
+        value["production"]["preflight_verified"] = False
+        value["acceptance"]["preflight_evidence_required"] = False
         with self.assertRaises(SlicerAcceptanceError):
             self.service.accept(value)
 

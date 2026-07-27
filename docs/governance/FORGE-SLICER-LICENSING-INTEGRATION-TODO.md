@@ -105,7 +105,8 @@ release is distributed until the applicable items in this gate are complete.
 - [ ] Add deterministic artifact preflight and production/twin comparison.
   Byte-to-result digest, request, context, provenance, comparison, and
   acceptance reference services are implemented. Comparison now requires
-  measured preflight evidence; real engine artifact evidence remains open.
+  measured preflight evidence, and acceptance rejects raw comparisons; real
+  engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

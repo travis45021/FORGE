@@ -34,11 +34,23 @@ class SlicerArtifactAcceptance:
             raise SlicerAcceptanceError("production artifact digest is required")
         if acceptance.get("status") != "matching":
             raise SlicerAcceptanceError("production and twin artifacts must match")
+        if acceptance.get("preflight_evidence_required") is not True:
+            raise SlicerAcceptanceError(
+                "acceptance requires deterministic preflight evidence"
+            )
+        if (
+            production.get("preflight_verified") is not True
+            or twin.get("preflight_verified") is not True
+        ):
+            raise SlicerAcceptanceError(
+                "both production and twin artifacts require verified preflight"
+            )
         if acceptance.get("reviewed_by_user") is not True:
             raise SlicerAcceptanceError("user review is required")
         return {
             "comparison_id": item.get("comparison_id"),
             "artifact_digest": artifact_digest,
+            "preflight_verified": True,
             "ready_for_live_checks": True,
             "final_confirmation_required": True,
             "can_upload": False,
