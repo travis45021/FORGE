@@ -21,6 +21,7 @@
     },
     "decision": {"enum": ["accepted", "rejected", "needs_user_resolution"]},
     "ambiguities": {"type": "array", "items": {"type": "string"}},
-    "normalized_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"}
+    "normalized_digest": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "can_authorize_production": {"const": false}
   }
 }

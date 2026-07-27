@@ -9,6 +9,7 @@ from .events import EventError, IdempotentConsumer, validate_event
 from .executive import ExecutiveError, ForgeExecutive
 from .health import HEALTH_STATES, HealthError, HealthService
 from .interactions import InteractionError, InteractionManager
+from .imports import ImportAssessmentError, ImportQuarantine
 from .job_lifecycle import JobLifecycleError, PrintJobLifecycle
 from .interfaces import (
     CONTENT_KINDS,
@@ -66,6 +67,8 @@ __all__ = [
     "IdempotentConsumer",
     "InteractionError",
     "InteractionManager",
+    "ImportAssessmentError",
+    "ImportQuarantine",
     "JobLifecycleError",
     "PrintJobLifecycle",
     "CONTENT_KINDS",
