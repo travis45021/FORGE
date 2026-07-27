@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
-from typing import Any, Mapping
+from typing import Any
 
 
 class MissionTransitionError(ValueError):
@@ -44,7 +45,9 @@ class MissionLifecycle:
     ) -> tuple[dict[str, Any], dict[str, Any]]:
         current = str(mission["state"])
         if target not in _TRANSITIONS.get(current, set()):
-            raise MissionTransitionError(f"transition not allowed: {current} -> {target}")
+            raise MissionTransitionError(
+                f"transition not allowed: {current} -> {target}"
+            )
         if not actor_id or not reason or not event_id:
             raise MissionTransitionError("actor, reason, and event are required")
         updated = deepcopy(dict(mission))

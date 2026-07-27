@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Mapping
+from typing import Any
 
 
 class EventError(ValueError):
@@ -12,9 +13,19 @@ class EventError(ValueError):
 
 
 _REQUIRED = {
-    "event_id", "event_type", "event_version", "occurred_at", "published_at",
-    "source", "subject", "correlation_id", "causation_id", "classification",
-    "payload", "metadata", "trace_id",
+    "event_id",
+    "event_type",
+    "event_version",
+    "occurred_at",
+    "published_at",
+    "source",
+    "subject",
+    "correlation_id",
+    "causation_id",
+    "classification",
+    "payload",
+    "metadata",
+    "trace_id",
 }
 _CLASSES = {"event", "request", "command", "decision", "evidence", "state"}
 

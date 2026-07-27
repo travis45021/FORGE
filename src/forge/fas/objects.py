@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Mapping
+from typing import Any
 
 
 class ObjectSystemError(ValueError):
@@ -12,15 +13,32 @@ class ObjectSystemError(ValueError):
 
 
 LIFECYCLE = {
-    "declared", "discovered", "configured", "provisional", "validated",
-    "active", "degraded", "unavailable", "retired",
+    "declared",
+    "discovered",
+    "configured",
+    "provisional",
+    "validated",
+    "active",
+    "degraded",
+    "unavailable",
+    "retired",
 }
 KNOWLEDGE_STATES = {
-    "unknown", "user_declared", "detected_unverified", "locally_measured",
-    "validated", "conflicting", "expired",
+    "unknown",
+    "user_declared",
+    "detected_unverified",
+    "locally_measured",
+    "validated",
+    "conflicting",
+    "expired",
 }
 HEALTH_STATES = {
-    "healthy", "unobserved", "stale", "degraded", "unavailable", "failed",
+    "healthy",
+    "unobserved",
+    "stale",
+    "degraded",
+    "unavailable",
+    "failed",
     "recovering",
 }
 
@@ -83,13 +101,18 @@ class ObjectSystem:
         self._record("object.updated", object_id, reason)
         return deepcopy(candidate)
 
-    def add_relationship(
-        self, relationship: Mapping[str, Any]
-    ) -> dict[str, Any]:
+    def add_relationship(self, relationship: Mapping[str, Any]) -> dict[str, Any]:
         item = deepcopy(dict(relationship))
         required = {
-            "relationship_id", "source_id", "relationship_type", "target_id",
-            "scope", "knowledge_state", "evidence_refs", "created_at", "active",
+            "relationship_id",
+            "source_id",
+            "relationship_type",
+            "target_id",
+            "scope",
+            "knowledge_state",
+            "evidence_refs",
+            "created_at",
+            "active",
             "reason",
         }
         missing = sorted(required - item.keys())
@@ -207,11 +230,25 @@ class ObjectSystem:
 
     def _validate_object(self, item: Mapping[str, Any]) -> None:
         required = {
-            "object_id", "object_type", "display_name", "owner_scope",
-            "lifecycle_state", "knowledge_state", "version", "capabilities",
-            "state", "health", "limits", "policies", "evidence_refs",
-            "metadata", "unknown_fields", "creation_source", "created_at",
-            "updated_at", "reason",
+            "object_id",
+            "object_type",
+            "display_name",
+            "owner_scope",
+            "lifecycle_state",
+            "knowledge_state",
+            "version",
+            "capabilities",
+            "state",
+            "health",
+            "limits",
+            "policies",
+            "evidence_refs",
+            "metadata",
+            "unknown_fields",
+            "creation_source",
+            "created_at",
+            "updated_at",
+            "reason",
         }
         missing = sorted(required - item.keys())
         if missing:

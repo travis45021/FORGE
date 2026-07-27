@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
-from typing import Any, Mapping
+from typing import Any
 
 
 class OnboardingError(ValueError):
@@ -82,9 +83,7 @@ class OnboardingService:
         record["settings"] = deepcopy(PROFILES[experience_profile])
         record["automation_authority"] = "manual"
         record["onboarding_complete"] = True
-        self._record(
-            "experience.profile.selected", local_id, experience_profile
-        )
+        self._record("experience.profile.selected", local_id, experience_profile)
         return deepcopy(record)
 
     def update_settings(
@@ -135,9 +134,7 @@ class OnboardingService:
         record["settings"]["network_mode"] = network_mode
         record["sharing_consent"] = sharing_consent
         record["network_identity"] = network_identity
-        self._record(
-            "network.participation.changed", local_id, network_mode
-        )
+        self._record("network.participation.changed", local_id, network_mode)
         return deepcopy(record)
 
     def set_automation_authority(

@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
-from datetime import datetime, time
 import hashlib
 import json
-from typing import Any, Mapping
+from collections.abc import Mapping
+from copy import deepcopy
+from datetime import datetime, time
+from typing import Any
 
 
 class InteractionError(ValueError):
@@ -109,11 +110,13 @@ class InteractionManager:
     def update_preferences(self, changes: Mapping[str, Any]) -> dict[str, Any]:
         """Update communication choices without changing automation authority."""
         candidate = deepcopy(self._preferences)
-        if "automation_profile" in changes:
-            if changes["automation_profile"] != candidate["automation_profile"]:
-                raise InteractionError(
-                    "interaction preferences cannot change automation authority"
-                )
+        if (
+            "automation_profile" in changes
+            and changes["automation_profile"] != candidate["automation_profile"]
+        ):
+            raise InteractionError(
+                "interaction preferences cannot change automation authority"
+            )
         candidate.update(deepcopy(dict(changes)))
         self._preferences = self._normalize_preferences(candidate)
         self._record("interaction.profile.changed", self._preferences)
@@ -150,9 +153,12 @@ class InteractionManager:
             and not requested
         ):
             return self._decision("defer", "quiet_profile")
-        if self._in_quiet_hours(evaluated_at):
-            if interaction_class not in QUIET_HOUR_EXEMPT and not requested:
-                return self._decision("defer", "quiet_hours")
+        if (
+            self._in_quiet_hours(evaluated_at)
+            and interaction_class not in QUIET_HOUR_EXEMPT
+            and not requested
+        ):
+            return self._decision("defer", "quiet_hours")
         return self._decision("deliver", "allowed_by_interaction_policy")
 
     def evaluate_suggestion(
@@ -304,9 +310,7 @@ class InteractionManager:
         }
         missing = sorted(required - item.keys())
         if missing:
-            raise InteractionError(
-                f"suggestion missing fields: {', '.join(missing)}"
-            )
+            raise InteractionError(f"suggestion missing fields: {', '.join(missing)}")
         if item["source_type"] not in {
             "deterministic",
             "ai",
@@ -326,9 +330,7 @@ class InteractionManager:
         if not item["evidence_refs"] or not item["actions"]:
             raise InteractionError("suggestions require evidence and actions")
 
-    def _budget_exhausted(
-        self, when: datetime, mission_id: str | None
-    ) -> bool:
+    def _budget_exhausted(self, when: datetime, mission_id: str | None) -> bool:
         ordinary = [item for item in self._presented if not item["requested"]]
         day_count = sum(
             _utc(item["presented_at"]).date() == when.date() for item in ordinary
@@ -336,13 +338,8 @@ class InteractionManager:
         if day_count >= self._preferences["maximum_suggestions_per_day"]:
             return True
         if mission_id is not None:
-            mission_count = sum(
-                item["mission_id"] == mission_id for item in ordinary
-            )
-            if (
-                mission_count
-                >= self._preferences["maximum_suggestions_per_mission"]
-            ):
+            mission_count = sum(item["mission_id"] == mission_id for item in ordinary)
+            if mission_count >= self._preferences["maximum_suggestions_per_mission"]:
                 return True
         return False
 

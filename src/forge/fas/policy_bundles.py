@@ -7,11 +7,12 @@ enforces lifecycle, immutability, lineage, rollout, and rollback invariants.
 
 from __future__ import annotations
 
-from copy import deepcopy
-from datetime import datetime
 import hashlib
 import json
-from typing import Any, Iterable, Mapping
+from collections.abc import Iterable, Mapping
+from copy import deepcopy
+from datetime import datetime
+from typing import Any
 
 
 class PolicyBundleError(ValueError):
@@ -69,8 +70,12 @@ class PolicyBundleRegistry:
         digest = content_digest(candidate)
         if candidate["content_digest"] != digest:
             raise PolicyBundleError("content_digest does not match bundle content")
-        if not any(signature.get("verified") is True for signature in candidate["signatures"]):
-            raise PolicyBundleError("at least one verified bundle signature is required")
+        if not any(
+            signature.get("verified") is True for signature in candidate["signatures"]
+        ):
+            raise PolicyBundleError(
+                "at least one verified bundle signature is required"
+            )
 
         bundle_id = candidate["bundle_id"]
         existing = self._bundles.get(bundle_id)
@@ -113,7 +118,12 @@ class PolicyBundleRegistry:
 
         self._active_by_channel[channel] = bundle_id
         return self._record(
-            "activated", bundle_id, channel, previous, actor, evaluated_at,
+            "activated",
+            bundle_id,
+            channel,
+            previous,
+            actor,
+            evaluated_at,
             rollout_percent=rollout_percent,
         )
 
@@ -131,11 +141,13 @@ class PolicyBundleRegistry:
         current = self._active_by_channel.get(channel)
         if current is None:
             raise PolicyBundleError("channel has no active bundle")
-        target = self._require_bundle(target_bundle_id)
+        self._require_bundle(target_bundle_id)
         if target_bundle_id == current:
             raise PolicyBundleError("rollback target is already active")
         if not self._is_ancestor(target_bundle_id, current):
-            raise PolicyBundleError("rollback target must be an ancestor of active bundle")
+            raise PolicyBundleError(
+                "rollback target must be an ancestor of active bundle"
+            )
         result = self.activate(
             target_bundle_id,
             channel=channel,
@@ -160,13 +172,24 @@ class PolicyBundleRegistry:
 
     def _validate_bundle(self, bundle: Mapping[str, Any]) -> None:
         required = {
-            "bundle_id", "version", "created_at", "created_by", "status",
-            "parent_bundle_id", "policies", "constitution", "sentinel",
-            "rollout", "content_digest", "signatures",
+            "bundle_id",
+            "version",
+            "created_at",
+            "created_by",
+            "status",
+            "parent_bundle_id",
+            "policies",
+            "constitution",
+            "sentinel",
+            "rollout",
+            "content_digest",
+            "signatures",
         }
         missing = sorted(required - bundle.keys())
         if missing:
-            raise PolicyBundleError(f"bundle missing required fields: {', '.join(missing)}")
+            raise PolicyBundleError(
+                f"bundle missing required fields: {', '.join(missing)}"
+            )
         if bundle["status"] != "candidate":
             raise PolicyBundleError("only candidate bundles may be registered")
         _utc(bundle["created_at"])
@@ -203,21 +226,29 @@ class PolicyBundleRegistry:
             raise PolicyBundleError("policy activation requires Forge Admin")
         minimum = bundle["rollout"]["minimum_percent"]
         maximum = bundle["rollout"]["maximum_percent"]
-        if not isinstance(rollout_percent, int) or not minimum <= rollout_percent <= maximum:
+        if (
+            not isinstance(rollout_percent, int)
+            or not minimum <= rollout_percent <= maximum
+        ):
             raise PolicyBundleError("rollout percentage is outside bundle bounds")
 
         counts: dict[str, set[str]] = {}
         for approval in approvals:
             if approval.get("verified") is not True:
                 continue
-            if _utc(approval["approved_at"]) <= evaluated_at < _utc(approval["expires_at"]):
+            if (
+                _utc(approval["approved_at"])
+                <= evaluated_at
+                < _utc(approval["expires_at"])
+            ):
                 counts.setdefault(approval["approval_type"], set()).add(
                     approval["approval_id"]
                 )
         for requirement in bundle["rollout"]["required_approvals"]:
-            if len(counts.get(requirement["approval_type"], set())) < requirement[
-                "minimum_count"
-            ]:
+            if (
+                len(counts.get(requirement["approval_type"], set()))
+                < requirement["minimum_count"]
+            ):
                 raise PolicyBundleError(
                     f"missing approval: {requirement['approval_type']}"
                 )

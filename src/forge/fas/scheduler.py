@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Mapping
+from typing import Any
 
 
 class SchedulingError(ValueError):
@@ -73,8 +74,11 @@ class MissionScheduler:
         candidates: list[tuple[int, datetime, str, dict[str, Any]]] = []
         for item in self._missions.values():
             if item["state"] not in {
-                "queued", "waiting_for_approval", "waiting_for_capability",
-                "waiting_for_resource", "waiting_for_condition",
+                "queued",
+                "waiting_for_approval",
+                "waiting_for_capability",
+                "waiting_for_resource",
+                "waiting_for_condition",
             }:
                 continue
             reason = self._blocked_reason(item, observed)
@@ -132,9 +136,10 @@ class MissionScheduler:
         emergency = incoming["priority"] == "emergency"
         if not emergency and not running["at_safe_pause_point"]:
             raise SchedulingError("preemption requires a safe pause point")
-        if not emergency and PRIORITY[incoming["priority"]] <= PRIORITY[
-            running["priority"]
-        ]:
+        if (
+            not emergency
+            and PRIORITY[incoming["priority"]] <= PRIORITY[running["priority"]]
+        ):
             raise SchedulingError("preemption requires higher priority")
         for resource in list(self._resources):
             if self._resources[resource] == running_id:
@@ -214,10 +219,20 @@ class MissionScheduler:
 
     def _validate(self, item: Mapping[str, Any]) -> None:
         required = {
-            "mission_id", "priority", "queued_at", "deadline", "resources",
-            "dependencies", "conditions", "requires_approval",
-            "approval_verified", "requires_ai", "at_safe_pause_point",
-            "retry_policy", "cost_limit", "offline_capable",
+            "mission_id",
+            "priority",
+            "queued_at",
+            "deadline",
+            "resources",
+            "dependencies",
+            "conditions",
+            "requires_approval",
+            "approval_verified",
+            "requires_ai",
+            "at_safe_pause_point",
+            "retry_policy",
+            "cost_limit",
+            "offline_capable",
         }
         missing = sorted(required - item.keys())
         if missing:

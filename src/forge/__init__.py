@@ -1,2 +1,1 @@
 """Forge core package."""
-

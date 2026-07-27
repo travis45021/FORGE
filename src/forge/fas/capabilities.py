@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import re
+from collections.abc import Iterable, Mapping
 from copy import deepcopy
 from dataclasses import dataclass
-import re
-from typing import Any, Iterable, Mapping
+from typing import Any
 
 
 class CapabilityError(ValueError):
@@ -55,11 +56,20 @@ class CapabilityRegistry:
             raise CapabilityError(f"contract missing: {', '.join(missing)}")
         _version(str(item["version"]))
         names = [operation.get("name") for operation in item["operations"]]
-        if not names or any(not name for name in names) or len(names) != len(set(names)):
+        if (
+            not names
+            or any(not name for name in names)
+            or len(names) != len(set(names))
+        ):
             raise CapabilityError("operations must have unique names")
         key = (item["capability_id"], item["version"], item["provider_id"])
         if any(
-            (entry.contract["capability_id"], entry.contract["version"], entry.contract["provider_id"]) == key
+            (
+                entry.contract["capability_id"],
+                entry.contract["version"],
+                entry.contract["provider_id"],
+            )
+            == key
             for entry in self._items
         ):
             raise CapabilityError("capability provider already registered")
@@ -84,7 +94,10 @@ class CapabilityRegistry:
         if not candidates:
             raise CapabilityError(f"unresolved capability: {wanted} {constraint}")
         candidates.sort(
-            key=lambda entry: (_version(entry.contract["version"]), entry.contract["provider_id"]),
+            key=lambda entry: (
+                _version(entry.contract["version"]),
+                entry.contract["provider_id"],
+            ),
             reverse=True,
         )
         return deepcopy(candidates[0].contract)

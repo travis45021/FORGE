@@ -8,12 +8,13 @@ load policy from ambient process state.
 
 from __future__ import annotations
 
+import hashlib
+import json
+from collections.abc import Iterable, Mapping
 from copy import deepcopy
 from datetime import datetime
 from fnmatch import fnmatchcase
-import hashlib
-import json
-from typing import Any, Iterable, Mapping
+from typing import Any
 
 
 class EvaluationError(ValueError):
@@ -39,7 +40,9 @@ def _canonical(value: Any) -> bytes:
             separators=(",", ":"),
         ).encode("utf-8")
     except (TypeError, ValueError) as exc:
-        raise EvaluationError("request and policy values must be canonical JSON") from exc
+        raise EvaluationError(
+            "request and policy values must be canonical JSON"
+        ) from exc
 
 
 def _digest(value: Any) -> str:
@@ -57,7 +60,9 @@ def _match_action(patterns: list[str], action_type: str) -> bool:
 
 
 def _facts_match(expected: Mapping[str, Any], actual: Mapping[str, Any]) -> bool:
-    return all(key in actual and actual[key] == value for key, value in expected.items())
+    return all(
+        key in actual and actual[key] == value for key, value in expected.items()
+    )
 
 
 def _approval_counts(
@@ -112,15 +117,18 @@ class AuthorizationEngine:
             key=lambda item: (item["policy_id"], item["version"]),
         )
         policy_set_digest = _digest(policy_set)
-        evaluation_id = "forge-authorization:" + hashlib.sha256(
-            _canonical(
-                {
-                    "request_id": request["request_id"],
-                    "idempotency_key": request["idempotency_key"],
-                    "policy_set_digest": policy_set_digest,
-                }
-            )
-        ).hexdigest()[:32]
+        evaluation_id = (
+            "forge-authorization:"
+            + hashlib.sha256(
+                _canonical(
+                    {
+                        "request_id": request["request_id"],
+                        "idempotency_key": request["idempotency_key"],
+                        "policy_set_digest": policy_set_digest,
+                    }
+                )
+            ).hexdigest()[:32]
+        )
 
         invariant_denial = self._invariant_denial(request)
         if invariant_denial:
@@ -229,14 +237,17 @@ class AuthorizationEngine:
         )
         if request["authorization_phase"] not in {"decision", "execution"}:
             raise EvaluationError("authorization_phase must be decision or execution")
-        if not isinstance(request["readiness_level"], int) or not 0 <= request[
-            "readiness_level"
-        ] <= 5:
+        if (
+            not isinstance(request["readiness_level"], int)
+            or not 0 <= request["readiness_level"] <= 5
+        ):
             raise EvaluationError("readiness_level must be an integer from 0 through 5")
         actor = request["actor"]
         _require(actor, ("actor_id", "actor_type", "version"), "actor")
         action = request["requested_action"]
-        _require(action, ("action_type", "target_refs", "parameters"), "requested_action")
+        _require(
+            action, ("action_type", "target_refs", "parameters"), "requested_action"
+        )
         _utc(request["evaluated_at"])
 
     def _validate_policy(self, policy: Mapping[str, Any]) -> None:

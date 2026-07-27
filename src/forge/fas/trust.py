@@ -6,13 +6,13 @@ examples only; production adapters should use approved asymmetric verification.
 
 from __future__ import annotations
 
-from copy import deepcopy
-from datetime import datetime
 import hashlib
 import hmac
 import json
-from typing import Any, Callable, Mapping
-
+from collections.abc import Callable, Mapping
+from copy import deepcopy
+from datetime import datetime
+from typing import Any
 
 Verifier = Callable[[bytes, str, Mapping[str, Any]], bool]
 
@@ -140,9 +140,7 @@ class TrustService:
         required = {"key_id", "algorithm", "purpose", "signature"}
         missing = sorted(required - claim.keys())
         if missing:
-            raise TrustError(
-                f"signature envelope missing fields: {', '.join(missing)}"
-            )
+            raise TrustError(f"signature envelope missing fields: {', '.join(missing)}")
 
         key = self._keys.get(claim["key_id"])
         if key is None:
@@ -246,9 +244,7 @@ class TrustService:
             "trust_attestation_id": attestation["attestation_id"],
         }
 
-    def record_sentinel_evidence(
-        self, evidence: Mapping[str, Any]
-    ) -> dict[str, Any]:
+    def record_sentinel_evidence(self, evidence: Mapping[str, Any]) -> dict[str, Any]:
         """Validate Sentinel evidence without converting it into authority."""
         record = deepcopy(dict(evidence))
         required = {
@@ -331,4 +327,3 @@ class TrustService:
                 "detail": deepcopy(dict(detail or {})),
             }
         )
-

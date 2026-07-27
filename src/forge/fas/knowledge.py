@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import json
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
-import json
-from typing import Any, Mapping
+from typing import Any
 
 
 class KnowledgeError(ValueError):
@@ -13,13 +14,27 @@ class KnowledgeError(ValueError):
 
 
 TYPES = {
-    "observed_data", "evidence", "fact", "user_statement", "measurement",
-    "inference", "prediction", "preference", "policy_reference", "outcome",
+    "observed_data",
+    "evidence",
+    "fact",
+    "user_statement",
+    "measurement",
+    "inference",
+    "prediction",
+    "preference",
+    "policy_reference",
+    "outcome",
     "unknown",
 }
 STATES = {
-    "provisional", "active", "stale", "disputed", "superseded", "retired",
-    "invalidated", "advisory",
+    "provisional",
+    "active",
+    "stale",
+    "disputed",
+    "superseded",
+    "retired",
+    "invalidated",
+    "advisory",
 }
 
 
@@ -47,13 +62,12 @@ class KnowledgeCore:
             raise KnowledgeError("knowledge identifiers are immutable")
         if candidate["origin"] == "shared" and candidate["status"] == "active":
             raise KnowledgeError("shared knowledge is advisory until adopted")
-        if candidate["source_class"] == "ai":
-            if (
-                candidate["knowledge_type"] not in {"inference", "prediction"}
-                or candidate["status"] != "provisional"
-                or candidate["requires_verification"] is not True
-            ):
-                raise KnowledgeError("AI knowledge must remain provisional")
+        if candidate["source_class"] == "ai" and (
+            candidate["knowledge_type"] not in {"inference", "prediction"}
+            or candidate["status"] != "provisional"
+            or candidate["requires_verification"] is not True
+        ):
+            raise KnowledgeError("AI knowledge must remain provisional")
         self._items[knowledge_id] = candidate
         self._record("knowledge.created", knowledge_id, candidate["reason"])
         return deepcopy(candidate)
@@ -127,16 +141,17 @@ class KnowledgeCore:
         _utc(changed_at)
         changed: list[str] = []
         for item in self._items.values():
-            if (
-                knowledge_id in item["depends_on"]
-                and item["status"] in {"active", "provisional"}
-            ):
+            if knowledge_id in item["depends_on"] and item["status"] in {
+                "active",
+                "provisional",
+            }:
                 item["status"] = "stale"
                 item["updated_at"] = changed_at
                 item["reason"] = reason
                 changed.append(item["knowledge_id"])
-                self._record("knowledge.verification.required",
-                             item["knowledge_id"], reason)
+                self._record(
+                    "knowledge.verification.required", item["knowledge_id"], reason
+                )
         return changed
 
     def item(self, knowledge_id: str) -> dict[str, Any] | None:
@@ -186,11 +201,26 @@ class KnowledgeCore:
 
     def _validate(self, item: Mapping[str, Any]) -> None:
         required = {
-            "knowledge_id", "knowledge_type", "subject_id", "predicate", "value",
-            "scope", "confidence", "source_class", "source_refs", "origin",
-            "created_at", "updated_at", "last_verified_at", "expires_at",
-            "status", "requires_verification", "depends_on", "supersedes",
-            "superseded_by", "reason",
+            "knowledge_id",
+            "knowledge_type",
+            "subject_id",
+            "predicate",
+            "value",
+            "scope",
+            "confidence",
+            "source_class",
+            "source_refs",
+            "origin",
+            "created_at",
+            "updated_at",
+            "last_verified_at",
+            "expires_at",
+            "status",
+            "requires_verification",
+            "depends_on",
+            "supersedes",
+            "superseded_by",
+            "reason",
         }
         missing = sorted(required - item.keys())
         if missing:

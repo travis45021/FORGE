@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
-from datetime import datetime
 import hashlib
 import json
-from typing import Any, Mapping
+from collections.abc import Mapping
+from copy import deepcopy
+from datetime import datetime
+from typing import Any
 
 
 class AssuranceError(ValueError):
@@ -27,19 +28,45 @@ CLASS_CHECKS = {
     "A0": {"source", "timestamp"},
     "A1": {"source", "timestamp", "context", "applicability"},
     "A2": {
-        "source", "timestamp", "context", "applicability", "capability",
-        "compatibility", "evidence_quality", "recovery",
+        "source",
+        "timestamp",
+        "context",
+        "applicability",
+        "capability",
+        "compatibility",
+        "evidence_quality",
+        "recovery",
     },
     "A3": {
-        "source", "timestamp", "context", "applicability", "capability",
-        "compatibility", "evidence_quality", "recovery", "authority",
-        "live_state", "safety", "monitoring",
+        "source",
+        "timestamp",
+        "context",
+        "applicability",
+        "capability",
+        "compatibility",
+        "evidence_quality",
+        "recovery",
+        "authority",
+        "live_state",
+        "safety",
+        "monitoring",
     },
     "A4": {
-        "source", "timestamp", "context", "applicability", "capability",
-        "compatibility", "evidence_quality", "recovery", "authority",
-        "live_state", "safety", "monitoring", "deterministic_safety",
-        "strong_evidence", "explicit_constraints",
+        "source",
+        "timestamp",
+        "context",
+        "applicability",
+        "capability",
+        "compatibility",
+        "evidence_quality",
+        "recovery",
+        "authority",
+        "live_state",
+        "safety",
+        "monitoring",
+        "deterministic_safety",
+        "strong_evidence",
+        "explicit_constraints",
         "conservative_authorization",
     },
 }
@@ -48,7 +75,10 @@ CLASS_CHECKS = {
 def _canonical(value: Any) -> bytes:
     try:
         return json.dumps(
-            value, ensure_ascii=False, allow_nan=False, sort_keys=True,
+            value,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
             separators=(",", ":"),
         ).encode("utf-8")
     except (TypeError, ValueError) as exc:
@@ -109,7 +139,9 @@ class AssuranceService:
         if not declared <= completed | waived:
             return self._result(candidate, "incomplete", "checks_incomplete")
         if candidate["assurance_class"] == "A4" and waived & {
-            "safety", "deterministic_safety", "conservative_authorization"
+            "safety",
+            "deterministic_safety",
+            "conservative_authorization",
         }:
             raise AssuranceError("safety-critical checks cannot be waived")
         if waived and not candidate["waiver"]:
@@ -121,7 +153,9 @@ class AssuranceService:
                 raise AssuranceError("authorized actions require A3 or A4")
             if authorization_verified is not True:
                 return self._result(
-                    candidate, "verified", "authority_not_verified",
+                    candidate,
+                    "verified",
+                    "authority_not_verified",
                     claim_state="verified_recommendation",
                 )
         elif requested_state == "measured_outcome":
@@ -164,11 +198,24 @@ class AssuranceService:
 
     def _validate(self, packet: Mapping[str, Any]) -> None:
         required = {
-            "verification_id", "subject_id", "claim_state", "assurance_class",
-            "context_fingerprint", "required_checks", "completed_checks",
-            "failed_checks", "waived_checks", "evidence_refs", "assumptions",
-            "uncertainties", "applicability_limits", "confidence",
-            "verifier_versions", "expires_at", "revalidate_when", "waiver",
+            "verification_id",
+            "subject_id",
+            "claim_state",
+            "assurance_class",
+            "context_fingerprint",
+            "required_checks",
+            "completed_checks",
+            "failed_checks",
+            "waived_checks",
+            "evidence_refs",
+            "assumptions",
+            "uncertainties",
+            "applicability_limits",
+            "confidence",
+            "verifier_versions",
+            "expires_at",
+            "revalidate_when",
+            "waiver",
         }
         missing = sorted(required - packet.keys())
         if missing:
@@ -187,8 +234,12 @@ class AssuranceService:
         if not packet["evidence_refs"]:
             raise AssuranceError("verification requires evidence")
         for field in (
-            "required_checks", "completed_checks", "failed_checks",
-            "waived_checks", "evidence_refs", "revalidate_when",
+            "required_checks",
+            "completed_checks",
+            "failed_checks",
+            "waived_checks",
+            "evidence_refs",
+            "revalidate_when",
         ):
             if not isinstance(packet[field], list) or len(packet[field]) != len(
                 set(packet[field])

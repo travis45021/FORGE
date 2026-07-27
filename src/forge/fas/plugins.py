@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import re
-from typing import Any, Mapping
+from collections.abc import Mapping
+from copy import deepcopy
+from typing import Any
 
 from .capabilities import CapabilityRegistry
 
@@ -14,16 +15,30 @@ class PluginError(ValueError):
 
 
 PLUGIN_TYPES = {
-    "capability_provider", "transport", "ai_provider", "mission", "profile",
-    "interface", "knowledge",
+    "capability_provider",
+    "transport",
+    "ai_provider",
+    "mission",
+    "profile",
+    "interface",
+    "knowledge",
 }
 TRUST_STATES = {
-    "unverified", "provisional", "locally_trusted", "validated",
-    "verified_publisher", "official_forge", "quarantined", "blocked",
+    "unverified",
+    "provisional",
+    "locally_trusted",
+    "validated",
+    "verified_publisher",
+    "official_forge",
+    "quarantined",
+    "blocked",
 }
 SENSITIVE_PERMISSIONS = {
-    "network.internet", "machine.motion.control", "machine.thermal.control",
-    "firmware.flash", "policy.modify",
+    "network.internet",
+    "machine.motion.control",
+    "machine.thermal.control",
+    "firmware.flash",
+    "policy.modify",
 }
 _SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 _PLUGIN_ID = re.compile(r"^[a-z][a-z0-9]*(?:\.[a-z0-9_]+){2,}$")
@@ -65,7 +80,8 @@ class PluginRegistry:
         record = self._require(plugin_id)
         manifest = record["manifest"]
         if trust_state not in TRUST_STATES or trust_state in {
-            "quarantined", "blocked",
+            "quarantined",
+            "blocked",
         }:
             raise PluginError("invalid activation trust state")
         requested = set(manifest["permissions"])
@@ -97,9 +113,7 @@ class PluginRegistry:
         self._record("plugin.ready", plugin_id)
         return deepcopy(record)
 
-    def activate(
-        self, plugin_id: str, *, executive_authorized: bool
-    ) -> dict[str, Any]:
+    def activate(self, plugin_id: str, *, executive_authorized: bool) -> dict[str, Any]:
         record = self._require(plugin_id)
         if record["state"] != "ready":
             raise PluginError("plugin must be ready before activation")
@@ -123,8 +137,11 @@ class PluginRegistry:
             self._capabilities.register(
                 contract,
                 healthy=True,
-                trusted=record["trust_state"] in {
-                    "locally_trusted", "validated", "verified_publisher",
+                trusted=record["trust_state"]
+                in {
+                    "locally_trusted",
+                    "validated",
+                    "verified_publisher",
                     "official_forge",
                 },
             )
@@ -159,11 +176,25 @@ class PluginRegistry:
 
     def _validate_manifest(self, item: Mapping[str, Any]) -> None:
         required = {
-            "schema_version", "plugin_id", "name", "version", "api_version",
-            "plugin_type", "publisher", "description", "fas_compliance",
-            "capabilities", "permissions", "services", "isolation",
-            "network_scope", "configuration_schema", "validation_tests",
-            "experimental", "execution_mode", "limitations",
+            "schema_version",
+            "plugin_id",
+            "name",
+            "version",
+            "api_version",
+            "plugin_type",
+            "publisher",
+            "description",
+            "fas_compliance",
+            "capabilities",
+            "permissions",
+            "services",
+            "isolation",
+            "network_scope",
+            "configuration_schema",
+            "validation_tests",
+            "experimental",
+            "execution_mode",
+            "limitations",
         }
         missing = sorted(required - item.keys())
         if missing:
@@ -191,13 +222,18 @@ class PluginRegistry:
         ):
             raise PluginError("internet scope requires explicit permission")
         if item["experimental"] and item["execution_mode"] not in {
-            "simulation_only", "test_hardware",
+            "simulation_only",
+            "test_hardware",
         }:
             raise PluginError("experimental plugins require a testing gate")
         for capability in item["capabilities"]:
             fields = {
-                "capability_id", "version", "provider_id", "operations",
-                "limitations", "required_permission",
+                "capability_id",
+                "version",
+                "provider_id",
+                "operations",
+                "limitations",
+                "required_permission",
             }
             if fields - capability.keys():
                 raise PluginError("capability declaration is incomplete")
@@ -238,19 +274,27 @@ def custom_component_manifest(
         "publisher": "local-user",
         "description": f"Local custom {category} component.",
         "fas_compliance": ["FAS-003", "FAS-010", "FAS-014", "FAS-018"],
-        "capabilities": [{
-            "capability_id": capability_id,
-            "version": "1.0.0",
-            "provider_id": f"{plugin_id}.provider",
-            "operations": [{"name": value} for value in operations],
-            "limitations": ["provisional_custom_hardware", f"limits:{dict(limits)}"],
-            "required_permission": permission,
-        }],
+        "capabilities": [
+            {
+                "capability_id": capability_id,
+                "version": "1.0.0",
+                "provider_id": f"{plugin_id}.provider",
+                "operations": [{"name": value} for value in operations],
+                "limitations": [
+                    "provisional_custom_hardware",
+                    f"limits:{dict(limits)}",
+                ],
+                "required_permission": permission,
+            }
+        ],
         "permissions": [permission],
         "services": ["events", "logging", "capability_registry"],
         "isolation": "separate_process",
         "network_scope": "none",
-        "configuration_schema": {"connection": dict(connection), "limits": dict(limits)},
+        "configuration_schema": {
+            "connection": dict(connection),
+            "limits": dict(limits),
+        },
         "validation_tests": ["manifest", "configuration", "capability_contract"],
         "experimental": True,
         "execution_mode": "test_hardware",

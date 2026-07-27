@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Mapping
+from typing import Any
 
 
 class HealthError(ValueError):
@@ -88,7 +89,9 @@ class HealthService:
 
     def set_dependencies(self, object_id: str, dependencies: list[str]) -> None:
         if len(dependencies) != len(set(dependencies)) or object_id in dependencies:
-            raise HealthError("dependencies must be unique and cannot be self-referential")
+            raise HealthError(
+                "dependencies must be unique and cannot be self-referential"
+            )
         self._dependencies[object_id] = set(dependencies)
 
     def impact(self, failed_object_id: str) -> dict[str, Any]:
