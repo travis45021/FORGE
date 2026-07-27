@@ -23,9 +23,10 @@ the applicable GPL terms. A commercial MCUT license is not assumed and cannot
 be selected implicitly; it would require separate procurement, contract
 review, and an updated notice/SBOM record.
 
-**Owner position:** use the MCUT GPLv3 option unless qualified counsel and
-procurement approve a documented commercial alternative. **Status: Open for
-evidence and legal confirmation.**
+**Owner approval recorded 2026-07-27:** use the MCUT GPLv3 option. The
+commercial alternative is not selected and may not enter the v1 build or
+distribution without a new procurement and legal decision. **Status: Owner
+approved; evidence and legal confirmation remain open.**
 
 #### Simplest route
 
@@ -71,6 +72,14 @@ compatibility confirmation required.**
 Keep Orca-derived work in the governed AGPLv3 distribution boundary, preserve
 all upstream notices and corresponding-source obligations, and do not import or
 publish it until Gate 1 closes. **Status: Open for legal confirmation.**
+
+**Next-step route:** treat the approved Orca worker as an openly distributed,
+AGPL-governed component of FORGE, with a pinned source commit, reproducible
+build inputs, separate worker boundary, complete notices, and a matching
+corresponding-source offer. Do not wrap Orca in a proprietary or undisclosed
+binary-only layer, and do not let the worker acquire FORGE authority over
+printers or user data. The file-level audit and counsel must still confirm the
+combined-work and distribution treatment.
 
 ### 1.4 Non-free Bambu networking exclusion
 

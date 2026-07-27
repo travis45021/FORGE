@@ -530,6 +530,16 @@ FORGE build, packaging graph, and required operating path. Printer connectivity
 uses governed, replaceable capability providers and may not become a vendor
 lock-in boundary.
 
+### FORGE-DEC-079 — MCUT GPLv3 path is the v1 default
+
+Status: Owner approved; evidence and qualified legal review open
+
+FORGE will use MCUT's GPLv3 option for the v1 open distribution when MCUT is
+reachable in the approved Orca worker build. The commercial alternative is not
+selected. It may not enter the v1 build or distribution without a new
+procurement and qualified legal decision. MCUT remains isolated inside the
+replaceable slicer worker and does not become a FORGE kernel dependency.
+
 ## Known reconciliation items
 
 1. Historical FAS-007–036 documents exist in a prior project workspace, while
