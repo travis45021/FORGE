@@ -75,6 +75,9 @@ application composition boundary. It invokes the Executive, replaceable
 transport registry, and Runtime in that order. Any rejection stops the chain.
 Its result distinguishes an upload command accepted by Runtime from an actual
 print start or confirmed physical outcome; both remain false.
+The status presenter also requires Runtime and upload evidence to name the same
+job, provider, and artifact and validates all displayed evidence digests before
+rendering. Mismatched lineage cannot be shown as a successful upload command.
 
 The coordinator has no network or device client and cannot bypass the
 underlying gates. A product-facing application may call it only after creating

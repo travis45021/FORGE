@@ -431,6 +431,7 @@ class ForgeRuntime:
         self._consumed_confirmation_tokens.add(confirmation_token)
         result.update(
             {
+                "provider_id": handoff.get("provider_id"),
                 "job_id": handoff.get("job_id"),
                 "artifact_digest": artifact_digest,
                 "comparison_id": handoff.get("comparison_id"),

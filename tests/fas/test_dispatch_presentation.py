@@ -28,6 +28,9 @@ def dispatch_result() -> dict:
         },
         "runtime_result": {
             "status": "dispatched",
+            "provider_id": "provider:custom",
+            "job_id": "job:1",
+            "artifact_digest": "a" * 64,
             "physical_outcome_confirmed": False,
             "provider_dispatch_evidence_digest": "c" * 64,
         },
@@ -136,4 +139,29 @@ def test_rejects_secret_confirmation_material(secret_field: str) -> None:
     item["upload_evidence"][secret_field] = "secret"
 
     with pytest.raises(DispatchPresentationError):
+        DispatchOutcomePresenter().present(item)
+
+
+@pytest.mark.parametrize("field", ["provider_id", "job_id", "artifact_digest"])
+def test_rejects_runtime_identity_mismatch(field: str) -> None:
+    item = dispatch_result()
+    item["runtime_result"][field] = "different"
+
+    with pytest.raises(DispatchPresentationError, match="does not match"):
+        DispatchOutcomePresenter().present(item)
+
+
+@pytest.mark.parametrize(
+    ("section", "field"),
+    [
+        ("upload_evidence", "artifact_digest"),
+        ("upload_evidence", "final_confirmation_evidence_digest"),
+        ("runtime_result", "provider_dispatch_evidence_digest"),
+    ],
+)
+def test_rejects_invalid_presentation_digests(section: str, field: str) -> None:
+    item = dispatch_result()
+    item[section][field] = "not-a-digest"
+
+    with pytest.raises(DispatchPresentationError, match="digest"):
         DispatchOutcomePresenter().present(item)

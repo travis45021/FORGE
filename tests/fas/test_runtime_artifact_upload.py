@@ -129,6 +129,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         result = self.dispatch()
         self.assertEqual(result["status"], "dispatched")
         self.assertFalse(result["physical_outcome_confirmed"])
+        self.assertEqual(result["provider_id"], "provider:custom")
         self.assertEqual(result["artifact_digest"], "a" * 64)
         self.assertEqual(result["input_digest"], "b" * 64)
         self.assertEqual(result["profile_digest"], "c" * 64)

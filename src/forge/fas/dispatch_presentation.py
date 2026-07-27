@@ -37,6 +37,33 @@ class DispatchOutcomePresenter:
             or runtime.get("physical_outcome_confirmed") is not False
         ):
             raise DispatchPresentationError("dispatch evidence is inconsistent")
+        for field in ("job_id", "provider_id"):
+            value = evidence.get(field)
+            if not isinstance(value, str) or not value.strip():
+                raise DispatchPresentationError(
+                    f"dispatch {field.replace('_', ' ')} is invalid"
+                )
+            if runtime.get(field) != value:
+                raise DispatchPresentationError(
+                    f"Runtime {field.replace('_', ' ')} does not match upload evidence"
+                )
+        for field in (
+            "artifact_digest",
+            "final_confirmation_evidence_digest",
+        ):
+            value = evidence.get(field)
+            if not self._digest(value):
+                raise DispatchPresentationError(
+                    f"dispatch {field.replace('_', ' ')} is invalid"
+                )
+        if runtime.get("artifact_digest") != evidence["artifact_digest"]:
+            raise DispatchPresentationError(
+                "Runtime artifact does not match upload evidence"
+            )
+        if not self._digest(runtime.get("provider_dispatch_evidence_digest")):
+            raise DispatchPresentationError(
+                "provider dispatch evidence digest is invalid"
+            )
         if (
             "confirmation_token" in evidence
             or "final_confirmation_evidence" in evidence
@@ -78,3 +105,11 @@ class DispatchOutcomePresenter:
             ),
             "non_color_cue": "waiting",
         }
+
+    @staticmethod
+    def _digest(value: Any) -> bool:
+        return (
+            isinstance(value, str)
+            and len(value) == 64
+            and all(character in "0123456789abcdef" for character in value)
+        )
