@@ -7,6 +7,9 @@ Historical source: FAS-027
 FAS-028 defines a capability-first provider boundary for custom, off-brand,
 and user-built hardware. Providers advertise transport identity, health, and
 capabilities; FORGE does not maintain a fixed printer whitelist.
+Provider identities, capability lists, and health observations are validated
+before registration or state changes, including strict UTC observation
+timestamps.
 
 The reference registry discovers providers, records health, rejects raw
 hardware commands, and prepares structured commands only when authorization,

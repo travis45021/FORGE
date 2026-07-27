@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any
 
 from .job_lifecycle import (
@@ -25,13 +26,20 @@ def capability_provider_manifest(
     tested_reference: str | None = None,
 ) -> dict[str, Any]:
     """Create a replaceable, hardware-neutral transport provider manifest."""
-    if not provider_id.startswith("provider:"):
+    if (
+        not isinstance(provider_id, str)
+        or not provider_id.startswith("provider:")
+        or not provider_id[9:].strip()
+    ):
         raise TransportError("provider identity must use the provider namespace")
-    if not transport.strip():
+    if not isinstance(transport, str) or not transport.strip():
         raise TransportError("provider transport is required")
     if (
         not capabilities
-        or any(not capability.strip() for capability in capabilities)
+        or any(
+            not isinstance(capability, str) or not capability.strip()
+            for capability in capabilities
+        )
         or len(capabilities) != len(set(capabilities))
     ):
         raise TransportError("provider capabilities must be unique and non-empty")
@@ -83,11 +91,25 @@ class HardwareTransportRegistry:
         missing = sorted(required - item.keys())
         if missing:
             raise TransportError(f"provider manifest missing: {', '.join(missing)}")
+        if (
+            not isinstance(item["provider_id"], str)
+            or not item["provider_id"].startswith("provider:")
+            or not item["provider_id"][9:].strip()
+        ):
+            raise TransportError("provider identity must use the provider namespace")
         if item["provider_id"] in self._providers or item["state"] != "registered":
             raise TransportError("provider identity or initial state is invalid")
         if item["health"] not in {"unknown", "healthy", "degraded", "failed"}:
             raise TransportError("invalid provider health")
-        if not isinstance(item["capabilities"], list) or not item["capabilities"]:
+        if (
+            not isinstance(item["capabilities"], list)
+            or not item["capabilities"]
+            or any(
+                not isinstance(value, str) or not value.strip()
+                for value in item["capabilities"]
+            )
+            or len(item["capabilities"]) != len(set(item["capabilities"]))
+        ):
             raise TransportError("provider capabilities must be a non-empty list")
         self._providers[item["provider_id"]] = item
         self._record("provider.registered", item["provider_id"])
@@ -99,6 +121,14 @@ class HardwareTransportRegistry:
         provider = self._require(provider_id)
         if health not in {"unknown", "healthy", "degraded", "failed"}:
             raise TransportError("invalid provider health")
+        if not isinstance(observed_at, str) or not observed_at.endswith("Z"):
+            raise TransportError("provider health observation must be UTC")
+        try:
+            datetime.fromisoformat(observed_at[:-1] + "+00:00")
+        except ValueError as exc:
+            raise TransportError(
+                "provider health observation must be valid UTC"
+            ) from exc
         provider.update({"health": health, "observed_at": observed_at})
         self._record("provider.health.changed", provider_id)
         return deepcopy(provider)

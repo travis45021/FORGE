@@ -79,6 +79,20 @@ class Fas028TransportTests(unittest.TestCase):
                 user_confirmation=True,
             )
 
+    def test_provider_identity_capabilities_and_health_time_fail_closed(self):
+        with self.assertRaisesRegex(TransportError, "provider identity"):
+            HardwareTransportRegistry().register(
+                {**self.provider, "provider_id": "provider:"}
+            )
+        with self.assertRaisesRegex(TransportError, "capabilities"):
+            HardwareTransportRegistry().register(
+                {**self.provider, "capabilities": ["motion", "motion"]}
+            )
+        with self.assertRaisesRegex(TransportError, "UTC"):
+            self.registry.set_health(
+                "provider:custom-printer", "healthy", observed_at="not-a-time"
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
