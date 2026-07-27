@@ -18,6 +18,9 @@ each output beneath a caller-supplied, non-symlinked execution root and rejects
 artifacts outside the assigned output directory before reading their bytes.
 Reads are capped by the assigned worker disk limit and rejected if file
 identity, size, or modification time changes during hashing.
+Pair composition accepts only the complete supervisor outcome shape. Success
+and failure reasons, artifact acceptance, retry, cleanup, reuse, and authority
+flags must be internally consistent; unknown fields cannot cross the boundary.
 
 The worker must declare `printer_control` among its forbidden capabilities.
 Printer discovery, cloud access, upload, update, telemetry, and print-start

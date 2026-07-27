@@ -368,15 +368,63 @@ class SlicerWorkerSupervisor:
         if not isinstance(assigned, Mapping):
             raise SlicerWorkerError(f"{context} worker assignment is missing")
         item = dict(outcome)
+        required = {
+            "schema_version",
+            "worker_id",
+            "context",
+            "context_id",
+            "status",
+            "reason",
+            "artifact_digest",
+            "artifact_accepted",
+            "workspace_cleanup_required",
+            "worker_reuse_allowed",
+            "retry_requires_fresh_context",
+            "can_upload",
+            "can_start_print",
+            "can_control_hardware",
+        }
+        if set(item) != required:
+            raise SlicerWorkerError(f"{context} worker outcome fields are invalid")
         if (
-            item.get("worker_id") != assigned.get("worker_id")
+            item.get("schema_version") != "1.0.0"
+            or item.get("worker_id") != assigned.get("worker_id")
             or item.get("context") != context
+            or not isinstance(item.get("context_id"), str)
+            or not item["context_id"]
             or item.get("can_upload") is not False
             or item.get("can_start_print") is not False
             or item.get("can_control_hardware") is not False
             or item.get("status") not in {"succeeded", "failed_closed"}
+            or item.get("workspace_cleanup_required") is not True
+            or item.get("worker_reuse_allowed") is not False
         ):
             raise SlicerWorkerError(f"{context} worker outcome is invalid")
+        if item["status"] == "succeeded":
+            if (
+                item.get("reason") != "worker_completed"
+                or item.get("artifact_accepted") is not True
+                or item.get("retry_requires_fresh_context") is not False
+            ):
+                raise SlicerWorkerError(
+                    f"{context} successful worker outcome is inconsistent"
+                )
+            SlicerWorkerSupervisor._digest(item.get("artifact_digest"))
+        elif (
+            item.get("reason")
+            not in {
+                "worker_crashed",
+                "worker_timed_out",
+                "worker_cancelled",
+                "stale_execution_context",
+                "memory_limit_exceeded",
+                "disk_limit_exceeded",
+            }
+            or item.get("artifact_digest") is not None
+            or item.get("artifact_accepted") is not False
+            or item.get("retry_requires_fresh_context") is not True
+        ):
+            raise SlicerWorkerError(f"{context} failed worker outcome is inconsistent")
         item["request_id"] = assigned.get("request_id")
         item["profile_digest"] = assigned.get("profile_digest")
         item["workspace"] = deepcopy(assigned.get("workspace"))

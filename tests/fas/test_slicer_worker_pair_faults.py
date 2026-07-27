@@ -51,11 +51,17 @@ def pair_assignment() -> dict:
 
 def outcome(context: str, *, succeeded: bool = True) -> dict:
     return {
+        "schema_version": "1.0.0",
         "worker_id": f"worker:{context}",
         "context": context,
+        "context_id": f"context:{context}",
         "status": "succeeded" if succeeded else "failed_closed",
         "reason": "worker_completed" if succeeded else "worker_crashed",
         "artifact_digest": ("e" * 64) if succeeded else None,
+        "artifact_accepted": succeeded,
+        "workspace_cleanup_required": True,
+        "worker_reuse_allowed": False,
+        "retry_requires_fresh_context": not succeeded,
         "can_upload": False,
         "can_start_print": False,
         "can_control_hardware": False,
@@ -110,3 +116,29 @@ def test_rejects_pair_assignment_that_claims_authority() -> None:
 
     with pytest.raises(SlicerWorkerError, match="not trusted"):
         assess(outcome("production"), outcome("twin"), assignment)
+
+
+def test_rejects_extra_or_secret_outcome_fields() -> None:
+    production = outcome("production")
+    production["confirmation_token"] = "must-not-survive"
+
+    with pytest.raises(SlicerWorkerError, match="fields"):
+        assess(production, outcome("twin"))
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("reason", "worker_crashed"),
+        ("artifact_accepted", False),
+        ("retry_requires_fresh_context", True),
+        ("workspace_cleanup_required", False),
+        ("worker_reuse_allowed", True),
+    ],
+)
+def test_rejects_inconsistent_success_outcome(field: str, value: object) -> None:
+    production = outcome("production")
+    production[field] = value
+
+    with pytest.raises(SlicerWorkerError, match="outcome"):
+        assess(production, outcome("twin"))

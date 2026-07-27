@@ -117,6 +117,7 @@
         "preflight output bound to assigned workspace",
         "disk-bounded stable-file preflight hashing",
         "outcome-bound artifact digest claims",
+        "strict supervisor outcome composition",
         "supervisor fault-injection contracts",
         "digest-bound result contract"
       ],
