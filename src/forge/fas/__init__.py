@@ -20,6 +20,7 @@ from .interfaces import (
 from .job_lifecycle import JobLifecycleError, PrintJobLifecycle
 from .knowledge import KnowledgeCore, KnowledgeError
 from .lifecycle import LifecycleError, ServiceLifecycle
+from .live_printer_checks import LivePrinterCheckError, LivePrinterCheckService
 from .manufacturing_intent import ManufacturingIntentError, ManufacturingIntentService
 from .material_review import MaterialDesignReview, MaterialReviewError
 from .missions import MissionLifecycle, MissionTransitionError
@@ -87,6 +88,8 @@ __all__ = [
     "KnowledgeCore",
     "KnowledgeError",
     "LifecycleError",
+    "LivePrinterCheckError",
+    "LivePrinterCheckService",
     "ManufacturingIntentError",
     "ManufacturingIntentService",
     "MaterialDesignReview",
