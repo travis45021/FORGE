@@ -106,7 +106,9 @@ release is distributed until the applicable items in this gate are complete.
   Byte-to-result digest, request, context, provenance, comparison, and
   acceptance reference services are implemented. Comparison now requires
   measured preflight evidence; acceptance, fourth-click, and Executive
-  boundaries reject raw evidence. Real engine artifact evidence remains open.
+  boundaries reject raw evidence. Confirmed jobs, transport handoffs, and
+  Runtime dispatch preserve and recheck preflight. Real engine artifact
+  evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
   Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
   application integration remains open.

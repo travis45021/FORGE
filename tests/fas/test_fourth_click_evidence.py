@@ -58,6 +58,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
         job = self.confirm()
         self.assertEqual(job["state"], "upload_pending")
         self.assertEqual(job["final_confirmed_by"], "user-1")
+        self.assertTrue(job["artifact_preflight_verified"])
 
     def test_rejects_stale_artifact_checks(self) -> None:
         self.live["artifact_digest"] = "b" * 64

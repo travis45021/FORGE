@@ -50,6 +50,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "artifact_digest": "a" * 64,
             "confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
+            "artifact_preflight_verified": True,
             "historical_replay_allowed": False,
             "physical_dispatch_allowed": False,
             "requires_runtime_dispatcher": True,
@@ -103,6 +104,11 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
                 for event in self.runtime.history()
             )
         )
+
+    def test_rejects_handoff_without_artifact_preflight(self) -> None:
+        self.handoff["artifact_preflight_verified"] = False
+        with self.assertRaises(RuntimeError):
+            self.dispatch()
 
 
 if __name__ == "__main__":

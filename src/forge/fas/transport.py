@@ -171,6 +171,8 @@ class HardwareTransportRegistry:
             raise TransportError("job must pass final confirmation before upload")
         if item.get("click_count") != 3 or not item.get("final_confirmed_by"):
             raise TransportError("evidence-backed fourth click is required")
+        if item.get("artifact_preflight_verified") is not True:
+            raise TransportError("deterministic artifact preflight is required")
         confirmation_token = item.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise TransportError("fresh final-confirmation token is required")
@@ -189,6 +191,7 @@ class HardwareTransportRegistry:
             "artifact_digest": artifact_digest,
             "confirmed_by": item["final_confirmed_by"],
             "confirmation_token": confirmation_token,
+            "artifact_preflight_verified": True,
             "historical_replay_allowed": False,
             "physical_dispatch_allowed": False,
             "requires_runtime_dispatcher": True,

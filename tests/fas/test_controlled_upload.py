@@ -30,6 +30,7 @@ class ControlledUploadTests(unittest.TestCase):
             "final_confirmed_by": "user-1",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_digest": "a" * 64,
+            "artifact_preflight_verified": True,
         }
 
     def prepare(self) -> dict:
@@ -61,6 +62,11 @@ class ControlledUploadTests(unittest.TestCase):
 
     def test_rejects_job_without_fresh_confirmation_token(self) -> None:
         self.job.pop("confirmation_token")
+        with self.assertRaises(TransportError):
+            self.prepare()
+
+    def test_rejects_job_without_artifact_preflight(self) -> None:
+        self.job["artifact_preflight_verified"] = False
         with self.assertRaises(TransportError):
             self.prepare()
 

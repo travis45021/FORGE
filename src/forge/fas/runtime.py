@@ -263,6 +263,8 @@ class ForgeRuntime:
             raise RuntimeError("upload handoff must require the runtime dispatcher")
         if handoff.get("fourth_click_satisfied") is not True:
             raise RuntimeError("upload handoff requires the fourth user click")
+        if handoff.get("artifact_preflight_verified") is not True:
+            raise RuntimeError("upload handoff requires deterministic preflight")
         confirmation_token = handoff.get("confirmation_token")
         if not isinstance(confirmation_token, str) or len(confirmation_token) < 32:
             raise RuntimeError("upload handoff requires a fresh confirmation token")

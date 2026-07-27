@@ -155,13 +155,15 @@ class PrintJobLifecycle:
             or live_checks.get("can_start_print") is not False
         ):
             raise JobLifecycleError("live checks must remain non-authoritative")
-        return self.final_confirm(
+        self.final_confirm(
             job_id,
             actor=actor,
             confirmation=confirmation,
             live_checks_passed=True,
             authorization_verified=authorization_verified,
         )
+        job["artifact_preflight_verified"] = True
+        return deepcopy(job)
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:
         job = self._require(job_id)
