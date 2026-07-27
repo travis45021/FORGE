@@ -1,0 +1,80 @@
+"""Tests for accepted artifact integration with the FORGE Executive."""
+
+from copy import deepcopy
+
+import pytest
+
+from forge.fas.executive import ExecutiveError, ForgeExecutive
+
+
+@pytest.fixture
+def inputs() -> dict[str, dict]:
+    digest = "a" * 64
+    return {
+        "mission": {
+            "mission_id": "mission:print-1",
+            "state": "approved",
+            "correlation_id": "job-1",
+            "context": {"job_id": "job-1", "artifact_digest": digest},
+            "plan": [{"capability_id": "artifact.upload"}],
+        },
+        "job": {
+            "job_id": "job-1",
+            "provider_id": "provider:custom",
+            "state": "upload_pending",
+            "click_count": 3,
+            "artifact_digest": digest,
+            "final_confirmed_by": "user-1",
+            "confirmation_token": "confirmation-" + ("x" * 32),
+        },
+        "acceptance": {
+            "artifact_digest": digest,
+            "ready_for_live_checks": True,
+            "final_confirmation_required": True,
+            "can_upload": False,
+            "can_start_print": False,
+        },
+        "authorization": {
+            "outcome": "allow",
+            "evaluation_id": "authorization:1",
+            "decision_id": "decision:1",
+            "effective_action": {"action_type": "artifact.upload"},
+        },
+        "capability": {
+            "capability_id": "artifact.upload",
+            "provider_id": "provider:custom",
+        },
+    }
+
+
+def prepare(inputs: dict[str, dict]) -> dict:
+    return ForgeExecutive().prepare_confirmed_artifact_execution(**inputs)
+
+
+def test_prepares_non_dispatching_executive_request(inputs: dict[str, dict]) -> None:
+    request = prepare(inputs)
+
+    assert request["classification"] == "command"
+    assert request["payload"]["final_confirmation_verified"] is True
+    assert request["payload"]["physical_dispatch_allowed"] is False
+    assert request["payload"]["requires_runtime_dispatcher"] is True
+    assert "confirmation_token" not in request["payload"]
+
+
+@pytest.mark.parametrize(
+    ("section", "field", "value"),
+    [
+        ("job", "state", "final_confirmation_required"),
+        ("job", "artifact_digest", "b" * 64),
+        ("acceptance", "can_upload", True),
+        ("mission", "state", "created"),
+    ],
+)
+def test_rejects_unconfirmed_or_mismatched_inputs(
+    inputs: dict[str, dict], section: str, field: str, value: object
+) -> None:
+    changed = deepcopy(inputs)
+    changed[section][field] = value
+
+    with pytest.raises(ExecutiveError):
+        prepare(changed)

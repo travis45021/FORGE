@@ -102,8 +102,8 @@ release is distributed until the applicable items in this gate are complete.
   Comparison and acceptance reference services are implemented; real engine
   artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.
-  Runtime upload dispatch is implemented; Executive/application integration
-  remains open.
+  Evidence-bound Executive handoff and Runtime upload dispatch are implemented;
+  application integration remains open.
 - [x] Add capability-provider upload only after the mandatory final user gate.
 - [ ] Keep printer-specific behavior in replaceable capability providers, with
   Moonraker/Klipper only as the first tested reference.
