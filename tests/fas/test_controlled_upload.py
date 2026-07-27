@@ -32,6 +32,8 @@ class ControlledUploadTests(unittest.TestCase):
             "artifact_digest": "a" * 64,
             "input_digest": "b" * 64,
             "profile_digest": "c" * 64,
+            "engine_source_digest": "d" * 64,
+            "engine_build_digest": "e" * 64,
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
         }
@@ -50,6 +52,7 @@ class ControlledUploadTests(unittest.TestCase):
         self.assertTrue(result["artifact_pair_preflight_verified"])
         self.assertEqual(result["input_digest"], "b" * 64)
         self.assertEqual(result["profile_digest"], "c" * 64)
+        self.assertEqual(result["engine_build_digest"], "e" * 64)
         self.assertFalse(result["physical_dispatch_allowed"])
 
     def test_rejects_job_before_final_confirmation(self) -> None:
@@ -84,6 +87,11 @@ class ControlledUploadTests(unittest.TestCase):
     def test_rejects_job_without_profile_lineage(self) -> None:
         self.job.pop("profile_digest")
         with self.assertRaisesRegex(TransportError, "profile digest"):
+            self.prepare()
+
+    def test_rejects_job_without_engine_build_provenance(self) -> None:
+        self.job.pop("engine_build_digest")
+        with self.assertRaisesRegex(TransportError, "engine build digest"):
             self.prepare()
 
 

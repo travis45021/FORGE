@@ -133,7 +133,12 @@ class PrintJobLifecycle:
         artifact_digest = job.get("artifact_digest")
         if not artifact_digest or acceptance.get("artifact_digest") != artifact_digest:
             raise JobLifecycleError("accepted slicer artifact does not match the job")
-        for field in ("input_digest", "profile_digest"):
+        for field in (
+            "input_digest",
+            "profile_digest",
+            "engine_source_digest",
+            "engine_build_digest",
+        ):
             if not self._digest(job.get(field)) or acceptance.get(field) != job.get(
                 field
             ):

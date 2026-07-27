@@ -38,6 +38,17 @@ class SlicerArtifactAcceptance:
             raise SlicerAcceptanceError(
                 "accepted artifact requires input and profile lineage"
             )
+        engine = production.get("engine")
+        if not isinstance(engine, Mapping):
+            raise SlicerAcceptanceError("accepted artifact requires engine provenance")
+        engine_source_digest = engine.get("source_digest")
+        engine_build_digest = engine.get("build_digest")
+        if not self._digest(engine_source_digest) or not self._digest(
+            engine_build_digest
+        ):
+            raise SlicerAcceptanceError(
+                "accepted artifact requires exact engine source and build provenance"
+            )
         if acceptance.get("status") != "matching":
             raise SlicerAcceptanceError("production and twin artifacts must match")
         if acceptance.get("preflight_evidence_required") is not True:
@@ -65,6 +76,8 @@ class SlicerArtifactAcceptance:
             "artifact_digest": artifact_digest,
             "input_digest": input_digest,
             "profile_digest": profile_digest,
+            "engine_source_digest": engine_source_digest,
+            "engine_build_digest": engine_build_digest,
             "preflight_verified": True,
             "pair_preflight_verified": True,
             "ready_for_live_checks": True,

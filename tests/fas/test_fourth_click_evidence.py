@@ -16,6 +16,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
         self.digest = "a" * 64
         self.input_digest = "b" * 64
         self.profile_digest = "c" * 64
+        self.engine_source_digest = "d" * 64
+        self.engine_build_digest = "e" * 64
         self.lifecycle.create(
             {
                 "job_id": "job-1",
@@ -23,6 +25,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
                 "artifact_digest": self.digest,
                 "input_digest": self.input_digest,
                 "profile_digest": self.profile_digest,
+                "engine_source_digest": self.engine_source_digest,
+                "engine_build_digest": self.engine_build_digest,
                 "provider_id": "provider-1",
                 "state": "draft",
                 "preflight_passed": True,
@@ -37,6 +41,8 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "artifact_digest": self.digest,
             "input_digest": self.input_digest,
             "profile_digest": self.profile_digest,
+            "engine_source_digest": self.engine_source_digest,
+            "engine_build_digest": self.engine_build_digest,
             "final_confirmation_required": True,
             "preflight_verified": True,
             "pair_preflight_verified": True,
@@ -91,6 +97,11 @@ class FourthClickEvidenceTests(unittest.TestCase):
     def test_rejects_acceptance_from_different_profile(self) -> None:
         self.acceptance["profile_digest"] = "d" * 64
         with self.assertRaisesRegex(JobLifecycleError, "profile digest"):
+            self.confirm()
+
+    def test_rejects_acceptance_from_different_engine_build(self) -> None:
+        self.acceptance["engine_build_digest"] = "f" * 64
+        with self.assertRaisesRegex(JobLifecycleError, "engine build digest"):
             self.confirm()
 
 

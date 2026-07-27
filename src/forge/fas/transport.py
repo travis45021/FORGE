@@ -185,7 +185,12 @@ class HardwareTransportRegistry:
             or any(character not in "0123456789abcdef" for character in artifact_digest)
         ):
             raise TransportError("job artifact digest must be lowercase SHA-256")
-        for field in ("input_digest", "profile_digest"):
+        for field in (
+            "input_digest",
+            "profile_digest",
+            "engine_source_digest",
+            "engine_build_digest",
+        ):
             value = item.get(field)
             if (
                 not isinstance(value, str)
@@ -203,6 +208,8 @@ class HardwareTransportRegistry:
             "artifact_digest": artifact_digest,
             "input_digest": item["input_digest"],
             "profile_digest": item["profile_digest"],
+            "engine_source_digest": item["engine_source_digest"],
+            "engine_build_digest": item["engine_build_digest"],
             "confirmed_by": item["final_confirmed_by"],
             "confirmation_token": confirmation_token,
             "artifact_preflight_verified": True,

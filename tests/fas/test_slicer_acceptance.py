@@ -23,12 +23,24 @@ def comparison() -> dict:
             "status": "succeeded",
             "artifact_digest": "d" * 64,
             "preflight_verified": True,
+            "engine": {
+                "name": "reviewed-engine",
+                "version": "pinned",
+                "source_digest": "c" * 64,
+                "build_digest": "d" * 64,
+            },
         },
         "twin": {
             "context": "twin",
             "status": "succeeded",
             "artifact_digest": "d" * 64,
             "preflight_verified": True,
+            "engine": {
+                "name": "reviewed-engine",
+                "version": "pinned",
+                "source_digest": "c" * 64,
+                "build_digest": "d" * 64,
+            },
         },
         "acceptance": {
             "status": "matching",
@@ -51,6 +63,8 @@ class SlicerAcceptanceTests(unittest.TestCase):
         self.assertTrue(result["final_confirmation_required"])
         self.assertEqual(result["input_digest"], "a" * 64)
         self.assertEqual(result["profile_digest"], "b" * 64)
+        self.assertEqual(result["engine_source_digest"], "c" * 64)
+        self.assertEqual(result["engine_build_digest"], "d" * 64)
         self.assertFalse(result["can_upload"])
         self.assertFalse(result["can_start_print"])
 
@@ -85,6 +99,12 @@ class SlicerAcceptanceTests(unittest.TestCase):
         value = comparison()
         value.pop("profile_digest")
         with self.assertRaisesRegex(SlicerAcceptanceError, "input and profile"):
+            self.service.accept(value)
+
+    def test_rejects_missing_exact_engine_build_provenance(self) -> None:
+        value = comparison()
+        value["production"]["engine"].pop("build_digest")
+        with self.assertRaisesRegex(SlicerAcceptanceError, "exact engine"):
             self.service.accept(value)
 
 

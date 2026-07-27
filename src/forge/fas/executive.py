@@ -87,7 +87,17 @@ class ForgeExecutive:
             raise ExecutiveError("accepted artifact digest is invalid")
         input_digest = acceptance.get("input_digest")
         profile_digest = acceptance.get("profile_digest")
-        if not self._digest(input_digest) or not self._digest(profile_digest):
+        engine_source_digest = acceptance.get("engine_source_digest")
+        engine_build_digest = acceptance.get("engine_build_digest")
+        if not all(
+            self._digest(value)
+            for value in (
+                input_digest,
+                profile_digest,
+                engine_source_digest,
+                engine_build_digest,
+            )
+        ):
             raise ExecutiveError("accepted artifact lineage is invalid")
         if job.get("state") != "upload_pending" or job.get("click_count") != 3:
             raise ExecutiveError("job has not passed the fourth-click gate")
@@ -96,6 +106,8 @@ class ForgeExecutive:
         if (
             job.get("input_digest") != input_digest
             or job.get("profile_digest") != profile_digest
+            or job.get("engine_source_digest") != engine_source_digest
+            or job.get("engine_build_digest") != engine_build_digest
         ):
             raise ExecutiveError("job and accepted artifact lineage do not match")
         if job.get("provider_id") != capability.get("provider_id"):
@@ -114,6 +126,8 @@ class ForgeExecutive:
             or context.get("artifact_digest") != artifact_digest
             or context.get("input_digest") != input_digest
             or context.get("profile_digest") != profile_digest
+            or context.get("engine_source_digest") != engine_source_digest
+            or context.get("engine_build_digest") != engine_build_digest
         ):
             raise ExecutiveError("Mission context does not match the confirmed job")
 
@@ -124,6 +138,8 @@ class ForgeExecutive:
                 "artifact_digest": artifact_digest,
                 "input_digest": input_digest,
                 "profile_digest": profile_digest,
+                "engine_source_digest": engine_source_digest,
+                "engine_build_digest": engine_build_digest,
                 "confirmation_token_digest": sha256(token.encode("utf-8")).hexdigest(),
                 "final_confirmation_verified": True,
                 "artifact_preflight_verified": True,
