@@ -149,11 +149,15 @@ and A5 autonomy remain future-gated.
 
 ## Immediate next work
 
-Continue Licensing Gate 1 and the final v1 release gate. Contract-only Slicer
-Gate 3 work may
-proceed without importing Orca source, but no Orca-derived code or public
-integrated distribution may bypass the licensing gate.
+Follow the ordered prerequisite checklist in
+`docs/governance/FORGE-V1-NEXT-STEP-PREREQUISITES.md`, beginning with Licensing
+Gate 1, provenance decisions, and qualified legal review. Contract-only Slicer
+Gate 3 work may proceed without importing Orca source, but no Orca-derived code
+or public integrated distribution may bypass the licensing gate.
 
 ## Decisions or attention
 
-None. This audit preserves the already approved v1 scope and authority model.
+The next completion packet must resolve Gate 1 licensing/provenance decisions
+and obtain qualified legal review before any Orca source import or public
+integrated distribution. This audit preserves the already approved v1 scope and
+authority model.
