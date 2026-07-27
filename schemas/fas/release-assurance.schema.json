@@ -14,9 +14,10 @@
       "minItems": 1,
       "items": {
         "type": "object",
+        "additionalProperties": false,
         "required": ["suite", "outcome", "required"],
         "properties": {
-          "suite": {"type": "string"},
+          "suite": {"type": "string", "minLength": 1},
           "outcome": {"enum": ["passed", "failed", "inconclusive"]},
           "required": {"type": "boolean"},
           "security_critical": {"type": "boolean"}
@@ -31,10 +32,11 @@
     "documentation_complete": {"type": "boolean"},
     "integrity": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["algorithm", "digest"],
       "properties": {
-        "algorithm": {"type": "string"},
-        "digest": {"type": "string"}
+        "algorithm": {"const": "sha256"},
+        "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
       }
     }
   }

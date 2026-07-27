@@ -97,10 +97,34 @@ class TestAssuranceTests(unittest.TestCase):
         assessed = self.service.assess_release(record)
         self.assertEqual(assessed["decision"], "blocked")
 
-    def test_complete_release_record_is_releasable(self):
+    def test_incomplete_compatibility_review_blocks_release(self):
+        record = self._release()
+        record["compatibility_review"] = "incomplete"
+        assessed = self.service.assess_release(record)
+        self.assertEqual(assessed["decision"], "blocked")
+        self.assertIn(
+            {"reason": "compatibility_review_not_passed"},
+            assessed["blocking_evidence"],
+        )
+
+    def test_complete_release_record_is_ready_for_release_gate_only(self):
         assessed = self.service.assess_release(self._release())
-        self.assertEqual(assessed["decision"], "releasable")
+        self.assertEqual(assessed["decision"], "ready_for_release_gate")
         self.assertEqual(assessed["maturity_claim"], "bounded_by_recorded_evidence")
+        self.assertFalse(assessed["release_authorized"])
+        self.assertFalse(assessed["physical_execution_authorized"])
+
+    def test_placeholder_integrity_digest_is_rejected(self):
+        record = self._release()
+        record["integrity"]["digest"] = "record-at-package-time"
+        with self.assertRaisesRegex(TestAssuranceError, "SHA-256"):
+            self.service.assess_release(record)
+
+    def test_unknown_release_fields_are_rejected(self):
+        record = self._release()
+        record["publish_now"] = True
+        with self.assertRaisesRegex(TestAssuranceError, "unknown release"):
+            self.service.assess_release(record)
 
     def test_schema_and_example_validate(self):
         from jsonschema import Draft202012Validator
@@ -127,7 +151,7 @@ class TestAssuranceTests(unittest.TestCase):
             "migration": "none",
             "rollback": "restore previous package",
             "documentation_complete": True,
-            "integrity": {"algorithm": "sha256", "digest": "demo"},
+            "integrity": {"algorithm": "sha256", "digest": "a" * 64},
         }
 
 

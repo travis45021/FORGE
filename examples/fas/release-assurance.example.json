@@ -9,5 +9,8 @@
   "migration": "No migration is required.",
   "rollback": "Restore the previous local package.",
   "documentation_complete": true,
-  "integrity": {"algorithm": "sha256", "digest": "record-at-package-time"}
+  "integrity": {
+    "algorithm": "sha256",
+    "digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  }
 }

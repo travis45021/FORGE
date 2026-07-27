@@ -20,5 +20,7 @@ measurements. They remain visibly distinct from production Missions.
 Every release has an assurance record covering components, supported
 environments, tests, limitations, reviews, migration, rollback, documentation,
 and integrity. Required failures, security-critical regressions, incomplete
-security review, absent rollback, or incomplete documentation block release.
-Maturity claims remain bounded by recorded evidence.
+security or compatibility review, absent rollback, invalid SHA-256 integrity,
+or incomplete documentation block progression. A passing FAS-025 assessment is
+only ready for the FAS-037 release gate; it never authorizes release or
+physical execution. Maturity claims remain bounded by recorded evidence.

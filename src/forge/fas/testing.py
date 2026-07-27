@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections.abc import Mapping
 from copy import deepcopy
 from typing import Any
@@ -172,7 +173,62 @@ class TestAssuranceService:
             raise TestAssuranceError(
                 f"release record missing fields: {', '.join(missing)}"
             )
+        unexpected = sorted(item.keys() - required)
+        if unexpected:
+            raise TestAssuranceError(
+                f"unknown release record fields: {', '.join(unexpected)}"
+            )
+        for field in ("components", "supported_environments"):
+            values = item[field]
+            if (
+                not isinstance(values, list)
+                or not values
+                or any(not isinstance(value, str) or not value for value in values)
+                or len(values) != len(set(values))
+            ):
+                raise TestAssuranceError(f"{field} must be a non-empty unique list")
         results = item["test_results"]
+        if not isinstance(results, list) or not results:
+            raise TestAssuranceError("release requires test results")
+        for result in results:
+            if not isinstance(result, Mapping):
+                raise TestAssuranceError("test results must be records")
+            allowed_result_fields = {
+                "suite",
+                "outcome",
+                "required",
+                "security_critical",
+            }
+            required_result_fields = {"suite", "outcome", "required"}
+            if (
+                required_result_fields - result.keys()
+                or result.keys() - allowed_result_fields
+            ):
+                raise TestAssuranceError("test result fields are invalid")
+            if (
+                not isinstance(result["suite"], str)
+                or not result["suite"]
+                or result["outcome"] not in {"passed", "failed", "inconclusive"}
+                or type(result["required"]) is not bool
+                or (
+                    "security_critical" in result
+                    and type(result["security_critical"]) is not bool
+                )
+            ):
+                raise TestAssuranceError("test result values are invalid")
+        if item["security_review"] not in {"passed", "failed", "incomplete"}:
+            raise TestAssuranceError("security review status is invalid")
+        if item["compatibility_review"] not in {"passed", "failed", "incomplete"}:
+            raise TestAssuranceError("compatibility review status is invalid")
+        integrity = item["integrity"]
+        if (
+            not isinstance(integrity, Mapping)
+            or set(integrity) != {"algorithm", "digest"}
+            or integrity["algorithm"] != "sha256"
+            or not isinstance(integrity["digest"], str)
+            or re.fullmatch(r"[0-9a-f]{64}", integrity["digest"]) is None
+        ):
+            raise TestAssuranceError("integrity requires a lowercase SHA-256 digest")
         blocking = [
             value
             for value in results
@@ -183,13 +239,17 @@ class TestAssuranceService:
         ]
         if item["security_review"] != "passed":
             blocking.append({"reason": "security_review_not_passed"})
+        if item["compatibility_review"] != "passed":
+            blocking.append({"reason": "compatibility_review_not_passed"})
         if item["documentation_complete"] is not True:
             blocking.append({"reason": "documentation_incomplete"})
         if not item["rollback"]:
             blocking.append({"reason": "rollback_missing"})
-        item["decision"] = "releasable" if not blocking else "blocked"
+        item["decision"] = "ready_for_release_gate" if not blocking else "blocked"
         item["blocking_evidence"] = blocking
         item["maturity_claim"] = "bounded_by_recorded_evidence"
+        item["release_authorized"] = False
+        item["physical_execution_authorized"] = False
         return item
 
     def results(self) -> list[dict[str, Any]]:
