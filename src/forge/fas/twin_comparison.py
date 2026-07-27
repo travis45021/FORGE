@@ -66,6 +66,74 @@ class TwinComparisonService:
             "can_authorize_production": False,
         }
 
+    def compare_preflighted(
+        self,
+        *,
+        comparison_id: str,
+        input_digest: str,
+        production: Mapping[str, Any],
+        twin: Mapping[str, Any],
+        reviewed_by_user: bool = False,
+    ) -> dict[str, Any]:
+        """Compare measured, preflighted artifacts instead of raw claims."""
+        production_evidence = self._preflight(production, "production")
+        twin_evidence = self._preflight(twin, "twin")
+        differences = []
+        for field in ("artifact_digest", "engine", "warnings"):
+            if production_evidence[field] != twin_evidence[field]:
+                differences.append(field)
+        return {
+            "comparison_id": comparison_id,
+            "input_digest": input_digest,
+            "production": {
+                **production_evidence,
+                "status": "succeeded",
+                "authority": {"can_upload": False, "can_start_print": False},
+            },
+            "twin": {
+                **twin_evidence,
+                "status": "succeeded",
+                "authority": {"can_upload": False, "can_start_print": False},
+            },
+            "differences": differences,
+            "acceptance": {
+                "status": "matching" if not differences else "different",
+                "reviewed_by_user": reviewed_by_user,
+                "preflight_evidence_required": True,
+            },
+            "can_authorize_production": False,
+        }
+
+    @staticmethod
+    def _preflight(value: Mapping[str, Any], context: str) -> dict[str, Any]:
+        item = dict(value)
+        if (
+            item.get("status") != "passed"
+            or item.get("result_contract_validated") is not True
+            or item.get("output_digest_verified") is not True
+            or item.get("can_authorize_production") is not False
+            or item.get("can_upload") is not False
+            or item.get("can_start_print") is not False
+        ):
+            raise TwinComparisonError(
+                f"{context} artifact has not passed deterministic preflight"
+            )
+        if item.get("context") != context:
+            raise TwinComparisonError(f"{context} preflight context is invalid")
+        TwinComparisonService._digest(item.get("artifact_digest"))
+        engine = item.get("engine")
+        warnings = item.get("warnings")
+        if not isinstance(engine, Mapping) or not isinstance(warnings, list):
+            raise TwinComparisonError(f"{context} preflight provenance is incomplete")
+        return {
+            "request_id": item.get("request_id"),
+            "context": context,
+            "artifact_digest": item["artifact_digest"],
+            "engine": dict(engine),
+            "warnings": list(warnings),
+            "preflight_verified": True,
+        }
+
     @staticmethod
     def _digest(value: Any) -> None:
         if (
