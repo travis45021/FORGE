@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://forge.local/schemas/fas/final-confirmation-evidence.schema.json",
+  "title": "FORGE Final Print Confirmation Evidence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["evidence", "evidence_digest"],
+  "properties": {
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "job_id",
+        "provider_id",
+        "artifact_digest",
+        "input_digest",
+        "profile_digest",
+        "engine_source_digest",
+        "engine_build_digest",
+        "comparison_id",
+        "comparison_evidence_digest",
+        "comparison_reviewed_by",
+        "comparison_reviewed_at",
+        "live_checks_checked_at",
+        "live_checks_expires_at",
+        "live_checks_evidence_digest",
+        "final_confirmed_by",
+        "final_confirmed_at",
+        "confirmation_expires_at",
+        "confirmation_token"
+      ],
+      "properties": {
+        "job_id": {"type": "string", "minLength": 1},
+        "provider_id": {"type": "string", "minLength": 1},
+        "artifact_digest": {"$ref": "#/$defs/digest"},
+        "input_digest": {"$ref": "#/$defs/digest"},
+        "profile_digest": {"$ref": "#/$defs/digest"},
+        "engine_source_digest": {"$ref": "#/$defs/digest"},
+        "engine_build_digest": {"$ref": "#/$defs/digest"},
+        "comparison_id": {"type": "string", "minLength": 1},
+        "comparison_evidence_digest": {"$ref": "#/$defs/digest"},
+        "comparison_reviewed_by": {"type": "string", "minLength": 1},
+        "comparison_reviewed_at": {"type": "string", "format": "date-time"},
+        "live_checks_checked_at": {"type": "string", "format": "date-time"},
+        "live_checks_expires_at": {"type": "string", "format": "date-time"},
+        "live_checks_evidence_digest": {"$ref": "#/$defs/digest"},
+        "final_confirmed_by": {"type": "string", "minLength": 1},
+        "final_confirmed_at": {"type": "string", "format": "date-time"},
+        "confirmation_expires_at": {"type": "string", "format": "date-time"},
+        "confirmation_token": {"type": "string", "minLength": 32}
+      }
+    },
+    "evidence_digest": {"$ref": "#/$defs/digest"}
+  },
+  "$defs": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    }
+  }
+}
