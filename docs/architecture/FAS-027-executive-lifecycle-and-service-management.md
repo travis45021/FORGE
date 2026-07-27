@@ -10,7 +10,9 @@ through observable states only with a user-scoped authority reference.
 
 The reference implementation in `src/forge/fas/lifecycle.py` provides service
 registration, constrained state transitions, explicit start/stop plans, and a
-local history. Plans do not spawn processes, issue printer commands, resume
+local history. Lifecycle observations are accepted only as parseable UTC
+timestamps ending in `Z`, so state history cannot silently mix local times.
+Plans do not spawn processes, issue printer commands, resume
 runtime contexts, or grant authority. A production supervisor may add process
 control, dependency resolution, health probes, crash recovery, and durable
 state while preserving those boundaries.

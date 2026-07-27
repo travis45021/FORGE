@@ -4,11 +4,21 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any
 
 
 class LifecycleError(ValueError):
     """Raised when a service lifecycle operation violates its contract."""
+
+
+def _validate_observed_at(value: str) -> None:
+    if not isinstance(value, str) or not value.endswith("Z"):
+        raise LifecycleError("observed_at must be a UTC timestamp ending in Z")
+    try:
+        datetime.fromisoformat(value[:-1] + "+00:00")
+    except ValueError as exc:
+        raise LifecycleError("observed_at must be a valid UTC timestamp") from exc
 
 
 STATES = {
@@ -77,6 +87,7 @@ class ServiceLifecycle:
             )
         if not authority_reference:
             raise LifecycleError("lifecycle transition requires authority reference")
+        _validate_observed_at(observed_at)
         if not dependencies_ready and state in {"starting", "ready"}:
             raise LifecycleError("dependencies are not ready")
         if health not in {"unknown", "healthy", "degraded", "failed"}:

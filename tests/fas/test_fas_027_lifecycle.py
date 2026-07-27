@@ -70,6 +70,16 @@ class Fas027LifecycleTests(unittest.TestCase):
                 approval_reference="decision:1",
             )
 
+    def test_transition_rejects_non_utc_observation(self):
+        with self.assertRaisesRegex(LifecycleError, "UTC"):
+            self.service.transition(
+                self.manifest["service_id"],
+                "starting",
+                reason="boot",
+                authority_reference="decision:1",
+                observed_at="2026-07-26T12:00:00-05:00",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
