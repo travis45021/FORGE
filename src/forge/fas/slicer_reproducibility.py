@@ -79,6 +79,11 @@ class SlicerReproducibilityService:
             raise SlicerReproducibilityError(
                 "repeated runs must use the same engine source and build"
             )
+        request_ids = [item["request_id"] for item in validated]
+        if len(set(request_ids)) != len(request_ids):
+            raise SlicerReproducibilityError(
+                "repeated runs must have distinct request identities"
+            )
 
         artifact_digests = [item["artifact_digest"] for item in validated]
         warning_sets = [item["warnings"] for item in validated]
@@ -94,7 +99,7 @@ class SlicerReproducibilityService:
             "profile_digest": profile_digest,
             "engine": deepcopy(engine),
             "run_count": len(validated),
-            "request_ids": [item["request_id"] for item in validated],
+            "request_ids": request_ids,
             "artifact_digests": artifact_digests,
             "warning_sets": deepcopy(warning_sets),
             "artifacts_match": artifacts_match,

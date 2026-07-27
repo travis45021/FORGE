@@ -140,6 +140,7 @@ def test_schema_rejects_authority_or_real_run_overstatement(field: str, value) -
                 },
             },
         ],
+        lambda values: [values[0], {**values[1], "request_id": "request:1"}],
     ],
 )
 def test_incomparable_runs_fail_closed(mutation) -> None:

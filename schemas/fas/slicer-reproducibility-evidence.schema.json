@@ -46,6 +46,7 @@
     "request_ids": {
       "type": "array",
       "minItems": 2,
+      "uniqueItems": true,
       "items": {"type": "string", "minLength": 1}
     },
     "artifact_digests": {
