@@ -2,9 +2,10 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
-from typing import Any, Mapping
+from typing import Any
 
 
 class RuntimeError(ValueError):
@@ -87,7 +88,9 @@ class ForgeRuntime:
         if state not in STATES:
             raise RuntimeError("unknown runtime state")
         if state not in TRANSITIONS.get(item["state"], set()):
-            raise RuntimeError(f"invalid runtime transition: {item['state']} -> {state}")
+            raise RuntimeError(
+                f"invalid runtime transition: {item['state']} -> {state}"
+            )
         if authority_reference != item["authority_reference"]:
             raise RuntimeError("state transition authority does not match context")
         item["state"] = state
@@ -123,7 +126,9 @@ class ForgeRuntime:
                 and (mode == "exclusive" or lease["mode"] == "exclusive")
             ):
                 raise RuntimeError("resource has an incompatible active lease")
-        lease_id = f"forge-lease:{context_id.split(':')[-1]}:{resource_id.split(':')[-1]}"
+        lease_id = (
+            f"forge-lease:{context_id.split(':')[-1]}:{resource_id.split(':')[-1]}"
+        )
         lease = {
             "lease_id": lease_id,
             "context_id": context_id,
@@ -229,6 +234,57 @@ class ForgeRuntime:
             "status": "dispatched",
             "physical_outcome_confirmed": False,
         }
+
+    def dispatch_artifact_upload(
+        self,
+        context_id: str,
+        prepared: Mapping[str, Any],
+        *,
+        command_id: str,
+        resource_ids: list[str],
+        expires_at: str,
+        evaluated_at: str,
+        provider_healthy: bool,
+        current_state_allows: bool,
+    ) -> dict[str, Any]:
+        """Dispatch a fourth-click upload handoff through the recorded runtime."""
+        handoff = deepcopy(dict(prepared))
+        if handoff.get("physical_dispatch_allowed") is not False:
+            raise RuntimeError("upload handoff must not self-authorize dispatch")
+        if handoff.get("requires_runtime_dispatcher") is not True:
+            raise RuntimeError("upload handoff must require the runtime dispatcher")
+        if handoff.get("fourth_click_satisfied") is not True:
+            raise RuntimeError("upload handoff requires the fourth user click")
+        artifact_digest = handoff.get("artifact_digest")
+        if (
+            not isinstance(artifact_digest, str)
+            or len(artifact_digest) != 64
+            or any(character not in "0123456789abcdef" for character in artifact_digest)
+        ):
+            raise RuntimeError("upload artifact digest must be lowercase SHA-256")
+        result = self.dispatch(
+            context_id,
+            {
+                "command_id": command_id,
+                "context_id": context_id,
+                "capability_id": "artifact.upload",
+                "provider_id": handoff.get("provider_id"),
+                "resource_ids": resource_ids,
+                "expires_at": expires_at,
+                "verification_passed": True,
+            },
+            evaluated_at=evaluated_at,
+            provider_healthy=provider_healthy,
+            current_state_allows=current_state_allows,
+        )
+        result.update(
+            {
+                "job_id": handoff.get("job_id"),
+                "artifact_digest": artifact_digest,
+                "confirmed_by": handoff.get("confirmed_by"),
+            }
+        )
+        return result
 
     def assess_restart(
         self,
