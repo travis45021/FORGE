@@ -127,6 +127,20 @@ class RepositoryIntegrityTests(unittest.TestCase):
                 ):
                     self.assertTrue(resolved.exists(), resolved)
 
+    def test_workflow_actions_are_pinned_to_immutable_commits(self):
+        action_pattern = re.compile(r"uses:\s+([^@\s]+)@([^\s#]+)")
+        workflows = sorted((ROOT / ".github/workflows").glob("*.yml"))
+        self.assertTrue(workflows)
+        for path in workflows:
+            text = path.read_text(encoding="utf-8")
+            actions = action_pattern.findall(text)
+            self.assertTrue(actions, path)
+            for action, revision in actions:
+                if action.startswith("./"):
+                    continue
+                with self.subTest(workflow=path.name, action=action):
+                    self.assertRegex(revision, r"^[a-f0-9]{40}$")
+
     def test_v1_audit_does_not_overstate_product_readiness(self):
         audit = (ROOT / "docs/governance/FORGE-V1-READINESS-AUDIT.md").read_text(
             encoding="utf-8"
