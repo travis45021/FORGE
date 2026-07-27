@@ -100,12 +100,18 @@ class PrintJobLifecycle:
         *,
         actor: str,
         confirmed_at: str,
+        confirmation_expires_at: str,
         confirmation: bool,
         live_checks_passed: bool,
         authorization_verified: bool,
     ) -> dict[str, Any]:
         job = self._require(job_id)
-        _utc(confirmed_at)
+        confirmed_time = _utc(confirmed_at)
+        expiry_time = _utc(confirmation_expires_at)
+        if expiry_time <= confirmed_time:
+            raise JobLifecycleError(
+                "final confirmation expiry must follow confirmation time"
+            )
         if job["state"] != "final_confirmation_required" or job["click_count"] != 3:
             raise JobLifecycleError(
                 "final confirmation requires exactly three preparation clicks"
@@ -125,6 +131,7 @@ class PrintJobLifecycle:
                 "state": "upload_pending",
                 "final_confirmed_by": actor,
                 "final_confirmed_at": confirmed_at,
+                "confirmation_expires_at": confirmation_expires_at,
                 "confirmation_token": token_urlsafe(32),
                 "live_checks_passed": True,
             }
@@ -138,6 +145,7 @@ class PrintJobLifecycle:
         *,
         actor: str,
         confirmed_at: str,
+        confirmation_expires_at: str,
         confirmation: bool,
         acceptance: Mapping[str, Any],
         live_checks: Mapping[str, Any],
@@ -201,6 +209,7 @@ class PrintJobLifecycle:
             job_id,
             actor=actor,
             confirmed_at=confirmed_at,
+            confirmation_expires_at=confirmation_expires_at,
             confirmation=confirmation,
             live_checks_passed=True,
             authorization_verified=authorization_verified,

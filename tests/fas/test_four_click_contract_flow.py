@@ -176,6 +176,7 @@ class FourClickContractFlowTests(unittest.TestCase):
             "job-1",
             actor="user-1",
             confirmed_at="2026-07-26T12:05:00Z",
+            confirmation_expires_at="2026-07-26T12:10:00Z",
             confirmation=True,
             acceptance=acceptance,
             live_checks=live,

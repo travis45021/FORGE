@@ -32,6 +32,7 @@ class Fas034JobLifecycleTests(unittest.TestCase):
                 "job:001",
                 actor="forge-user:local",
                 confirmed_at="2026-07-26T12:05:00Z",
+                confirmation_expires_at="2026-07-26T12:10:00Z",
                 confirmation=True,
                 live_checks_passed=False,
                 authorization_verified=True,
@@ -40,6 +41,7 @@ class Fas034JobLifecycleTests(unittest.TestCase):
             "job:001",
             actor="forge-user:local",
             confirmed_at="2026-07-26T12:05:00Z",
+            confirmation_expires_at="2026-07-26T12:10:00Z",
             confirmation=True,
             live_checks_passed=True,
             authorization_verified=True,
@@ -54,6 +56,7 @@ class Fas034JobLifecycleTests(unittest.TestCase):
                 "job:001",
                 actor="forge-user:local",
                 confirmed_at="2026-07-26T12:05:00Z",
+                confirmation_expires_at="2026-07-26T12:10:00Z",
                 confirmation=True,
                 live_checks_passed=True,
                 authorization_verified=True,
@@ -67,6 +70,21 @@ class Fas034JobLifecycleTests(unittest.TestCase):
                 "job:001",
                 actor="forge-user:local",
                 confirmed_at="not-a-time",
+                confirmation_expires_at="2026-07-26T12:10:00Z",
+                confirmation=True,
+                live_checks_passed=True,
+                authorization_verified=True,
+            )
+
+    def test_final_confirmation_expiry_must_follow_confirmation(self):
+        for action in ("configure", "review", "upload"):
+            self.service.click("job:001", action=action, actor="forge-user:local")
+        with self.assertRaisesRegex(JobLifecycleError, "expiry"):
+            self.service.final_confirm(
+                "job:001",
+                actor="forge-user:local",
+                confirmed_at="2026-07-26T12:05:00Z",
+                confirmation_expires_at="2026-07-26T12:05:00Z",
                 confirmation=True,
                 live_checks_passed=True,
                 authorization_verified=True,

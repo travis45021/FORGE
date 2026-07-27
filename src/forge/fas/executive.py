@@ -131,6 +131,7 @@ class ForgeExecutive:
         if (
             not job.get("final_confirmed_by")
             or not job.get("final_confirmed_at")
+            or not job.get("confirmation_expires_at")
             or not isinstance(token, str)
             or len(token) < 32
         ):
@@ -168,6 +169,7 @@ class ForgeExecutive:
                 "final_confirmation_verified": True,
                 "final_confirmed_by": job["final_confirmed_by"],
                 "final_confirmed_at": job["final_confirmed_at"],
+                "confirmation_expires_at": job["confirmation_expires_at"],
                 "artifact_preflight_verified": True,
                 "artifact_pair_preflight_verified": True,
                 "physical_dispatch_allowed": False,

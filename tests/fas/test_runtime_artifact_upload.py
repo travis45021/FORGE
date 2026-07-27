@@ -58,6 +58,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
             "comparison_reviewed_at": "2026-07-25T20:50:00Z",
             "confirmed_by": "user-1",
             "confirmed_at": "2026-07-25T20:55:00Z",
+            "confirmation_expires_at": "2026-07-25T21:05:00Z",
             "confirmation_token": "confirmation-" + ("x" * 32),
             "artifact_preflight_verified": True,
             "artifact_pair_preflight_verified": True,
@@ -90,6 +91,7 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
         self.assertEqual(result["comparison_evidence_digest"], "f" * 64)
         self.assertEqual(result["comparison_reviewed_by"], "reviewer-1")
         self.assertEqual(result["confirmed_at"], "2026-07-25T20:55:00Z")
+        self.assertEqual(result["confirmation_expires_at"], "2026-07-25T21:05:00Z")
 
     def test_rejects_missing_fourth_click(self) -> None:
         self.handoff["fourth_click_satisfied"] = False
@@ -109,6 +111,11 @@ class RuntimeArtifactUploadTests(unittest.TestCase):
     def test_rejects_review_after_fourth_click(self) -> None:
         self.handoff["comparison_reviewed_at"] = "2026-07-25T20:56:00Z"
         with self.assertRaisesRegex(RuntimeError, "after final confirmation"):
+            self.dispatch()
+
+    def test_rejects_expired_final_confirmation(self) -> None:
+        self.handoff["confirmation_expires_at"] = "2026-07-25T21:00:00Z"
+        with self.assertRaisesRegex(RuntimeError, "expired"):
             self.dispatch()
 
     def test_rejects_duplicate_live_handoff(self) -> None:

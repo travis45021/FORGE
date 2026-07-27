@@ -69,6 +69,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
             "job-1",
             actor="user-1",
             confirmed_at="2026-07-26T12:05:00Z",
+            confirmation_expires_at="2026-07-26T12:10:00Z",
             confirmation=True,
             acceptance=self.acceptance,
             live_checks=self.live,
@@ -80,6 +81,7 @@ class FourthClickEvidenceTests(unittest.TestCase):
         self.assertEqual(job["state"], "upload_pending")
         self.assertEqual(job["final_confirmed_by"], "user-1")
         self.assertEqual(job["final_confirmed_at"], "2026-07-26T12:05:00Z")
+        self.assertEqual(job["confirmation_expires_at"], "2026-07-26T12:10:00Z")
         self.assertTrue(job["artifact_preflight_verified"])
         self.assertTrue(job["artifact_pair_preflight_verified"])
         self.assertEqual(job["comparison_reviewed_by"], "reviewer-1")
