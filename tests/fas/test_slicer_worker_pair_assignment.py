@@ -118,3 +118,27 @@ def test_rejects_invalid_engine_build_provenance() -> None:
 
     with pytest.raises(SlicerWorkerError, match="build_digest"):
         assign_pair(engine=changed_engine)
+
+
+def test_rejects_request_input_outside_assigned_workspace() -> None:
+    changed_request = request("production")
+    changed_request["input"]["path"] = "work/twin/input/part.3mf"
+
+    with pytest.raises(SlicerWorkerError, match="assigned workspace"):
+        assign_pair(production_request=changed_request)
+
+
+@pytest.mark.parametrize(
+    "unsafe_path",
+    [
+        "../outside/part.3mf",
+        "work/production/input/../../outside/part.3mf",
+        "C:/outside/part.3mf",
+    ],
+)
+def test_rejects_noncanonical_request_input_path(unsafe_path: str) -> None:
+    changed_request = request("production")
+    changed_request["input"]["path"] = unsafe_path
+
+    with pytest.raises(SlicerWorkerError, match="relative POSIX"):
+        assign_pair(production_request=changed_request)

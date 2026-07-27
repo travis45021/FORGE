@@ -13,9 +13,18 @@
       "additionalProperties": false,
       "required": ["input", "output", "logs"],
       "properties": {
-        "input": {"type": "string", "minLength": 1},
-        "output": {"type": "string", "minLength": 1},
-        "logs": {"type": "string", "minLength": 1}
+        "input": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*:)(?!.*//)(?!.*(?:^|/)\\.\\.?(/|$)).+/input$"
+        },
+        "output": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*:)(?!.*//)(?!.*(?:^|/)\\.\\.?(/|$)).+/output$"
+        },
+        "logs": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*\\\\)(?!.*:)(?!.*//)(?!.*(?:^|/)\\.\\.?(/|$)).+/logs$"
+        }
       }
     },
     "limits": {

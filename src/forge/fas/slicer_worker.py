@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from copy import deepcopy
-from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Any, ClassVar
 
 from .slicing import SlicerContractBoundary, SlicerContractError
@@ -44,14 +44,25 @@ class SlicerWorkerBoundary:
         workspace = item["workspace"]
         if not isinstance(workspace, Mapping):
             raise SlicerWorkerError("worker workspace must be an object")
-        paths = []
+        if set(workspace) != {"input", "output", "logs"}:
+            raise SlicerWorkerError("worker workspace fields are invalid")
+        paths: dict[str, PurePosixPath] = {}
         for key in ("input", "output", "logs"):
             raw = workspace.get(key)
             if not isinstance(raw, str) or not raw:
                 raise SlicerWorkerError(f"workspace {key} path is required")
-            paths.append(Path(raw))
-        if len({path.resolve() for path in paths}) != 3:
+            path = self._workspace_path(raw)
+            if path.name != key:
+                raise SlicerWorkerError(f"workspace {key} path must end in /{key}")
+            paths[key] = path
+        if len(set(paths.values())) != 3:
             raise SlicerWorkerError("worker input, output, and logs must be separate")
+        roots = {path.parent for path in paths.values()}
+        if len(roots) != 1 or len(next(iter(roots)).parts) < 2:
+            raise SlicerWorkerError(
+                "worker paths must share one dedicated relative workspace root"
+            )
+        item["workspace"] = {key: path.as_posix() for key, path in paths.items()}
 
         limits = item["limits"]
         if not isinstance(limits, Mapping):
@@ -78,9 +89,11 @@ class SlicerWorkerBoundary:
         twin_item = self.validate(twin)
         if production_item["context"] != "production" or twin_item["context"] != "twin":
             raise SlicerWorkerError("worker pair contexts are invalid")
-        production_paths = set(production_item["workspace"].values())
-        twin_paths = set(twin_item["workspace"].values())
-        if production_paths & twin_paths:
+        production_root = PurePosixPath(production_item["workspace"]["input"]).parent
+        twin_root = PurePosixPath(twin_item["workspace"]["input"]).parent
+        if self._contains(production_root, twin_root) or self._contains(
+            twin_root, production_root
+        ):
             raise SlicerWorkerError("production and twin workspaces must not overlap")
         return production_item, twin_item
 
@@ -98,6 +111,18 @@ class SlicerWorkerBoundary:
             raise SlicerWorkerError(str(exc)) from exc
         if slicer_request["context"] != worker["context"]:
             raise SlicerWorkerError("worker and request contexts do not match")
+        input_value = slicer_request.get("input")
+        input_path_value = (
+            input_value.get("path") if isinstance(input_value, Mapping) else None
+        )
+        if not isinstance(input_path_value, str):
+            raise SlicerWorkerError("slicer request input path is required")
+        input_path = self._workspace_path(input_path_value)
+        input_root = PurePosixPath(worker["workspace"]["input"])
+        if not self._contains(input_root, input_path) or input_path == input_root:
+            raise SlicerWorkerError(
+                "slicer request input must stay inside its assigned workspace"
+            )
         profile_item = dict(profile)
         if slicer_request.get("profile_ephemeral") is not True:
             raise SlicerWorkerError("slicer request must declare an ephemeral profile")
@@ -188,6 +213,25 @@ class SlicerWorkerBoundary:
             or any(character not in "0123456789abcdef" for character in value)
         ):
             raise SlicerWorkerError(f"{label} must be lowercase SHA-256")
+
+    @staticmethod
+    def _workspace_path(value: str) -> PurePosixPath:
+        components = value.split("/")
+        if (
+            value.startswith("/")
+            or "\\" in value
+            or ":" in value
+            or any(component in {"", ".", ".."} for component in components)
+        ):
+            raise SlicerWorkerError(
+                "worker paths must be canonical relative POSIX paths"
+            )
+        return PurePosixPath(value)
+
+    @staticmethod
+    def _contains(parent: PurePosixPath, child: PurePosixPath) -> bool:
+        parent_parts = parent.parts
+        return child.parts[: len(parent_parts)] == parent_parts
 
 
 class SlicerWorkerSupervisor:

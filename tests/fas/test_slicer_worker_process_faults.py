@@ -7,14 +7,14 @@ from pathlib import Path
 from forge.fas.slicer_worker import REQUIRED_FORBIDDEN, SlicerWorkerSupervisor
 
 
-def manifest(tmp_path: Path) -> dict:
+def manifest() -> dict:
     return {
         "worker_id": "worker-process-fixture",
         "context": "production",
         "workspace": {
-            "input": str(tmp_path / "input"),
-            "output": str(tmp_path / "output"),
-            "logs": str(tmp_path / "logs"),
+            "input": "work/process-fixture/input",
+            "output": "work/process-fixture/output",
+            "logs": "work/process-fixture/logs",
         },
         "limits": {
             "timeout_seconds": 1,
@@ -27,7 +27,7 @@ def manifest(tmp_path: Path) -> dict:
 
 def assess(tmp_path: Path, outcome: str, artifact_digest: str | None = None) -> dict:
     return SlicerWorkerSupervisor().assess_outcome(
-        manifest(tmp_path),
+        manifest(),
         outcome=outcome,
         context_id="context:process-fixture",
         current_context_id="context:process-fixture",

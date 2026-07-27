@@ -35,7 +35,7 @@ def slicer_request() -> dict:
         "input": {
             "format": "3mf",
             "digest": "a" * 64,
-            "path": "quarantine/part.3mf",
+            "path": "work/production/input/part.3mf",
         },
         "context": "production",
         "profile_digest": "b" * 64,

@@ -5,6 +5,11 @@ workers receive separate input, output, and log workspaces and explicit
 timeout, memory, and disk limits. Cancellation and crash recovery are part of
 the worker supervisor, not the slicer engine.
 
+Workspace paths are canonical relative POSIX paths under one dedicated worker
+root. Absolute paths, drive paths, backslashes, empty components, `.`/`..`
+aliases, nested production/twin roots, and request inputs outside the assigned
+input directory are rejected before assignment.
+
 The worker must declare `printer_control` among its forbidden capabilities.
 Printer discovery, cloud access, upload, update, telemetry, and print-start
 paths are outside the worker contract. The worker returns evidence and derived

@@ -57,6 +57,39 @@ class SlicerWorkerTests(unittest.TestCase):
                 manifest("twin", "work/shared"),
             )
 
+    def test_rejects_alias_overlap_and_nested_workspace_roots(self) -> None:
+        alias = manifest("twin", "work/twin")
+        alias["workspace"] = {
+            "input": "work/production/../production/input",
+            "output": "work/twin/output",
+            "logs": "work/twin/logs",
+        }
+        with self.assertRaisesRegex(SlicerWorkerError, "canonical relative"):
+            self.boundary.validate_pair(
+                manifest("production", "work/production"),
+                alias,
+            )
+
+        with self.assertRaisesRegex(SlicerWorkerError, "must not overlap"):
+            self.boundary.validate_pair(
+                manifest("production", "work/production"),
+                manifest("twin", "work/production/twin"),
+            )
+
+    def test_rejects_absolute_or_mixed_workspace_paths(self) -> None:
+        for unsafe in (
+            "/tmp/forge/input",
+            "C:/forge/input",
+            r"work\production\input",
+        ):
+            item = manifest("production", "work/production")
+            item["workspace"]["input"] = unsafe
+            with (
+                self.subTest(unsafe=unsafe),
+                self.assertRaisesRegex(SlicerWorkerError, "relative POSIX"),
+            ):
+                self.boundary.validate(item)
+
 
 if __name__ == "__main__":
     unittest.main()
