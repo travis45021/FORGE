@@ -1,15 +1,15 @@
 """Behavior and schema tests for canonical FAS-019."""
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.objects import ObjectSystem, ObjectSystemError  # noqa: E402
+from forge.fas.objects import ObjectSystem, ObjectSystemError
 
 
 def load_json(path: Path) -> dict:
@@ -20,8 +20,7 @@ def load_json(path: Path) -> dict:
 class Fas019ObjectTests(unittest.TestCase):
     def setUp(self) -> None:
         self.extruder = load_json(
-            ROOT / "examples" / "fas" /
-            "forge-object-custom-extruder.example.json"
+            ROOT / "examples" / "fas" / "forge-object-custom-extruder.example.json"
         )
         self.system = ObjectSystem()
 
@@ -99,9 +98,7 @@ class Fas019ObjectTests(unittest.TestCase):
     def test_operational_twin_is_opt_in_and_not_simulation(self) -> None:
         self.system.create(self.extruder)
         with self.assertRaisesRegex(ObjectSystemError, "user choice"):
-            self.system.operational_twin(
-                self.extruder["object_id"], user_enabled=False
-            )
+            self.system.operational_twin(self.extruder["object_id"], user_enabled=False)
         twin = self.system.operational_twin(
             self.extruder["object_id"],
             user_enabled=True,
@@ -134,11 +131,12 @@ class Fas019ObjectTests(unittest.TestCase):
 
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator, FormatChecker
+
         schema = load_json(ROOT / "schemas" / "fas" / "forge-object.schema.json")
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(self.extruder)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+            self.extruder
+        )
 
 
 if __name__ == "__main__":

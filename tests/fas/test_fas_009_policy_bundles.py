@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
-
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.policy_bundles import (  # noqa: E402
+from forge.fas.policy_bundles import (
     PolicyBundleError,
     PolicyBundleRegistry,
     content_digest,
@@ -101,20 +100,22 @@ class Fas009PolicyBundleTests(unittest.TestCase):
             ("blocked", True),
             ("clear", False),
         ):
-            with self.subTest(
-                sentinel_state=sentinel_state,
-                constitution_verified=constitution_verified,
+            with (
+                self.subTest(
+                    sentinel_state=sentinel_state,
+                    constitution_verified=constitution_verified,
+                ),
+                self.assertRaises(PolicyBundleError),
             ):
-                with self.assertRaises(PolicyBundleError):
-                    self.registry.activate(
-                        self.bundle["bundle_id"],
-                        channel="production",
-                        actor=self.actor,
-                        approvals=self.approvals,
-                        sentinel_state=sentinel_state,
-                        constitution_verified=constitution_verified,
-                        evaluated_at="2026-07-25T20:30:00Z",
-                    )
+                self.registry.activate(
+                    self.bundle["bundle_id"],
+                    channel="production",
+                    actor=self.actor,
+                    approvals=self.approvals,
+                    sentinel_state=sentinel_state,
+                    constitution_verified=constitution_verified,
+                    evaluated_at="2026-07-25T20:30:00Z",
+                )
 
     def test_only_forge_admin_activates(self) -> None:
         self.registry.register(self.bundle)
@@ -186,9 +187,9 @@ class Fas009PolicyBundleTests(unittest.TestCase):
             self.skipTest(f"optional jsonschema validator unavailable: {exc}")
         schema = load_json(ROOT / "schemas" / "fas" / "policy-bundle.schema.json")
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(self.bundle)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+            self.bundle
+        )
 
 
 if __name__ == "__main__":

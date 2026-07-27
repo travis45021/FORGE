@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
+from pathlib import Path
 
 try:
     import jsonschema
@@ -17,7 +17,7 @@ except ImportError:  # pragma: no cover - environment-dependent test skip
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.authorization import AuthorizationEngine  # noqa: E402
+from forge.fas.authorization import AuthorizationEngine
 
 
 def load_json(path: Path) -> dict:
@@ -32,15 +32,9 @@ class Fas008SchemaTests(unittest.TestCase):
         schema_dir = ROOT / "schemas" / "fas"
         example_dir = ROOT / "examples" / "fas"
         cls.policy_schema = load_json(schema_dir / "policy.schema.json")
-        cls.request_schema = load_json(
-            schema_dir / "authorization-request.schema.json"
-        )
-        cls.result_schema = load_json(
-            schema_dir / "authorization-result.schema.json"
-        )
-        cls.policy = load_json(
-            example_dir / "policy-print-start.example.json"
-        )
+        cls.request_schema = load_json(schema_dir / "authorization-request.schema.json")
+        cls.result_schema = load_json(schema_dir / "authorization-result.schema.json")
+        cls.policy = load_json(example_dir / "policy-print-start.example.json")
         cls.request = load_json(
             example_dir / "authorization-request-print-start.example.json"
         )
@@ -75,4 +69,3 @@ class Fas008SchemaTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

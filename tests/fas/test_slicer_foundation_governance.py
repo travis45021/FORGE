@@ -3,13 +3,9 @@ import re
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 ADR = ROOT / "docs/architecture/ADR-001-orcaslicer-slicing-foundation.md"
-TODO = (
-    ROOT
-    / "docs/governance/FORGE-SLICER-LICENSING-INTEGRATION-TODO.md"
-)
+TODO = ROOT / "docs/governance/FORGE-SLICER-LICENSING-INTEGRATION-TODO.md"
 REGISTER = ROOT / "docs/governance/FORGE-DECISION-REGISTER.md"
 ROADMAP = ROOT / "docs/governance/FORGE-PRODUCTION-ROADMAP.md"
 PROVENANCE = ROOT / "docs/compliance/orcaslicer-upstream-provenance.md"
@@ -41,7 +37,9 @@ class SlicerFoundationGovernanceTests(unittest.TestCase):
         adr = ADR.read_text(encoding="utf-8")
         workflow = adr[adr.index("### 3. Mandatory four-click") :]
         final_step = workflow[workflow.index("4. After live printer checks") :]
-        self.assertLess(final_step.index("live printer checks"), final_step.index("Yes, Print"))
+        self.assertLess(
+            final_step.index("live printer checks"), final_step.index("Yes, Print")
+        )
         self.assertLess(final_step.index("Yes, Print"), final_step.index("upload"))
 
     def test_v1_bypass_is_disabled(self):
@@ -71,9 +69,9 @@ class SlicerFoundationGovernanceTests(unittest.TestCase):
 
     def test_release_gate_is_next(self):
         mapping = json.loads(
-            (
-                ROOT / "docs/governance/fas-reconciliation-map.json"
-            ).read_text(encoding="utf-8")
+            (ROOT / "docs/governance/fas-reconciliation-map.json").read_text(
+                encoding="utf-8"
+            )
         )
         self.assertEqual(mapping["rules"]["next_canonical_id"], "RELEASE-GATE")
         self.assertIn(

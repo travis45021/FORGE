@@ -3,7 +3,6 @@ import re
 import unittest
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -22,9 +21,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
             "USER-DATA-TERMS.md",
             "pyproject.toml",
         }
-        actual_files = {
-            path.name for path in ROOT.iterdir() if path.is_file()
-        }
+        actual_files = {path.name for path in ROOT.iterdir() if path.is_file()}
         self.assertEqual(actual_files, expected_files)
         self.assertFalse(list(ROOT.glob("README-FAS-*.md")))
 
@@ -82,15 +79,13 @@ class RepositoryIntegrityTests(unittest.TestCase):
 
     def test_reconciliation_is_complete_and_fas_026_is_next(self):
         mapping = json.loads(
-            (
-                ROOT / "docs/governance/fas-reconciliation-map.json"
-            ).read_text(encoding="utf-8")
+            (ROOT / "docs/governance/fas-reconciliation-map.json").read_text(
+                encoding="utf-8"
+            )
         )
         historical = [row["historical_id"] for row in mapping["mappings"]]
         canonical = {
-            value
-            for row in mapping["mappings"]
-            for value in row["canonical_ids"]
+            value for row in mapping["mappings"] for value in row["canonical_ids"]
         }
         self.assertEqual(len(historical), 36)
         self.assertEqual(len(set(historical)), 36)
@@ -100,9 +95,9 @@ class RepositoryIntegrityTests(unittest.TestCase):
         )
         self.assertEqual(mapping["rules"]["next_canonical_id"], "RELEASE-GATE")
 
-        register = (
-            ROOT / "docs/governance/FORGE-DECISION-REGISTER.md"
-        ).read_text(encoding="utf-8")
+        register = (ROOT / "docs/governance/FORGE-DECISION-REGISTER.md").read_text(
+            encoding="utf-8"
+        )
         self.assertIn(
             "FAS-037 — FORGE v1.0 Baseline Release Scope — is implemented",
             register,
@@ -111,9 +106,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
     def test_all_json_documents_parse(self):
         json_files = sorted((ROOT / "schemas").rglob("*.json"))
         json_files += sorted((ROOT / "examples").rglob("*.json"))
-        json_files.append(
-            ROOT / "docs/governance/fas-reconciliation-map.json"
-        )
+        json_files.append(ROOT / "docs/governance/fas-reconciliation-map.json")
         self.assertGreater(len(json_files), 40)
         for path in json_files:
             with self.subTest(path=path.relative_to(ROOT)):
@@ -124,11 +117,7 @@ class RepositoryIntegrityTests(unittest.TestCase):
         for path in ROOT.rglob("*.md"):
             text = path.read_text(encoding="utf-8")
             for target in pattern.findall(text):
-                if (
-                    "://" in target
-                    or target.startswith("#")
-                    or target.startswith("mailto:")
-                ):
+                if "://" in target or target.startswith(("#", "mailto:")):
                     continue
                 target_path = target.split("#", 1)[0]
                 resolved = (path.parent / target_path).resolve()
@@ -139,9 +128,9 @@ class RepositoryIntegrityTests(unittest.TestCase):
                     self.assertTrue(resolved.exists(), resolved)
 
     def test_v1_audit_does_not_overstate_product_readiness(self):
-        audit = (
-            ROOT / "docs/governance/FORGE-V1-READINESS-AUDIT.md"
-        ).read_text(encoding="utf-8")
+        audit = (ROOT / "docs/governance/FORGE-V1-READINESS-AUDIT.md").read_text(
+            encoding="utf-8"
+        )
         self.assertIn("not yet a complete v1.0 application", audit)
         self.assertIn("Licensing Gate 1", audit)
         self.assertIn("FAS-026", audit)

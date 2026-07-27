@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
-
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.trust import (  # noqa: E402
+from forge.fas.trust import (
     TrustError,
     TrustService,
     development_hmac_signature,
@@ -31,9 +30,7 @@ class Fas010TrustTests(unittest.TestCase):
         self.key = load_json(
             ROOT / "examples" / "fas" / "trust-key-release.example.json"
         )
-        self.service = TrustService(
-            {"hmac-sha256-test": development_hmac_verifier}
-        )
+        self.service = TrustService({"hmac-sha256-test": development_hmac_verifier})
         self.service.register_key(self.key)
         self.payload = {
             "release_id": "forge-release:0.10.0",
@@ -69,8 +66,9 @@ class Fas010TrustTests(unittest.TestCase):
         self.assertTrue(first["verified"])
         self.assertEqual(payload_digest(self.payload), first["payload_digest"])
         self.assertEqual(first["attestation_id"], second["attestation_id"])
-        self.assertEqual(["signature_valid", "key_valid", "purpose_allowed"],
-                         first["reason_codes"])
+        self.assertEqual(
+            ["signature_valid", "key_valid", "purpose_allowed"], first["reason_codes"]
+        )
 
     def test_tampered_payload_is_rejected(self) -> None:
         envelope = self.envelope()
@@ -91,17 +89,19 @@ class Fas010TrustTests(unittest.TestCase):
         )
         for changes, message in cases:
             with self.subTest(changes=changes):
-                envelope = {**self.envelope(), **{
-                    key: value for key, value in changes.items()
-                    if key != "subject_id"
-                }}
+                envelope = {
+                    **self.envelope(),
+                    **{
+                        key: value
+                        for key, value in changes.items()
+                        if key != "subject_id"
+                    },
+                }
                 with self.assertRaisesRegex(TrustError, message):
                     self.service.verify_signature(
                         self.payload,
                         envelope,
-                        subject_id=changes.get(
-                            "subject_id", self.key["subject_id"]
-                        ),
+                        subject_id=changes.get("subject_id", self.key["subject_id"]),
                         evaluated_at="2026-07-25T20:00:00Z",
                     )
 
@@ -110,14 +110,16 @@ class Fas010TrustTests(unittest.TestCase):
             "2026-07-24T23:59:59Z",
             "2027-07-25T00:00:00Z",
         ):
-            with self.subTest(evaluated_at=evaluated_at):
-                with self.assertRaisesRegex(TrustError, "validity interval"):
-                    self.service.verify_signature(
-                        self.payload,
-                        self.envelope(),
-                        subject_id=self.key["subject_id"],
-                        evaluated_at=evaluated_at,
-                    )
+            with (
+                self.subTest(evaluated_at=evaluated_at),
+                self.assertRaisesRegex(TrustError, "validity interval"),
+            ):
+                self.service.verify_signature(
+                    self.payload,
+                    self.envelope(),
+                    subject_id=self.key["subject_id"],
+                    evaluated_at=evaluated_at,
+                )
         self.service.revoke_key(
             self.key["key_id"],
             revoked_at="2026-08-01T00:00:00Z",
@@ -258,9 +260,9 @@ class Fas010TrustTests(unittest.TestCase):
         for schema in (key_schema, attestation_schema):
             Draft202012Validator.check_schema(schema)
         Draft202012Validator(key_schema, format_checker=checker).validate(self.key)
-        Draft202012Validator(
-            attestation_schema, format_checker=checker
-        ).validate(self.verify())
+        Draft202012Validator(attestation_schema, format_checker=checker).validate(
+            self.verify()
+        )
 
 
 if __name__ == "__main__":

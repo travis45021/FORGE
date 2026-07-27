@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
-
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.authorization import AuthorizationEngine  # noqa: E402
+from forge.fas.authorization import AuthorizationEngine
 
 
 def load_json(path: Path) -> dict:
@@ -28,16 +27,10 @@ class Fas008AuthorizationTests(unittest.TestCase):
             ROOT / "examples" / "fas" / "policy-print-start.example.json"
         )
         cls.request = load_json(
-            ROOT
-            / "examples"
-            / "fas"
-            / "authorization-request-print-start.example.json"
+            ROOT / "examples" / "fas" / "authorization-request-print-start.example.json"
         )
         cls.expected_result = load_json(
-            ROOT
-            / "examples"
-            / "fas"
-            / "authorization-result-allow.example.json"
+            ROOT / "examples" / "fas" / "authorization-result-allow.example.json"
         )
 
     def test_approved_user_directed_action_is_allowed(self) -> None:

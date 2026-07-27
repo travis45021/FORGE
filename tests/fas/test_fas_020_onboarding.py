@@ -1,14 +1,14 @@
 """Behavior and schema tests for canonical FAS-020."""
 
 import json
-from pathlib import Path
 import sys
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.onboarding import OnboardingError, OnboardingService  # noqa: E402
+from forge.fas.onboarding import OnboardingError, OnboardingService
 
 
 def load_json(path: Path) -> dict:
@@ -20,9 +20,7 @@ class Fas020OnboardingTests(unittest.TestCase):
     def setUp(self) -> None:
         self.service = OnboardingService()
         self.local_id = "local-user:owner"
-        self.service.create_local_profile(
-            self.local_id, display_name="Workshop Owner"
-        )
+        self.service.create_local_profile(self.local_id, display_name="Workshop Owner")
 
     def test_local_identity_requires_no_network_account(self) -> None:
         profile = self.service.export(self.local_id)
@@ -43,9 +41,7 @@ class Fas020OnboardingTests(unittest.TestCase):
                 self.service.select_experience(self.local_id, profile)
 
     def test_custom_builder_is_ai_free_and_custom_first(self) -> None:
-        record = self.service.select_experience(
-            self.local_id, "custom_builder"
-        )
+        record = self.service.select_experience(self.local_id, "custom_builder")
         self.assertFalse(record["settings"]["ai_enabled"])
         self.assertFalse(record["settings"]["suggestions_enabled"])
         self.assertEqual("custom", record["settings"]["hardware_setup"])
@@ -83,9 +79,7 @@ class Fas020OnboardingTests(unittest.TestCase):
             sharing_consent=True,
             network_identity="forge-network-user:owner",
         )
-        self.assertEqual(
-            "forge-network-user:owner", result["network_identity"]
-        )
+        self.assertEqual("forge-network-user:owner", result["network_identity"])
 
     def test_transparency_summary_states_effective_choices(self) -> None:
         self.service.select_experience(self.local_id, "custom_builder")
@@ -97,12 +91,10 @@ class Fas020OnboardingTests(unittest.TestCase):
 
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator
-        schema = load_json(
-            ROOT / "schemas" / "fas" / "onboarding-profile.schema.json"
-        )
+
+        schema = load_json(ROOT / "schemas" / "fas" / "onboarding-profile.schema.json")
         example = load_json(
-            ROOT / "examples" / "fas" /
-            "onboarding-profile-custom-builder.example.json"
+            ROOT / "examples" / "fas" / "onboarding-profile-custom-builder.example.json"
         )
         Draft202012Validator.check_schema(schema)
         Draft202012Validator(schema).validate(example)

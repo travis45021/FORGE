@@ -1,16 +1,15 @@
 """Behavior and schema tests for canonical FAS-022."""
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
-
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.runtime import ForgeRuntime, RuntimeError  # noqa: E402
+from forge.fas.runtime import ForgeRuntime, RuntimeError
 
 
 def load_json(path: Path) -> dict:
@@ -106,9 +105,7 @@ class Fas022RuntimeTests(unittest.TestCase):
     def test_expired_lease_enters_recovery_not_assumed_release(self) -> None:
         self.create()
         lease = self.lease(expires_at="2026-07-25T21:00:00Z")
-        expired = self.runtime.expire_leases(
-            evaluated_at="2026-07-25T21:00:00Z"
-        )
+        expired = self.runtime.expire_leases(evaluated_at="2026-07-25T21:00:00Z")
         self.assertEqual(lease["lease_id"], expired[0]["lease_id"])
         self.assertEqual(
             "recovering",
@@ -208,13 +205,11 @@ class Fas022RuntimeTests(unittest.TestCase):
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator, FormatChecker
 
-        schema = load_json(
-            ROOT / "schemas" / "fas" / "execution-context.schema.json"
-        )
+        schema = load_json(ROOT / "schemas" / "fas" / "execution-context.schema.json")
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(self.context)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+            self.context
+        )
 
 
 if __name__ == "__main__":

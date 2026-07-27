@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import hashlib
 import json
-from pathlib import Path
 import unittest
-
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 EXAMPLE = ROOT / "examples" / "fas" / "decision-approved.example.json"

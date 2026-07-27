@@ -1,15 +1,14 @@
 """Behavior and schema tests for canonical FAS-015."""
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.scheduler import MissionScheduler, SchedulingError  # noqa: E402
+from forge.fas.scheduler import MissionScheduler, SchedulingError
 
 
 def load_json(path: Path) -> dict:
@@ -25,9 +24,7 @@ class Fas015SchedulerTests(unittest.TestCase):
         self.scheduler = MissionScheduler()
 
     def submit(self, mission: dict | None = None) -> dict:
-        return self.scheduler.submit(
-            mission or self.mission, executive_authorized=True
-        )
+        return self.scheduler.submit(mission or self.mission, executive_authorized=True)
 
     def variant(self, suffix: str, **changes: object) -> dict:
         return {
@@ -122,9 +119,7 @@ class Fas015SchedulerTests(unittest.TestCase):
             conditions={"printer_idle": True},
         )
         self.scheduler.start(running["mission_id"])
-        incoming = self.variant(
-            "high", priority="high", resources=["device:other"]
-        )
+        incoming = self.variant("high", priority="high", resources=["device:other"])
         self.submit(incoming)
         with self.assertRaisesRegex(SchedulingError, "safe pause"):
             self.scheduler.preempt(
@@ -152,9 +147,7 @@ class Fas015SchedulerTests(unittest.TestCase):
             conditions=[],
         )
         self.submit(old)
-        ready = self.scheduler.next_ready(
-            evaluated_at="2026-07-25T21:00:00Z"
-        )
+        ready = self.scheduler.next_ready(evaluated_at="2026-07-25T21:00:00Z")
         self.assertEqual("high", ready["effective_priority"])
 
     def test_scheduler_has_no_hardware_command_surface(self) -> None:
@@ -163,11 +156,12 @@ class Fas015SchedulerTests(unittest.TestCase):
 
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator, FormatChecker
+
         schema = load_json(ROOT / "schemas" / "fas" / "scheduled-mission.schema.json")
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(self.mission)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+            self.mission
+        )
 
 
 if __name__ == "__main__":

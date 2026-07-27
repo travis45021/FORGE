@@ -1,15 +1,16 @@
 """Behavior and schema tests for canonical FAS-014."""
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.plugins import (  # noqa: E402
+from forge.fas.capabilities import CapabilityError
+from forge.fas.plugins import (
     PluginError,
     PluginRegistry,
     custom_component_manifest,
@@ -24,8 +25,7 @@ def load_json(path: Path) -> dict:
 class Fas014PluginTests(unittest.TestCase):
     def setUp(self) -> None:
         self.manifest = load_json(
-            ROOT / "examples" / "fas" /
-            "plugin-custom-filament-sensor.example.json"
+            ROOT / "examples" / "fas" / "plugin-custom-filament-sensor.example.json"
         )
         self.registry = PluginRegistry()
 
@@ -77,9 +77,7 @@ class Fas014PluginTests(unittest.TestCase):
 
     def test_active_plugin_registers_only_declared_capability(self) -> None:
         self.ready()
-        self.registry.activate(
-            self.manifest["plugin_id"], executive_authorized=True
-        )
+        self.registry.activate(self.manifest["plugin_id"], executive_authorized=True)
         contract = self.registry.capabilities().resolve(
             {
                 "capability_id": "filament.runout_detection",
@@ -92,10 +90,8 @@ class Fas014PluginTests(unittest.TestCase):
 
     def test_provisional_provider_does_not_resolve_as_trusted(self) -> None:
         self.ready(trust_state="provisional")
-        self.registry.activate(
-            self.manifest["plugin_id"], executive_authorized=True
-        )
-        with self.assertRaises(Exception):
+        self.registry.activate(self.manifest["plugin_id"], executive_authorized=True)
+        with self.assertRaises(CapabilityError):
             self.registry.capabilities().resolve(
                 {
                     "capability_id": "filament.runout_detection",
@@ -139,6 +135,7 @@ class Fas014PluginTests(unittest.TestCase):
 
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator
+
         schema = load_json(ROOT / "schemas" / "fas" / "plugin-manifest.schema.json")
         Draft202012Validator.check_schema(schema)
         Draft202012Validator(schema).validate(self.manifest)

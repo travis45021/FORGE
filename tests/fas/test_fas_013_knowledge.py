@@ -1,15 +1,15 @@
 """Behavior and schema tests for canonical FAS-013."""
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.knowledge import KnowledgeCore, KnowledgeError  # noqa: E402
+from forge.fas.knowledge import KnowledgeCore, KnowledgeError
 
 
 def load_json(path: Path) -> dict:
@@ -112,11 +112,10 @@ class Fas013KnowledgeTests(unittest.TestCase):
 
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator, FormatChecker
+
         schema = load_json(ROOT / "schemas" / "fas" / "knowledge-object.schema.json")
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(self.item)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(self.item)
 
 
 if __name__ == "__main__":

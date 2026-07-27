@@ -21,8 +21,7 @@ class ImportQuarantineTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "part.step"
             path.write_text(
-                "ISO-10303-21;\nHEADER;\nENDSEC;\nDATA;\nENDSEC;\n"
-                "END-ISO-10303-21;\n",
+                "ISO-10303-21;\nHEADER;\nENDSEC;\nDATA;\nENDSEC;\nEND-ISO-10303-21;\n",
                 encoding="ascii",
             )
             result = self.quarantine.assess(path)
@@ -44,9 +43,7 @@ class ImportQuarantineTests(unittest.TestCase):
         self.assertTrue(result["quarantine"]["path_traversal_checked"])
 
     def test_step_normalization_ignores_line_endings_and_trailing_space(self) -> None:
-        content = (
-            "ISO-10303-21;\nHEADER;\nENDSEC;\nDATA;\nENDSEC;\n" "END-ISO-10303-21;\n"
-        )
+        content = "ISO-10303-21;\nHEADER;\nENDSEC;\nDATA;\nENDSEC;\nEND-ISO-10303-21;\n"
         with tempfile.TemporaryDirectory() as directory:
             first = Path(directory) / "first.step"
             second = Path(directory) / "second.stp"

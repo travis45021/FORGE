@@ -4,7 +4,6 @@ from pathlib import Path
 
 from forge.fas.testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
 
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -37,15 +36,17 @@ class TestAssuranceTests(unittest.TestCase):
         self.assertIn("hardware_in_the_loop", TEST_LAYERS)
 
     def test_simulator_is_honestly_nonproduction(self):
-        registered = self.service.register_simulator({
-            "provider_id": "sim:printer",
-            "represented_behavior": "printer status",
-            "contract_version": "v1",
-            "limitations": ["no physical timing"],
-            "failure_modes": ["disconnect"],
-            "deterministic": True,
-            "suitable_layers": ["scenario", "fault_injection"],
-        })
+        registered = self.service.register_simulator(
+            {
+                "provider_id": "sim:printer",
+                "represented_behavior": "printer status",
+                "contract_version": "v1",
+                "limitations": ["no physical timing"],
+                "failure_modes": ["disconnect"],
+                "deterministic": True,
+                "suitable_layers": ["scenario", "fault_injection"],
+            }
+        )
         self.assertFalse(registered["production_eligible"])
         self.assertFalse(registered["can_authorize_physical_action"])
 
@@ -81,9 +82,7 @@ class TestAssuranceTests(unittest.TestCase):
         }
         with self.assertRaises(TestAssuranceError):
             self.service.validate_hardware_test(plan, user_authorized=False)
-        accepted = self.service.validate_hardware_test(
-            plan, user_authorized=True
-        )
+        accepted = self.service.validate_hardware_test(plan, user_authorized=True)
         self.assertTrue(accepted["bounded"])
 
     def test_failed_required_test_blocks_release(self):

@@ -1,18 +1,18 @@
 """Behavior and schema tests for canonical FAS-018."""
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.assurance import (  # noqa: E402
+from forge.fas.assurance import (
+    CLASS_CHECKS,
     AssuranceError,
     AssuranceService,
-    CLASS_CHECKS,
     context_fingerprint,
 )
 
@@ -25,8 +25,7 @@ def load_json(path: Path) -> dict:
 class Fas018AssuranceTests(unittest.TestCase):
     def setUp(self) -> None:
         self.packet = load_json(
-            ROOT / "examples" / "fas" /
-            "verification-packet-calibration.example.json"
+            ROOT / "examples" / "fas" / "verification-packet-calibration.example.json"
         )
         self.context = {
             "printer_id": "community-device:garage-printer",
@@ -125,13 +124,12 @@ class Fas018AssuranceTests(unittest.TestCase):
 
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator, FormatChecker
-        schema = load_json(
-            ROOT / "schemas" / "fas" / "verification-packet.schema.json"
-        )
+
+        schema = load_json(ROOT / "schemas" / "fas" / "verification-packet.schema.json")
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(self.packet)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(
+            self.packet
+        )
 
 
 if __name__ == "__main__":

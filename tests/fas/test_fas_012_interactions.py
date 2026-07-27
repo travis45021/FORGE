@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from copy import deepcopy
 import json
-from pathlib import Path
 import sys
 import unittest
-
+from copy import deepcopy
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
-from forge.fas.interactions import InteractionError, InteractionManager  # noqa: E402
+from forge.fas.interactions import InteractionError, InteractionManager
 
 
 def load_json(path: Path) -> dict:
@@ -94,9 +93,8 @@ class Fas012InteractionTests(unittest.TestCase):
     def test_daily_and_mission_budgets_are_enforced(self) -> None:
         manager = self.manager()
         self.assertEqual(
-            "deliver", self.evaluate(manager, mission_id="forge-mission:one")[
-                "disposition"
-            ]
+            "deliver",
+            self.evaluate(manager, mission_id="forge-mission:one")["disposition"],
         )
         manager.resolve_suggestion(self.suggestion["deduplication_key"])
         second = {
@@ -146,9 +144,7 @@ class Fas012InteractionTests(unittest.TestCase):
         self.assertEqual("deliver", self.evaluate(manager, changed)["disposition"])
 
     def test_quiet_hours_defer_suggestions_but_not_critical_alerts(self) -> None:
-        manager = self.manager(
-            quiet_hours={"start": "19:00", "end": "08:00"}
-        )
+        manager = self.manager(quiet_hours={"start": "19:00", "end": "08:00"})
         self.assertEqual("quiet_hours", self.evaluate(manager)["reason_code"])
         self.assertEqual(
             "deliver",
@@ -167,8 +163,10 @@ class Fas012InteractionTests(unittest.TestCase):
         from jsonschema import Draft202012Validator
 
         pairs = (
-            ("interaction-profile.schema.json",
-             "interaction-profile-simple.example.json"),
+            (
+                "interaction-profile.schema.json",
+                "interaction-profile-simple.example.json",
+            ),
             ("suggestion.schema.json", "suggestion-calibration.example.json"),
         )
         for schema_name, example_name in pairs:

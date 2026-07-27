@@ -4,7 +4,6 @@ from pathlib import Path
 
 from forge.fas.health import HEALTH_STATES, HealthError, HealthService
 
-
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -44,8 +43,15 @@ class HealthServiceTests(unittest.TestCase):
     def test_all_approved_health_states_are_supported(self):
         self.assertEqual(
             HEALTH_STATES,
-            {"healthy", "unobserved", "stale", "degraded", "unavailable",
-             "failed", "recovering"},
+            {
+                "healthy",
+                "unobserved",
+                "stale",
+                "degraded",
+                "unavailable",
+                "failed",
+                "recovering",
+            },
         )
 
     def test_observation_requires_evidence(self):
@@ -91,9 +97,7 @@ class HealthServiceTests(unittest.TestCase):
         self.assertEqual(plan["decision"], "approved_manual")
 
     def test_physical_action_requires_authority_and_safety(self):
-        plan = self.service.plan_recovery(
-            "provider:printer", action(physical=True)
-        )
+        plan = self.service.plan_recovery("provider:printer", action(physical=True))
         self.assertEqual(plan["decision"], "requires_authorization")
 
     def test_retry_limit_suppresses_loop(self):
@@ -137,9 +141,7 @@ class HealthServiceTests(unittest.TestCase):
             (ROOT / "examples/fas/health-report-provider.example.json").read_text()
         )
         Draft202012Validator.check_schema(schema)
-        Draft202012Validator(
-            schema, format_checker=FormatChecker()
-        ).validate(example)
+        Draft202012Validator(schema, format_checker=FormatChecker()).validate(example)
 
 
 if __name__ == "__main__":
