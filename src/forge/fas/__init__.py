@@ -33,6 +33,7 @@ from .release_gate import REQUIRED_GATES, ReleaseGate, ReleaseGateError
 from .runtime import ForgeRuntime, RuntimeError
 from .safety_review import SafetyDesignReview, SafetyReviewError
 from .scheduler import MissionScheduler, SchedulingError
+from .slicer_preparation import SlicerMissionPreparation, SlicerPreparationError
 from .slicer_worker import SlicerWorkerBoundary, SlicerWorkerError
 from .slicing import SlicerContractBoundary, SlicerContractError
 from .testing import TEST_LAYERS, TestAssuranceError, TestAssuranceService
@@ -113,6 +114,8 @@ __all__ = [
     "ServiceLifecycle",
     "SlicerContractBoundary",
     "SlicerContractError",
+    "SlicerMissionPreparation",
+    "SlicerPreparationError",
     "SlicerWorkerBoundary",
     "SlicerWorkerError",
     "TestAssuranceError",
