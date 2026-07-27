@@ -203,8 +203,10 @@ release is distributed until the applicable items in this gate are complete.
   checks are covered. Engine-backed geometry fixture coverage remains open.
 - [ ] Test worker crashes, timeouts, resource exhaustion, cancellation, and
   stale context. Deterministic supervisor fault-injection contracts cover each
-  failure and deny artifact/physical authority; real worker-process tests
-  remain open.
+  failure and deny artifact/physical authority. Real process fixtures now cover
+  clean exit, crash, timeout, and cancellation without a slicer engine;
+  production-launcher, enforced resource-exhaustion, and reviewed engine
+  process evidence remain open.
 - [ ] Prove repeated slicing reproducibility. A non-authoritative evaluator now
   requires identical engine source/build, input, profile, context, artifact
   digests, and warnings across repeated successful results. Real reviewed Orca

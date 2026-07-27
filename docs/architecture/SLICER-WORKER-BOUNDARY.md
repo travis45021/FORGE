@@ -13,3 +13,9 @@ in the Executive/runtime path.
 
 This manifest is a contract-only artifact. It does not authorize Orca source
 import or a production build while Gate 1 remains open.
+
+Cross-platform process fixtures now exercise clean exit, non-zero crash,
+timeout termination, and explicit cancellation against the supervisor. These
+tests launch no slicer and grant no authority. A production launcher, operating
+system sandbox, enforced memory/disk limits, and reviewed Orca process evidence
+remain open.

@@ -117,9 +117,10 @@
       ],
       "evidence_refs": [
         "docs/architecture/SLICER-WORKER-BOUNDARY.md",
-        "tests/fas/test_slicer_worker_faults.py"
+        "tests/fas/test_slicer_worker_faults.py",
+        "tests/fas/test_slicer_worker_process_faults.py"
       ],
-      "residual_risk": "Real process isolation, resource enforcement, and reviewed Orca execution are not implemented.",
+      "residual_risk": "A production launcher, operating-system sandbox, resource enforcement, and reviewed Orca execution are not implemented.",
       "release_blocking": true
     },
     {
