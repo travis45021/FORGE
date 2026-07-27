@@ -116,8 +116,9 @@ release is distributed until the applicable items in this gate are complete.
   acceptance reference services are implemented. Paired preflight now requires
   a successful coordinated worker-pair outcome, verifies both output byte
   digests against that outcome, and binds both results to the same reviewed
-  engine before comparison. Comparison requires measured preflight evidence;
-  acceptance, fourth-click, and Executive boundaries reject raw evidence.
+  engine before comparison. Comparison and acceptance now require and preserve
+  the paired-preflight proof, closing the individually preflighted evidence
+  bypass. Fourth-click and Executive boundaries reject raw evidence.
   Confirmed jobs, transport handoffs, and Runtime dispatch preserve and recheck
   preflight. Real engine artifact evidence remains open.
 - [ ] Connect accepted artifacts to the Executive and Runtime Mission path.

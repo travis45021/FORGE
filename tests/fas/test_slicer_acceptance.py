@@ -32,7 +32,9 @@ def comparison() -> dict:
             "status": "matching",
             "reviewed_by_user": True,
             "preflight_evidence_required": True,
+            "pair_preflight_required": True,
         },
+        "pair_preflight_verified": True,
         "can_authorize_production": False,
     }
 
@@ -65,6 +67,14 @@ class SlicerAcceptanceTests(unittest.TestCase):
         value["production"]["preflight_verified"] = False
         value["acceptance"]["preflight_evidence_required"] = False
         with self.assertRaises(SlicerAcceptanceError):
+            self.service.accept(value)
+
+    def test_rejects_individually_preflighted_but_unpaired_results(self) -> None:
+        value = comparison()
+        value["pair_preflight_verified"] = False
+        with self.assertRaisesRegex(
+            SlicerAcceptanceError, "coordinated production and twin"
+        ):
             self.service.accept(value)
 
 

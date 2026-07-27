@@ -39,6 +39,13 @@ class SlicerArtifactAcceptance:
                 "acceptance requires deterministic preflight evidence"
             )
         if (
+            item.get("pair_preflight_verified") is not True
+            or acceptance.get("pair_preflight_required") is not True
+        ):
+            raise SlicerAcceptanceError(
+                "acceptance requires coordinated production and twin preflight"
+            )
+        if (
             production.get("preflight_verified") is not True
             or twin.get("preflight_verified") is not True
         ):
@@ -51,6 +58,7 @@ class SlicerArtifactAcceptance:
             "comparison_id": item.get("comparison_id"),
             "artifact_digest": artifact_digest,
             "preflight_verified": True,
+            "pair_preflight_verified": True,
             "ready_for_live_checks": True,
             "final_confirmation_required": True,
             "can_upload": False,

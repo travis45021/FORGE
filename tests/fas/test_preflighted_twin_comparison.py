@@ -72,3 +72,51 @@ def test_rejects_unverified_or_authoritative_preflight(
 def test_rejects_swapped_preflight_contexts() -> None:
     with pytest.raises(TwinComparisonError, match="context"):
         compare(evidence("twin"), evidence("production"))
+
+
+def paired_preflight() -> dict:
+    return {
+        "status": "ready_for_comparison",
+        "input_digest": "d" * 64,
+        "profile_digest": "e" * 64,
+        "production": evidence("production"),
+        "twin": evidence("twin"),
+        "pair_outcome_validated": True,
+        "both_output_digests_verified": True,
+        "can_authorize_production": False,
+        "can_upload": False,
+        "can_start_print": False,
+    }
+
+
+def test_paired_preflight_proof_is_carried_into_comparison() -> None:
+    result = TwinComparisonService().compare_paired_preflight(
+        comparison_id="comparison:paired",
+        paired_preflight=paired_preflight(),
+        reviewed_by_user=True,
+    )
+
+    assert result["pair_preflight_verified"] is True
+    assert result["acceptance"]["pair_preflight_required"] is True
+    assert result["profile_digest"] == "e" * 64
+    assert result["can_authorize_production"] is False
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("status", "failed_closed"),
+        ("pair_outcome_validated", False),
+        ("both_output_digests_verified", False),
+        ("can_upload", True),
+    ],
+)
+def test_rejects_uncoordinated_or_authoritative_pair(field: str, value: object) -> None:
+    pair = paired_preflight()
+    pair[field] = value
+
+    with pytest.raises(TwinComparisonError, match="coordinated paired preflight"):
+        TwinComparisonService().compare_paired_preflight(
+            comparison_id="comparison:paired",
+            paired_preflight=pair,
+        )

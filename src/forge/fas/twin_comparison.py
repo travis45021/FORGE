@@ -104,6 +104,42 @@ class TwinComparisonService:
             "can_authorize_production": False,
         }
 
+    def compare_paired_preflight(
+        self,
+        *,
+        comparison_id: str,
+        paired_preflight: Mapping[str, Any],
+        reviewed_by_user: bool = False,
+    ) -> dict[str, Any]:
+        """Compare only evidence emitted by coordinated paired preflight."""
+        pair = dict(paired_preflight)
+        if (
+            pair.get("status") != "ready_for_comparison"
+            or pair.get("pair_outcome_validated") is not True
+            or pair.get("both_output_digests_verified") is not True
+            or pair.get("can_authorize_production") is not False
+            or pair.get("can_upload") is not False
+            or pair.get("can_start_print") is not False
+        ):
+            raise TwinComparisonError(
+                "comparison requires coordinated paired preflight"
+            )
+        production = pair.get("production")
+        twin = pair.get("twin")
+        if not isinstance(production, Mapping) or not isinstance(twin, Mapping):
+            raise TwinComparisonError("paired preflight evidence is incomplete")
+        result = self.compare_preflighted(
+            comparison_id=comparison_id,
+            input_digest=pair.get("input_digest"),
+            production=production,
+            twin=twin,
+            reviewed_by_user=reviewed_by_user,
+        )
+        result["profile_digest"] = pair.get("profile_digest")
+        result["pair_preflight_verified"] = True
+        result["acceptance"]["pair_preflight_required"] = True
+        return result
+
     @staticmethod
     def _preflight(value: Mapping[str, Any], context: str) -> dict[str, Any]:
         item = dict(value)

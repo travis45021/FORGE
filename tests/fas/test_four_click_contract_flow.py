@@ -113,11 +113,20 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "can_start_print": False,
             }
 
-        comparison = TwinComparisonService().compare_preflighted(
+        comparison = TwinComparisonService().compare_paired_preflight(
             comparison_id="comparison-1",
-            input_digest=assessment["source_digest"],
-            production=preflight(production_request),
-            twin=preflight(twin_request),
+            paired_preflight={
+                "status": "ready_for_comparison",
+                "input_digest": assessment["source_digest"],
+                "profile_digest": profile["profile_digest"],
+                "production": preflight(production_request),
+                "twin": preflight(twin_request),
+                "pair_outcome_validated": True,
+                "both_output_digests_verified": True,
+                "can_authorize_production": False,
+                "can_upload": False,
+                "can_start_print": False,
+            },
             reviewed_by_user=True,
         )
         acceptance = SlicerArtifactAcceptance().accept(comparison)
