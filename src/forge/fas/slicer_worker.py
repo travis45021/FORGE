@@ -7,6 +7,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Any, ClassVar
 
+from .slicing import SlicerContractBoundary, SlicerContractError
+
 
 class SlicerWorkerError(ValueError):
     """Raised when a slicer worker manifest violates isolation rules."""
@@ -81,6 +83,52 @@ class SlicerWorkerBoundary:
         if production_paths & twin_paths:
             raise SlicerWorkerError("production and twin workspaces must not overlap")
         return production_item, twin_item
+
+    def assign(
+        self,
+        manifest: Mapping[str, Any],
+        request: Mapping[str, Any],
+        profile: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Bind an isolated worker to one request and one ephemeral profile."""
+        worker = self.validate(manifest)
+        try:
+            slicer_request = SlicerContractBoundary().request(request)
+        except SlicerContractError as exc:
+            raise SlicerWorkerError(str(exc)) from exc
+        if slicer_request["context"] != worker["context"]:
+            raise SlicerWorkerError("worker and request contexts do not match")
+        profile_item = dict(profile)
+        if slicer_request.get("profile_ephemeral") is not True:
+            raise SlicerWorkerError("slicer request must declare an ephemeral profile")
+        if slicer_request["profile_digest"] != profile_item.get("profile_digest"):
+            raise SlicerWorkerError("worker profile digest does not match request")
+        if (
+            profile_item.get("lifecycle") != "ephemeral"
+            or profile_item.get("persist_after_worker") is not False
+            or profile_item.get("delete_after_result") is not True
+            or profile_item.get("contains_transport_endpoint") is not False
+            or profile_item.get("contains_credentials") is not False
+            or profile_item.get("cloud_access") is not False
+            or profile_item.get("can_control_printer") is not False
+            or profile_item.get("can_upload") is not False
+            or profile_item.get("can_start_print") is not False
+        ):
+            raise SlicerWorkerError("worker profile violates isolation or authority")
+        return {
+            "schema_version": "1.0.0",
+            "worker_id": worker["worker_id"],
+            "request_id": slicer_request["request_id"],
+            "context": worker["context"],
+            "profile_digest": slicer_request["profile_digest"],
+            "workspace": deepcopy(worker["workspace"]),
+            "limits": deepcopy(worker["limits"]),
+            "single_use": True,
+            "profile_delete_after_result": True,
+            "can_control_hardware": False,
+            "can_upload": False,
+            "can_start_print": False,
+        }
 
 
 class SlicerWorkerSupervisor:
