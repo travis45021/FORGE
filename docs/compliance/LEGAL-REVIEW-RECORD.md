@@ -11,6 +11,11 @@ The decision-ready evidence and question set is maintained in
 `docs/compliance/GATE-1-LICENSING-DECISION-PACKET.md`. The packet is not legal
 advice and does not authorize source import or public distribution.
 
+The source-import-specific request is maintained in
+`docs/compliance/SOURCE-IMPORT-LEGAL-REVIEW-REQUEST.md`. It is prepared for
+qualified external counsel; no counsel engagement or approval is represented by
+this repository record.
+
 ## Required review scope
 
 - final FORGE SPDX expression and relationship to OrcaSlicer AGPLv3;

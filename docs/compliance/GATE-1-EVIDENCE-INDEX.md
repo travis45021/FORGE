@@ -8,6 +8,9 @@ The decision-ready owner and counsel packet is
 It records conservative recommendations, unresolved questions, required legal
 deliverables, and closure criteria without making a legal determination.
 
+The source-import review request is
+[`SOURCE-IMPORT-LEGAL-REVIEW-REQUEST.md`](SOURCE-IMPORT-LEGAL-REVIEW-REQUEST.md).
+
 This index is the controlled checklist for the first open release gate. A row
 may move to **complete** only when the linked artifact is present, hashed, and
 reviewed. This document does not make a licensing determination.
