@@ -4,9 +4,13 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from copy import deepcopy
+from datetime import datetime
 from typing import Any
 
-from .live_printer_checks import REQUIRED_CHECKS
+from .live_printer_checks import (
+    REQUIRED_CHECKS,
+    live_check_evidence_digest,
+)
 
 
 class FinalConfirmationPresentationError(ValueError):
@@ -32,11 +36,53 @@ class FinalConfirmationPresenter:
         *,
         printer_name: str,
         job_name: str,
+        presented_at: str,
     ) -> dict[str, Any]:
         item = deepcopy(dict(live_checks))
-        if not printer_name.strip() or not job_name.strip():
+        if (
+            not isinstance(printer_name, str)
+            or not printer_name.strip()
+            or not isinstance(job_name, str)
+            or not job_name.strip()
+        ):
             raise FinalConfirmationPresentationError(
                 "printer and job names are required"
+            )
+        expected_fields = {
+            "provider_id",
+            "artifact_digest",
+            "checks",
+            "checked_at",
+            "expires_at",
+            "passed",
+            "failed_checks",
+            "final_confirmation_required",
+            "can_upload",
+            "can_start_print",
+            "evidence_digest",
+        }
+        if set(item) != expected_fields:
+            raise FinalConfirmationPresentationError("live evidence fields are invalid")
+        if (
+            not isinstance(item["provider_id"], str)
+            or not item["provider_id"]
+            or not self._digest(item["artifact_digest"])
+        ):
+            raise FinalConfirmationPresentationError(
+                "live evidence identity is invalid"
+            )
+        if item["evidence_digest"] != live_check_evidence_digest(item):
+            raise FinalConfirmationPresentationError("live evidence digest is invalid")
+        checked_at = self._utc(item["checked_at"])
+        expires_at = self._utc(item["expires_at"])
+        now = self._utc(presented_at)
+        if now < checked_at:
+            raise FinalConfirmationPresentationError(
+                "live evidence cannot be presented before it was checked"
+            )
+        if now >= expires_at:
+            raise FinalConfirmationPresentationError(
+                "live evidence expired before final confirmation"
             )
         if item.get("final_confirmation_required") is not True:
             raise FinalConfirmationPresentationError(
@@ -63,7 +109,11 @@ class FinalConfirmationPresenter:
             raise FinalConfirmationPresentationError(
                 "failed-check evidence is inconsistent"
             )
-        passed = item.get("passed") is True and not failed
+        if item.get("passed") is not (not failed):
+            raise FinalConfirmationPresentationError(
+                "live pass evidence is inconsistent"
+            )
+        passed = not failed
 
         return {
             "schema_version": "1.0.0",
@@ -125,14 +175,19 @@ class FinalConfirmationPresenter:
         job_name: str,
         actor: str,
         action: str,
+        presented_at: str,
     ) -> dict[str, Any]:
         """Record the explicit fourth click without dispatching hardware."""
         presentation = self.present(
-            live_checks, printer_name=printer_name, job_name=job_name
+            live_checks,
+            printer_name=printer_name,
+            job_name=job_name,
+            presented_at=presented_at,
         )
         if (
             presentation["can_confirm"] is not True
             or action != "yes_print"
+            or not isinstance(actor, str)
             or not actor.strip()
         ):
             raise FinalConfirmationPresentationError(
@@ -142,10 +197,34 @@ class FinalConfirmationPresenter:
             "schema_version": "1.0.0",
             "provider_id": live_checks.get("provider_id"),
             "artifact_digest": live_checks.get("artifact_digest"),
+            "live_checks_evidence_digest": live_checks.get("evidence_digest"),
+            "live_checks_expires_at": live_checks.get("expires_at"),
             "stage": "final_confirmation_recorded",
             "confirmed_by": actor.strip(),
+            "confirmed_at": presented_at,
             "action": "Yes, Print",
             "click_number": 4,
             "requires_controlled_upload": True,
             "physical_dispatch_allowed": False,
         }
+
+    @staticmethod
+    def _utc(value: Any) -> datetime:
+        if not isinstance(value, str) or not value.endswith("Z"):
+            raise FinalConfirmationPresentationError(
+                "confirmation presentation timestamps must be UTC"
+            )
+        try:
+            return datetime.fromisoformat(value[:-1] + "+00:00")
+        except ValueError as exc:
+            raise FinalConfirmationPresentationError(
+                "confirmation presentation timestamp is invalid"
+            ) from exc
+
+    @staticmethod
+    def _digest(value: Any) -> bool:
+        return (
+            isinstance(value, str)
+            and len(value) == 64
+            and all(character in "0123456789abcdef" for character in value)
+        )

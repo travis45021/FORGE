@@ -33,6 +33,11 @@ Live-check records accept exactly the six named provider-neutral checks as
 explicit booleans. Unknown fields, non-boolean values, invalid provider
 identity, non-UTC timestamps, and validity windows over five minutes are
 rejected before evidence is created.
+The final-confirmation presenter recomputes the complete evidence digest and
+requires presentation time to fall between the recorded check and expiry.
+Mutated, future-dated, expired, contradictory, or extra-field evidence cannot
+show **Yes, Print**. A recorded click carries the live-evidence digest and
+expiry forward without dispatching hardware.
 
 The Executive and Runtime independently preserve and verify this lineage.
 Expiry is fail-closed: the upload command cannot outlive any evidence it

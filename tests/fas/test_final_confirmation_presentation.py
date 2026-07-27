@@ -6,7 +6,11 @@ from forge.fas.final_confirmation_presentation import (
     FinalConfirmationPresentationError,
     FinalConfirmationPresenter,
 )
-from forge.fas.live_printer_checks import REQUIRED_CHECKS, LivePrinterCheckService
+from forge.fas.live_printer_checks import (
+    REQUIRED_CHECKS,
+    LivePrinterCheckService,
+    live_check_evidence_digest,
+)
 
 
 def evidence(*, failed: str | None = None) -> dict:
@@ -27,6 +31,7 @@ def show(live: dict) -> dict:
         live,
         printer_name="Workshop printer",
         job_name="Bracket",
+        presented_at="2026-07-26T12:05:00Z",
     )
 
 
@@ -47,6 +52,7 @@ def test_records_fourth_click_without_dispatching() -> None:
         job_name="Bracket",
         actor="user-1",
         action="yes_print",
+        presented_at="2026-07-26T12:05:00Z",
     )
 
     assert result["click_number"] == 4
@@ -68,6 +74,7 @@ def test_each_failed_or_stale_check_removes_yes_print(failed: str) -> None:
             job_name="Bracket",
             actor="user-1",
             action="yes_print",
+            presented_at="2026-07-26T12:05:00Z",
         )
 
 
@@ -76,4 +83,39 @@ def test_rejects_live_evidence_that_claims_upload_authority() -> None:
     live["can_upload"] = True
 
     with pytest.raises(FinalConfirmationPresentationError):
+        show(live)
+
+
+def test_rejects_expired_or_not_yet_checked_evidence() -> None:
+    for presented_at in (
+        "2026-07-26T12:03:59Z",
+        "2026-07-26T12:09:00Z",
+    ):
+        with pytest.raises(FinalConfirmationPresentationError):
+            FinalConfirmationPresenter().present(
+                evidence(),
+                printer_name="Workshop printer",
+                job_name="Bracket",
+                presented_at=presented_at,
+            )
+
+
+def test_rejects_mutated_or_extra_live_evidence() -> None:
+    mutated = evidence()
+    mutated["checks"]["connected"] = False
+    with pytest.raises(FinalConfirmationPresentationError, match="digest"):
+        show(mutated)
+
+    extra = evidence()
+    extra["confirmation_token"] = "must-not-render"
+    with pytest.raises(FinalConfirmationPresentationError, match="fields"):
+        show(extra)
+
+
+def test_rejects_inconsistent_pass_claim() -> None:
+    live = evidence(failed="connected")
+    live["passed"] = True
+    live["evidence_digest"] = live_check_evidence_digest(live)
+
+    with pytest.raises(FinalConfirmationPresentationError, match="pass evidence"):
         show(live)
