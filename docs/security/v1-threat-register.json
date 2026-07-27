@@ -120,6 +120,7 @@
         "strict supervisor outcome composition",
         "pair assignment revalidation",
         "supervisor fault-injection contracts",
+        "paired-preflight evidence digest chain",
         "digest-bound result contract"
       ],
       "evidence_refs": [

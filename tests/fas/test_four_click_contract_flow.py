@@ -15,6 +15,7 @@ from forge.fas.executive import ForgeExecutive
 from forge.fas.imports import ImportQuarantine
 from forge.fas.job_lifecycle import PrintJobLifecycle
 from forge.fas.live_printer_checks import REQUIRED_CHECKS, LivePrinterCheckService
+from forge.fas.preflight import paired_preflight_evidence_digest
 from forge.fas.print_dispatch import PrintDispatchCoordinator
 from forge.fas.provider_dispatch import ProviderDispatchCheckService
 from forge.fas.runtime import ForgeRuntime
@@ -121,26 +122,31 @@ class FourClickContractFlowTests(unittest.TestCase):
                 "can_start_print": False,
             }
 
+        paired_preflight = {
+            "schema_version": "1.0.0",
+            "status": "ready_for_comparison",
+            "input_digest": assessment["source_digest"],
+            "profile_digest": profile["profile_digest"],
+            "engine": {
+                "name": "contract-fixture",
+                "version": "0",
+                "source_digest": "c" * 64,
+                "build_digest": "d" * 64,
+            },
+            "production": preflight(production_request),
+            "twin": preflight(twin_request),
+            "pair_outcome_validated": True,
+            "both_output_digests_verified": True,
+            "can_authorize_production": False,
+            "can_upload": False,
+            "can_start_print": False,
+        }
+        paired_preflight["evidence_digest"] = paired_preflight_evidence_digest(
+            paired_preflight
+        )
         comparison = TwinComparisonService().compare_paired_preflight(
             comparison_id="comparison-1",
-            paired_preflight={
-                "status": "ready_for_comparison",
-                "input_digest": assessment["source_digest"],
-                "profile_digest": profile["profile_digest"],
-                "engine": {
-                    "name": "contract-fixture",
-                    "version": "0",
-                    "source_digest": "c" * 64,
-                    "build_digest": "d" * 64,
-                },
-                "production": preflight(production_request),
-                "twin": preflight(twin_request),
-                "pair_outcome_validated": True,
-                "both_output_digests_verified": True,
-                "can_authorize_production": False,
-                "can_upload": False,
-                "can_start_print": False,
-            },
+            paired_preflight=paired_preflight,
         )
         review = VerificationPresenter().confirm_mission_creation(
             comparison,

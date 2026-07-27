@@ -28,6 +28,7 @@ class VerificationPresenter:
             "comparison_id",
             "input_digest",
             "profile_digest",
+            "pair_preflight_evidence_digest",
             "production",
             "twin",
             "differences",
@@ -45,6 +46,7 @@ class VerificationPresenter:
             or not item["comparison_id"].strip()
             or not self._digest(item["input_digest"])
             or not self._digest(item["profile_digest"])
+            or not self._digest(item["pair_preflight_evidence_digest"])
             or item["pair_preflight_verified"] is not True
         ):
             raise VerificationPresentationError(
@@ -197,6 +199,9 @@ class VerificationPresenter:
             "comparison_id": presentation["comparison_id"],
             "input_digest": comparison["input_digest"],
             "profile_digest": comparison["profile_digest"],
+            "pair_preflight_evidence_digest": comparison[
+                "pair_preflight_evidence_digest"
+            ],
             "artifact_digest": presentation["verification"]["artifact_digest"],
             "engine_source_digest": comparison["production"]["engine"]["source_digest"],
             "engine_build_digest": comparison["production"]["engine"]["build_digest"],

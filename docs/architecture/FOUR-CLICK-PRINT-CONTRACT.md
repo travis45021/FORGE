@@ -21,12 +21,15 @@ The click-three presenter accepts only coordinated paired-preflight evidence.
 It independently validates input, profile, artifact, and engine lineage,
 recomputes production/twin differences and acceptance, requires an unreviewed
 non-authoritative comparison, and records user review with a UTC timestamp.
-A caller-created self-hash without the paired-preflight chain cannot create a
-Print Mission.
+The paired-preflight record has a canonical digest that is revalidated before
+comparison and carried into the click-three record. Structurally incomplete or
+mutated evidence cannot create a Print Mission. Authenticated process
+provenance remains part of the open worker-isolation gate.
 
 Click three records the named reviewer, review time, immutable comparison
-digest, accepted artifact digest, input and profile digests, and exact slicing
-engine source and build digests. Click four is valid only when:
+digest, paired-preflight digest, accepted artifact digest, input and profile
+digests, and exact slicing engine source and build digests. Click four is valid
+only when:
 
 - the complete live-printer check record passes and is no more than five
   minutes old;

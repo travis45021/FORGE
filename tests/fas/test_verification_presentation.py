@@ -33,6 +33,7 @@ def comparison() -> dict:
         "comparison_id": "comparison:1",
         "input_digest": "b" * 64,
         "profile_digest": "c" * 64,
+        "pair_preflight_evidence_digest": "9" * 64,
         "production": result("production"),
         "twin": result("twin"),
         "differences": [],
@@ -78,6 +79,7 @@ def test_records_third_click_without_physical_authority(comparison: dict) -> Non
     assert result["comparison_evidence_digest"] == comparison["evidence_digest"]
     assert result["input_digest"] == "b" * 64
     assert result["profile_digest"] == "c" * 64
+    assert result["pair_preflight_evidence_digest"] == "9" * 64
     assert result["engine_build_digest"] == "e" * 64
     assert result["twin_authority_granted"] is False
     assert result["can_start_print"] is False

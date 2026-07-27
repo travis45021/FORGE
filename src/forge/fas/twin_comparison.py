@@ -8,6 +8,7 @@ from copy import deepcopy
 from hashlib import sha256
 from typing import Any
 
+from .preflight import paired_preflight_evidence_digest
 from .slicing import SlicerContractBoundary, SlicerContractError
 
 
@@ -144,6 +145,12 @@ class TwinComparisonService:
             raise TwinComparisonError(
                 "comparison requires coordinated paired preflight"
             )
+        pair_digest = pair.get("evidence_digest")
+        if (
+            not isinstance(pair_digest, str)
+            or paired_preflight_evidence_digest(pair) != pair_digest
+        ):
+            raise TwinComparisonError("paired preflight evidence digest is invalid")
         production = pair.get("production")
         twin = pair.get("twin")
         if not isinstance(production, Mapping) or not isinstance(twin, Mapping):
@@ -156,6 +163,7 @@ class TwinComparisonService:
             reviewed_by_user=reviewed_by_user,
         )
         result["profile_digest"] = pair.get("profile_digest")
+        result["pair_preflight_evidence_digest"] = pair_digest
         result["pair_preflight_verified"] = True
         result["acceptance"]["pair_preflight_required"] = True
         result["evidence_digest"] = comparison_evidence_digest(result)

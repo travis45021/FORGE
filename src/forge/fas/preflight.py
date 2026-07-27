@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
 from copy import deepcopy
 from hashlib import sha256
@@ -17,6 +18,20 @@ class PreflightError(ValueError):
 
 FORMATS = {"step", "stl", "3mf", "gcode", "f3d", "cad"}
 SUPPORTED = {"step", "stl", "3mf", "gcode", "cad"}
+
+
+def paired_preflight_evidence_digest(value: Mapping[str, Any]) -> str:
+    """Hash measured pair-preflight evidence for downstream review."""
+    item = deepcopy(dict(value))
+    item.pop("evidence_digest", None)
+    encoded = json.dumps(
+        item,
+        allow_nan=False,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+    return sha256(encoded).hexdigest()
 
 
 class ArtifactPreflight:
@@ -115,7 +130,7 @@ class ArtifactPreflight:
         measured_digest = sha256(output_bytes).hexdigest()
         if slicer_result.get("artifact_digest") != measured_digest:
             raise PreflightError("slicer output bytes do not match the recorded digest")
-        return {
+        result = {
             "schema_version": "1.0.0",
             "request_id": expected_request_id,
             "context": expected_context,
@@ -131,6 +146,7 @@ class ArtifactPreflight:
             "can_upload": False,
             "can_start_print": False,
         }
+        return result
 
     def inspect_worker_pair_outputs(
         self,
@@ -200,7 +216,7 @@ class ArtifactPreflight:
             self._same_engine(checked["engine"], pair.get("engine"), context)
             evidence[context] = checked
 
-        return {
+        result = {
             "schema_version": "1.0.0",
             "status": "ready_for_comparison",
             "engine": deepcopy(pair["engine"]),
@@ -214,6 +230,8 @@ class ArtifactPreflight:
             "can_start_print": False,
             "can_authorize_production": False,
         }
+        result["evidence_digest"] = paired_preflight_evidence_digest(result)
+        return result
 
     @staticmethod
     def _output_inside_workspace(

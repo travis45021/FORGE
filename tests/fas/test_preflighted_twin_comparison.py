@@ -2,6 +2,7 @@
 
 import pytest
 
+from forge.fas.preflight import paired_preflight_evidence_digest
 from forge.fas.twin_comparison import TwinComparisonError, TwinComparisonService
 
 
@@ -76,7 +77,8 @@ def test_rejects_swapped_preflight_contexts() -> None:
 
 
 def paired_preflight() -> dict:
-    return {
+    result = {
+        "schema_version": "1.0.0",
         "status": "ready_for_comparison",
         "input_digest": "d" * 64,
         "profile_digest": "e" * 64,
@@ -88,6 +90,8 @@ def paired_preflight() -> dict:
         "can_upload": False,
         "can_start_print": False,
     }
+    result["evidence_digest"] = paired_preflight_evidence_digest(result)
+    return result
 
 
 def test_paired_preflight_proof_is_carried_into_comparison() -> None:
@@ -99,6 +103,10 @@ def test_paired_preflight_proof_is_carried_into_comparison() -> None:
     assert result["pair_preflight_verified"] is True
     assert result["acceptance"]["pair_preflight_required"] is True
     assert result["profile_digest"] == "e" * 64
+    assert (
+        result["pair_preflight_evidence_digest"]
+        == paired_preflight()["evidence_digest"]
+    )
     assert len(result["evidence_digest"]) == 64
     assert result["can_authorize_production"] is False
 
@@ -109,6 +117,17 @@ def test_rejects_boolean_user_review_shortcut() -> None:
             comparison_id="comparison:paired",
             paired_preflight=paired_preflight(),
             reviewed_by_user=True,
+        )
+
+
+def test_rejects_mutated_paired_preflight_evidence() -> None:
+    pair = paired_preflight()
+    pair["production"]["artifact_digest"] = "f" * 64
+
+    with pytest.raises(TwinComparisonError, match="evidence digest"):
+        TwinComparisonService().compare_paired_preflight(
+            comparison_id="comparison:paired",
+            paired_preflight=pair,
         )
 
 
