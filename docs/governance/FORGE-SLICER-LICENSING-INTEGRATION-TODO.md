@@ -120,7 +120,8 @@ release is distributed until the applicable items in this gate are complete.
   two. A plain-language, accessible, fail-closed click-two presentation and
   confirmation contract is implemented; application rendering remains open.
 - [ ] Show verification, twin comparison, warnings, and limitations before
-  click three.
+  click three. A plain-language, accessible, fail-closed click-three review
+  contract is implemented; application rendering remains open.
 - [ ] Show live printer checks and the mandatory **Yes, Print** action before
   controlled upload/start.
 - [ ] Meet FAS-024 accessibility, structured error, and interface parity

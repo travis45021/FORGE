@@ -63,6 +63,10 @@ from .trust import (
 )
 from .twin_comparison import TwinComparisonError, TwinComparisonService
 from .updates import UpdateError, UpdateManager
+from .verification_presentation import (
+    VerificationPresentationError,
+    VerificationPresenter,
+)
 from .vision_review import VisionDesignReview, VisionReviewError
 
 __all__ = [
@@ -156,6 +160,8 @@ __all__ = [
     "TwinComparisonService",
     "UpdateError",
     "UpdateManager",
+    "VerificationPresentationError",
+    "VerificationPresenter",
     "VisionDesignReview",
     "VisionReviewError",
     "capability_provider_manifest",
