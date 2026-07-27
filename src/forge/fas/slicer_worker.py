@@ -363,6 +363,7 @@ class SlicerWorkerSupervisor:
         item["request_id"] = assigned.get("request_id")
         item["profile_digest"] = assigned.get("profile_digest")
         item["workspace"] = deepcopy(assigned.get("workspace"))
+        item["limits"] = deepcopy(assigned.get("limits"))
         return item
 
     @staticmethod

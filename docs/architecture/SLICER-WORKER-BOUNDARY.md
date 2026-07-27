@@ -12,6 +12,8 @@ input directory are rejected before assignment.
 Successful pair outcomes preserve their assigned workspaces. Preflight resolves
 each output beneath a caller-supplied, non-symlinked execution root and rejects
 artifacts outside the assigned output directory before reading their bytes.
+Reads are capped by the assigned worker disk limit and rejected if file
+identity, size, or modification time changes during hashing.
 
 The worker must declare `printer_control` among its forbidden capabilities.
 Printer discovery, cloud access, upload, update, telemetry, and print-start

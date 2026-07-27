@@ -44,6 +44,11 @@ def pair(production_digest: str, twin_digest: str) -> dict:
                 "output": f"work/{context}/output",
                 "logs": f"work/{context}/logs",
             },
+            "limits": {
+                "timeout_seconds": 300,
+                "memory_bytes": 1_000_000,
+                "disk_bytes": 10_000_000,
+            },
         }
     return {
         "status": "ready_for_preflight",
@@ -195,6 +200,24 @@ def test_rejects_output_outside_assigned_workspace(tmp_path: Path) -> None:
         ArtifactPreflight().inspect_worker_pair_outputs(
             pair(production_digest, twin_digest),
             production_path=outside_path,
+            production_result=result("production", production_digest),
+            twin_path=twin_path,
+            twin_result=result("twin", twin_digest),
+            workspace_root=tmp_path,
+        )
+
+
+def test_rejects_output_larger_than_assigned_disk_limit(tmp_path: Path) -> None:
+    production_path, twin_path = output_paths(tmp_path)
+    production_digest = output(production_path, b"G28\n")
+    twin_digest = output(twin_path, b"M84\n")
+    bounded_pair = pair(production_digest, twin_digest)
+    bounded_pair["production"]["limits"]["disk_bytes"] = 3
+
+    with pytest.raises(PreflightError, match="disk limit"):
+        ArtifactPreflight().inspect_worker_pair_outputs(
+            bounded_pair,
+            production_path=production_path,
             production_result=result("production", production_digest),
             twin_path=twin_path,
             twin_result=result("twin", twin_digest),

@@ -115,6 +115,7 @@
         "canonical relative workspace paths",
         "request input bound to assigned workspace",
         "preflight output bound to assigned workspace",
+        "disk-bounded stable-file preflight hashing",
         "supervisor fault-injection contracts",
         "digest-bound result contract"
       ],

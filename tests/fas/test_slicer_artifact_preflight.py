@@ -1,5 +1,6 @@
 """Deterministic byte-to-contract tests for slicer artifact preflight."""
 
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -37,6 +38,7 @@ def test_binds_output_bytes_to_result_digest(tmp_path: Path) -> None:
         result(digest),
         expected_request_id="request:production",
         expected_context="production",
+        max_output_bytes=1_000_000,
     )
 
     assert evidence["status"] == "passed"
@@ -56,6 +58,7 @@ def test_rejects_tampered_output_bytes(tmp_path: Path) -> None:
             result("a" * 64),
             expected_request_id="request:production",
             expected_context="production",
+            max_output_bytes=1_000_000,
         )
 
 
@@ -84,6 +87,7 @@ def test_rejects_stale_request_or_context(
             result(digest),
             expected_request_id=expected_request,
             expected_context=expected_context,
+            max_output_bytes=1_000_000,
         )
 
 
@@ -97,4 +101,45 @@ def test_rejects_empty_output(tmp_path: Path) -> None:
             result("a" * 64),
             expected_request_id="request:production",
             expected_context="production",
+            max_output_bytes=1_000_000,
+        )
+
+
+def test_rejects_output_over_explicit_limit(tmp_path: Path) -> None:
+    output = tmp_path / "oversized.gcode"
+    content = b"G28\n"
+    output.write_bytes(content)
+
+    with pytest.raises(PreflightError, match="disk limit"):
+        ArtifactPreflight().inspect_slicer_output(
+            output,
+            result(sha256(content).hexdigest()),
+            expected_request_id="request:production",
+            expected_context="production",
+            max_output_bytes=3,
+        )
+
+
+def test_rejects_output_changed_while_being_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    output = tmp_path / "changing.gcode"
+    content = b"G28\n"
+    output.write_bytes(content)
+    original_read = Path.read_bytes
+
+    def read_then_change(path: Path) -> bytes:
+        value = original_read(path)
+        path.write_bytes(value + b"M84\n")
+        return value
+
+    monkeypatch.setattr(Path, "read_bytes", read_then_change)
+
+    with pytest.raises(PreflightError, match="changed during preflight"):
+        ArtifactPreflight().inspect_slicer_output(
+            output,
+            result(sha256(content).hexdigest()),
+            expected_request_id="request:production",
+            expected_context="production",
+            max_output_bytes=1_000_000,
         )

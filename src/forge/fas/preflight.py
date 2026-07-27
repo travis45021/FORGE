@@ -77,13 +77,23 @@ class ArtifactPreflight:
         *,
         expected_request_id: str,
         expected_context: str,
+        max_output_bytes: int,
     ) -> dict[str, Any]:
         """Bind output bytes to one validated slicer-result contract."""
+        if (
+            not isinstance(max_output_bytes, int)
+            or isinstance(max_output_bytes, bool)
+            or max_output_bytes <= 0
+        ):
+            raise PreflightError("slicer output limit must be a positive integer")
         path = Path(output_path)
         if not path.is_file() or path.is_symlink():
             raise PreflightError("slicer output must be a regular file")
-        if path.stat().st_size <= 0:
+        before = path.stat()
+        if before.st_size <= 0:
             raise PreflightError("slicer output must not be empty")
+        if before.st_size > max_output_bytes:
+            raise PreflightError("slicer output exceeds its worker disk limit")
         try:
             slicer_result = SlicerContractBoundary().result(result)
         except SlicerContractError as exc:
@@ -95,7 +105,14 @@ class ArtifactPreflight:
         if slicer_result["context"] != expected_context:
             raise PreflightError("slicer output belongs to a stale or wrong context")
 
-        measured_digest = sha256(path.read_bytes()).hexdigest()
+        output_bytes = path.read_bytes()
+        after = path.stat()
+        stable_fields = ("st_dev", "st_ino", "st_size", "st_mtime_ns")
+        if len(output_bytes) != before.st_size or any(
+            getattr(before, field) != getattr(after, field) for field in stable_fields
+        ):
+            raise PreflightError("slicer output changed during preflight")
+        measured_digest = sha256(output_bytes).hexdigest()
         if slicer_result.get("artifact_digest") != measured_digest:
             raise PreflightError("slicer output bytes do not match the recorded digest")
         return {
@@ -103,7 +120,7 @@ class ArtifactPreflight:
             "request_id": expected_request_id,
             "context": expected_context,
             "artifact_digest": measured_digest,
-            "size_bytes": path.stat().st_size,
+            "size_bytes": after.st_size,
             "engine": deepcopy(slicer_result["engine"]),
             "warnings": deepcopy(slicer_result["warnings"]),
             "status": "passed",
@@ -159,11 +176,22 @@ class ArtifactPreflight:
                 outcome.get("workspace"),
                 context,
             )
+            limits = outcome.get("limits")
+            disk_limit = (
+                limits.get("disk_bytes") if isinstance(limits, Mapping) else None
+            )
+            if (
+                not isinstance(disk_limit, int)
+                or isinstance(disk_limit, bool)
+                or disk_limit <= 0
+            ):
+                raise PreflightError(f"{context} worker disk limit is invalid")
             checked = self.inspect_slicer_output(
                 path,
                 result,
                 expected_request_id=str(outcome["request_id"]),
                 expected_context=context,
+                max_output_bytes=disk_limit,
             )
             if checked["artifact_digest"] != outcome.get("artifact_digest"):
                 raise PreflightError(
