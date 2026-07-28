@@ -1,3 +1,4 @@
+import ast
 import json
 import re
 import unittest
@@ -150,6 +151,16 @@ class RepositoryIntegrityTests(unittest.TestCase):
         self.assertIn("FAS-026", audit)
         self.assertIn("FAS-037", audit)
         self.assertIn("Yes, Print", audit)
+
+    def test_core_reference_modules_have_plain_language_module_docs(self):
+        modules = sorted((ROOT / "src/forge/fas").glob("*.py"))
+        self.assertGreater(len(modules), 40)
+        for path in modules:
+            with self.subTest(module=path.relative_to(ROOT)):
+                tree = ast.parse(path.read_text(encoding="utf-8"))
+                docstring = ast.get_docstring(tree)
+                self.assertTrue(docstring, path)
+                self.assertGreaterEqual(len(docstring.split()), 4, path)
 
 
 if __name__ == "__main__":
