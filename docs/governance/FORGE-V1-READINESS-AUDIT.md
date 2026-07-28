@@ -1,8 +1,8 @@
 # FORGE v1.0 Repository Readiness Audit
 
 Status: Current verified baseline
-Audit date: 2026-07-26
-Audited commit: `6ef08a1e95aaac73ba9f90da65b0daeda0855ce2`
+Audit date: 2026-07-27
+Audited commit: `7b2dd3f`
 
 ## Verdict
 
@@ -43,9 +43,8 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - Git working state was clean at audit start and matched `origin/main`.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
-- All 187 unit, schema, governance, and assurance tests passed at the audited
-  commit; the FAS-026 through FAS-037 follow-on validation expanded the suite to 237 passing
-  tests.
+- The current full validation passed 587 tests, skipped 1 platform-dependent
+  test, and passed 131 subtests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
@@ -69,7 +68,7 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 | `schemas/fas` | versioned data contracts | Correct for current reference components |
 | `examples/fas` | valid representative contract instances | Correct and test-covered |
 | `src/forge/fas` | reference implementations | Correct; not yet a complete application runtime |
-| `tests/fas` | behavioral, schema, and governance verification | Correct; CI now repeats the documented suite |
+| `tests/fas` | behavioral, schema, and governance verification | Correct; CI now repeats the documented suite and fail-closed Gate 1 check |
 
 ## Constitutional alignment
 
