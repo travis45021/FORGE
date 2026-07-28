@@ -73,6 +73,18 @@ class Fas037ReleaseGateTests(unittest.TestCase):
                 reviewed_at="2026-07-26T12:00:00",
             )
 
+    def test_automation_reviewer_labels_are_rejected(self):
+        for reviewer in ("automation", "forge-review:ci", "system"):
+            with (
+                self.subTest(reviewer=reviewer),
+                self.assertRaisesRegex(ReleaseGateError, "human reviewer"),
+            ):
+                self.gate.evaluate(
+                    self.evidence,
+                    reviewed_by=reviewer,
+                    reviewed_at="2026-07-26T12:00:00Z",
+                )
+
     def test_evidence_digest_is_deterministic(self):
         reversed_evidence = dict(reversed(list(self.evidence.items())))
         first = self.gate.evaluate(

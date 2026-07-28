@@ -25,6 +25,7 @@ REQUIRED_GATES = {
     "packaging",
     "security",
 }
+NON_HUMAN_REVIEWER_LABELS = {"automation", "bot", "ci", "system"}
 
 
 def _utc(value: str) -> None:
@@ -34,6 +35,16 @@ def _utc(value: str) -> None:
         datetime.fromisoformat(value[:-1] + "+00:00")
     except ValueError as exc:
         raise ReleaseGateError("release review timestamp is invalid") from exc
+
+
+def _reviewer(value: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ReleaseGateError("release review identity and timestamp are required")
+    normalized = value.strip().lower()
+    label = normalized.rsplit(":", 1)[-1]
+    if label in NON_HUMAN_REVIEWER_LABELS:
+        raise ReleaseGateError("release review must identify a human reviewer")
+    return value.strip()
 
 
 def _digest(value: Mapping[str, bool]) -> str:
@@ -61,15 +72,14 @@ class ReleaseGate:
             raise ReleaseGateError(f"unknown release evidence: {', '.join(unexpected)}")
         if any(type(item[name]) is not bool for name in REQUIRED_GATES):
             raise ReleaseGateError("release evidence values must be explicit booleans")
-        if not isinstance(reviewed_by, str) or not reviewed_by.strip():
-            raise ReleaseGateError("release review identity and timestamp are required")
+        reviewer = _reviewer(reviewed_by)
         _utc(reviewed_at)
         failed = sorted(name for name in REQUIRED_GATES if item[name] is not True)
         ordered_evidence = {name: item[name] for name in sorted(REQUIRED_GATES)}
         return {
             "schema_version": "1.0.0",
             "release_id": "forge-release:v1.0",
-            "reviewed_by": reviewed_by.strip(),
+            "reviewed_by": reviewer,
             "reviewed_at": reviewed_at,
             "evidence": ordered_evidence,
             "evidence_digest": _digest(ordered_evidence),
