@@ -93,6 +93,23 @@ class Fas028TransportTests(unittest.TestCase):
                 "provider:custom-printer", "healthy", observed_at="not-a-time"
             )
 
+    def test_provider_manifest_cannot_claim_slicer_or_nonlocal_authority(self):
+        for field, value, message in (
+            ("direct_slicer_control", True, "slicers directly"),
+            ("compatibility_boundary", True, "compatibility boundary"),
+            ("requires_runtime_dispatcher", False, "runtime dispatcher"),
+            ("endpoint_scope", "internet", "offline or local-only"),
+        ):
+            with self.assertRaisesRegex(TransportError, message):
+                HardwareTransportRegistry().register({**self.provider, field: value})
+
+    def test_custom_manifest_defaults_to_safe_provider_metadata(self):
+        registered = HardwareTransportRegistry().register(self.provider)
+        self.assertEqual("1.0.0", registered["schema_version"])
+        self.assertEqual("local_only", registered["endpoint_scope"])
+        self.assertFalse(registered["direct_slicer_control"])
+        self.assertTrue(registered["requires_runtime_dispatcher"])
+
 
 if __name__ == "__main__":
     unittest.main()

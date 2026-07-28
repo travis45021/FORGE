@@ -99,6 +99,8 @@ class HardwareTransportRegistry:
             raise TransportError("provider identity must use the provider namespace")
         if item["provider_id"] in self._providers or item["state"] != "registered":
             raise TransportError("provider identity or initial state is invalid")
+        if not isinstance(item["transport"], str) or not item["transport"].strip():
+            raise TransportError("provider transport is required")
         if item["health"] not in {"unknown", "healthy", "degraded", "failed"}:
             raise TransportError("invalid provider health")
         if (
@@ -111,6 +113,43 @@ class HardwareTransportRegistry:
             or len(item["capabilities"]) != len(set(item["capabilities"]))
         ):
             raise TransportError("provider capabilities must be a non-empty list")
+        allowed = required | {
+            "schema_version",
+            "endpoint_scope",
+            "tested_reference",
+            "compatibility_boundary",
+            "direct_slicer_control",
+            "requires_runtime_dispatcher",
+        }
+        unexpected = sorted(item.keys() - allowed)
+        if unexpected:
+            raise TransportError(
+                f"provider manifest has unknown fields: {', '.join(unexpected)}"
+            )
+        item.setdefault("schema_version", "1.0.0")
+        item.setdefault("endpoint_scope", "local_only")
+        item.setdefault("tested_reference", None)
+        item.setdefault("compatibility_boundary", False)
+        item.setdefault("direct_slicer_control", False)
+        item.setdefault("requires_runtime_dispatcher", True)
+        if item["schema_version"] != "1.0.0":
+            raise TransportError("unsupported provider manifest schema")
+        if item["endpoint_scope"] not in {"offline", "local_only"}:
+            raise TransportError(
+                "v1 hardware providers must remain offline or local-only"
+            )
+        if item["compatibility_boundary"] is not False:
+            raise TransportError("provider cannot declare a compatibility boundary")
+        if item["direct_slicer_control"] is not False:
+            raise TransportError("provider cannot control slicers directly")
+        if item["requires_runtime_dispatcher"] is not True:
+            raise TransportError("provider must require the runtime dispatcher")
+        if item["tested_reference"] is not None and (
+            not isinstance(item["tested_reference"], str)
+            or not item["tested_reference"].strip()
+        ):
+            raise TransportError("tested provider reference must be non-empty text")
+        item["capabilities"] = sorted(item["capabilities"])
         self._providers[item["provider_id"]] = item
         self._record("provider.registered", item["provider_id"])
         return deepcopy(item)

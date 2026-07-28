@@ -9,7 +9,9 @@ and user-built hardware. Providers advertise transport identity, health, and
 capabilities; FORGE does not maintain a fixed printer whitelist.
 Provider identities, capability lists, and health observations are validated
 before registration or state changes, including strict UTC observation
-timestamps.
+timestamps. Registration also normalizes legacy custom manifests to safe
+versioned metadata and rejects nonlocal scope, direct slicer control, or any
+claim that bypasses the runtime dispatcher.
 
 The reference registry discovers providers, records health, rejects raw
 hardware commands, and prepares structured commands only when authorization,
