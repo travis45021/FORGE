@@ -145,6 +145,34 @@ class ServiceLifecycle:
             "physical_commands_allowed": False,
         }
 
+    def plan_recovery(
+        self,
+        service_id: str,
+        *,
+        requested_by: str,
+        approval_reference: str,
+        reason: str,
+    ) -> dict[str, Any]:
+        """Prepare a reviewed recovery attempt without restarting anything."""
+        service = self._require(service_id)
+        if service["state"] not in {"failed", "degraded"}:
+            raise LifecycleError("service is not eligible for recovery")
+        if not all(
+            isinstance(value, str) and value.strip()
+            for value in (requested_by, approval_reference, reason)
+        ):
+            raise LifecycleError("recovery requires requester, approval, and reason")
+        return {
+            "operation": "recover",
+            "service_id": service_id,
+            "requested_by": requested_by,
+            "approval_reference": approval_reference,
+            "reason": reason,
+            "requires_fresh_context": True,
+            "automatic_restart_allowed": False,
+            "physical_commands_allowed": False,
+        }
+
     def service(self, service_id: str) -> dict[str, Any]:
         return deepcopy(self._require(service_id))
 

@@ -90,6 +90,39 @@ class Fas027LifecycleTests(unittest.TestCase):
         with self.assertRaisesRegex(LifecycleError, "itself"):
             ServiceLifecycle().register(self_reference)
 
+    def test_recovery_plan_is_review_gated_and_fails_closed(self):
+        self.service.transition(
+            self.manifest["service_id"],
+            "starting",
+            reason="boot",
+            authority_reference="decision:1",
+            observed_at="2026-07-26T12:00:00Z",
+        )
+        self.service.transition(
+            self.manifest["service_id"],
+            "failed",
+            reason="crash",
+            authority_reference="decision:1",
+            observed_at="2026-07-26T12:00:01Z",
+            health="failed",
+        )
+        plan = self.service.plan_recovery(
+            self.manifest["service_id"],
+            requested_by="forge-user:local",
+            approval_reference="decision:recovery-1",
+            reason="user requested crash recovery review",
+        )
+        self.assertTrue(plan["requires_fresh_context"])
+        self.assertFalse(plan["automatic_restart_allowed"])
+        self.assertFalse(plan["physical_commands_allowed"])
+        with self.assertRaisesRegex(LifecycleError, "requester"):
+            self.service.plan_recovery(
+                self.manifest["service_id"],
+                requested_by="",
+                approval_reference="decision:recovery-1",
+                reason="review",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
