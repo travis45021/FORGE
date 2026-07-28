@@ -2,7 +2,7 @@
 
 Status: Current verified baseline
 Audit date: 2026-07-27
-Audited commit: `57a4feb`
+Audited commit: `d783e7f`
 
 ## Verdict
 
@@ -43,7 +43,7 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - Git working state was clean at audit start and matched `origin/main`.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
-- The current full validation passed 606 tests, skipped 1 platform-dependent
+- The current full validation passed 607 tests, skipped 1 platform-dependent
   test, and passed 188 subtests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
