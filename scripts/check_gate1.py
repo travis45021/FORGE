@@ -51,9 +51,9 @@ def main() -> int:
         print("legal review record must remain explicitly open until signed")
         return 1
 
-    fsf_packet = (
-        ROOT / "docs/compliance/FSF-LICENSING-OUTREACH-PACKET.md"
-    ).read_text(encoding="utf-8")
+    fsf_packet = (ROOT / "docs/compliance/FSF-LICENSING-OUTREACH-PACKET.md").read_text(
+        encoding="utf-8"
+    )
     if (
         "request for licensing guidance" not in fsf_packet
         or "no Orca source" not in fsf_packet
@@ -69,7 +69,8 @@ def main() -> int:
     ).read_text(encoding="utf-8")
     if (
         "not yet signed or approved" not in import_request
-        or "Do not copy, vendor, build, or commit Orca-derived source" not in import_request
+        or "Do not copy, vendor, build, or commit Orca-derived source"
+        not in import_request
         or "AGPL-3.0-only" not in import_request
     ):
         print("source-import legal request must remain fail-closed pending review")
