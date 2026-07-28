@@ -76,6 +76,17 @@ class Fas030ThermalReviewTests(unittest.TestCase):
                 self.contract(), reviewer="forge-user:local", reviewed_at="not-a-time"
             )
 
+    def test_malformed_zone_limit_types_become_findings(self):
+        contract = self.contract()
+        contract["zones"][0]["maximum"] = "120"
+        result = self.review.review(
+            contract,
+            reviewer="forge-user:local",
+            reviewed_at="2026-07-26T12:00:00Z",
+        )
+        self.assertEqual("needs_work", result["status"])
+        self.assertIn("limits must be numeric", result["findings"][0])
+
 
 if __name__ == "__main__":
     unittest.main()

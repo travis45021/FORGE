@@ -61,9 +61,20 @@ class ThermalDesignReview:
                     f"{zone.get('zone_id', 'unknown')}: missing {', '.join(missing_zone)}"
                 )
                 continue
+            if not isinstance(zone["zone_id"], str) or not zone["zone_id"].strip():
+                findings.append("zone identity must be non-empty text")
+                continue
             if zone["zone_id"] in ids:
                 findings.append(f"duplicate zone: {zone['zone_id']}")
             ids.add(zone["zone_id"])
+            numeric_fields = ("minimum", "maximum", "max_rate")
+            if any(
+                not isinstance(zone[field], (int, float))
+                or isinstance(zone[field], bool)
+                for field in numeric_fields
+            ):
+                findings.append(f"{zone['zone_id']}: thermal limits must be numeric")
+                continue
             if zone["minimum"] >= zone["maximum"] or zone["max_rate"] <= 0:
                 findings.append(f"{zone['zone_id']}: invalid thermal limits")
             if zone["control_mode"] not in {"off", "bang_bang", "pid", "manual"}:
@@ -73,7 +84,7 @@ class ThermalDesignReview:
                 "sensor_fault_behavior",
                 "power_interlock",
             ):
-                if not zone[field]:
+                if not isinstance(zone[field], str) or not zone[field].strip():
                     findings.append(f"{zone['zone_id']}: {field} is required")
         if not isinstance(item["evidence"], list) or not item["evidence"]:
             findings.append("at least one evidence reference is required")
