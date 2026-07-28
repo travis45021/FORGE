@@ -18,6 +18,8 @@ REQUIRED = (
     ROOT / "NOTICE",
     ROOT / "SOURCE-OFFER.md",
     ROOT / "docs/compliance/GATE-1-EVIDENCE-INDEX.md",
+    ROOT / "docs/compliance/FSF-LICENSING-OUTREACH-PACKET.md",
+    ROOT / "docs/compliance/SOURCE-IMPORT-LEGAL-REVIEW-REQUEST.md",
     ROOT / "docs/compliance/LEGAL-REVIEW-RECORD.md",
     ROOT / "docs/compliance/orcaslicer-upstream-provenance.md",
     ROOT / "docs/compliance/orcaslicer-v2.3.2-bambu-exclusion-scan.md",
@@ -47,6 +49,30 @@ def main() -> int:
     )
     if "Decision: **OPEN" not in legal_record or "not approved**" not in legal_record:
         print("legal review record must remain explicitly open until signed")
+        return 1
+
+    fsf_packet = (
+        ROOT / "docs/compliance/FSF-LICENSING-OUTREACH-PACKET.md"
+    ).read_text(encoding="utf-8")
+    if (
+        "request for licensing guidance" not in fsf_packet
+        or "no Orca source" not in fsf_packet
+        or "imported into the trusted tree" not in fsf_packet
+        or "AGPL-3.0-only" not in fsf_packet
+        or "MCUT" not in fsf_packet
+    ):
+        print("FSF outreach packet must remain guidance-only and decision-complete")
+        return 1
+
+    import_request = (
+        ROOT / "docs/compliance/SOURCE-IMPORT-LEGAL-REVIEW-REQUEST.md"
+    ).read_text(encoding="utf-8")
+    if (
+        "not yet signed or approved" not in import_request
+        or "Do not copy, vendor, build, or commit Orca-derived source" not in import_request
+        or "AGPL-3.0-only" not in import_request
+    ):
+        print("source-import legal request must remain fail-closed pending review")
         return 1
 
     provenance = (ROOT / "docs/compliance/orcaslicer-upstream-provenance.md").read_text(
