@@ -5,7 +5,7 @@ from __future__ import annotations
 import hashlib
 import math
 import subprocess
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
@@ -24,12 +24,15 @@ class LocalProcessSupervisor:
         cwd: str | Path,
         timeout_seconds: float,
         environment: Mapping[str, str] | None = None,
+        cancel_requested: Callable[[], bool] | None = None,
     ) -> dict[str, Any]:
         normalized = self._command(command)
         timeout = self._timeout(timeout_seconds)
         workdir = Path(cwd)
         if not workdir.is_dir():
             raise ProcessSupervisionError("process working directory must exist")
+        if cancel_requested is not None and not callable(cancel_requested):
+            raise ProcessSupervisionError("cancel_requested must be callable")
         env = self._environment(environment)
         try:
             process = subprocess.Popen(
@@ -46,7 +49,15 @@ class LocalProcessSupervisor:
 
         outcome = "completed"
         try:
-            stdout, stderr = process.communicate(timeout=timeout)
+            if cancel_requested is None:
+                stdout, stderr = process.communicate(timeout=timeout)
+            else:
+                stdout, stderr = self._communicate_with_cancellation(
+                    process, timeout, cancel_requested
+                )
+        except _ProcessCancelled as cancelled:
+            outcome = "cancelled"
+            stdout, stderr = cancelled.stdout, cancelled.stderr
         except subprocess.TimeoutExpired:
             outcome = "timed_out"
             process.terminate()
@@ -72,6 +83,30 @@ class LocalProcessSupervisor:
             "resource_limits_enforced": False,
             "requires_reviewed_resource_supervisor": True,
         }
+
+    @staticmethod
+    def _communicate_with_cancellation(
+        process: subprocess.Popen[bytes],
+        timeout: float,
+        cancel_requested: Callable[[], bool],
+    ) -> tuple[bytes, bytes]:
+        elapsed = 0.0
+        interval = min(0.05, timeout)
+        while True:
+            if cancel_requested():
+                process.terminate()
+                try:
+                    stdout, stderr = process.communicate(timeout=1.0)
+                except subprocess.TimeoutExpired:
+                    process.kill()
+                    stdout, stderr = process.communicate()
+                raise _ProcessCancelled(stdout, stderr)
+            try:
+                return process.communicate(timeout=interval)
+            except subprocess.TimeoutExpired:
+                elapsed += interval
+                if elapsed >= timeout:
+                    raise
 
     @staticmethod
     def _command(command: Sequence[str]) -> list[str]:
@@ -114,3 +149,10 @@ class LocalProcessSupervisor:
     @staticmethod
     def _digest(value: bytes) -> str:
         return "sha256:" + hashlib.sha256(value).hexdigest()
+
+
+class _ProcessCancelled(Exception):
+    def __init__(self, stdout: bytes, stderr: bytes) -> None:
+        super().__init__("process cancelled")
+        self.stdout = stdout
+        self.stderr = stderr

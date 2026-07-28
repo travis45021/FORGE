@@ -46,6 +46,21 @@ def test_crash_and_timeout_fail_closed(tmp_path):
     assert timed_out["requires_reviewed_resource_supervisor"] is True
 
 
+def test_cancellation_fails_closed_and_preserves_non_authority(tmp_path):
+    calls = iter((False, True))
+    result = LocalProcessSupervisor().run(
+        command("import time; time.sleep(10)"),
+        cwd=tmp_path,
+        timeout_seconds=1,
+        cancel_requested=lambda: next(calls),
+    )
+
+    assert result["outcome"] == "cancelled"
+    assert result["worker_reuse_allowed"] is False
+    assert result["physical_commands_allowed"] is False
+    assert result["release_authority_granted"] is False
+
+
 @pytest.mark.parametrize(
     "command_value",
     ["not-a-list", [], [sys.executable, "\x00"]],

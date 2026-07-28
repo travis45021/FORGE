@@ -21,9 +21,10 @@ state while preserving those boundaries.
 
 `src/forge/fas/process_supervision.py` now provides a contract-only,
 shell-free local process evidence adapter. It records completion, crash, and
-timeout outcomes with output digests and explicitly grants no physical or
-release authority. It does not enforce OS memory/disk quotas and is not a
-production Orca launcher; those reviewed platform controls remain open.
+timeout, and cancellation outcomes with output digests and explicitly grants
+no physical or release authority. It does not enforce OS memory/disk quotas and
+is not a production Orca launcher; those reviewed platform controls remain
+open.
 
 Automatic restart is not an authority source. Any recovery that could affect a
 physical device must remain paused until FAS-007 authorization, FAS-010 trust,
