@@ -63,9 +63,34 @@ class MaterialDesignReview:
                     f"{material.get('material_id', 'unknown')}: missing {', '.join(missing_material)}"
                 )
                 continue
+            if (
+                not isinstance(material["material_id"], str)
+                or not material["material_id"].strip()
+            ):
+                findings.append("material identity must be non-empty text")
+                continue
             if material["material_id"] in ids:
                 findings.append(f"duplicate material: {material['material_id']}")
             ids.add(material["material_id"])
+            numeric_fields = (
+                "feed_min",
+                "feed_max",
+                "max_feed_rate",
+                "max_extrusion_rate",
+            )
+            if any(
+                not isinstance(material[field], (int, float))
+                or isinstance(material[field], bool)
+                for field in numeric_fields
+            ):
+                findings.append(
+                    f"{material['material_id']}: feed and extrusion limits must be numeric"
+                )
+                continue
+            if not isinstance(material["retraction_supported"], bool):
+                findings.append(
+                    f"{material['material_id']}: retraction_supported must be boolean"
+                )
             if (
                 material["feed_min"] >= material["feed_max"]
                 or material["max_feed_rate"] <= 0
@@ -79,7 +104,7 @@ class MaterialDesignReview:
                 "sensor_fault_behavior",
                 "temperature_reference",
             ):
-                if not material[field]:
+                if not isinstance(material[field], str) or not material[field].strip():
                     findings.append(f"{material['material_id']}: {field} is required")
         if not isinstance(item["evidence"], list) or not item["evidence"]:
             findings.append("at least one evidence reference is required")
