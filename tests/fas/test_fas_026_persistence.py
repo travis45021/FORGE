@@ -228,6 +228,20 @@ class Fas026PersistenceTests(unittest.TestCase):
             with self.assertRaisesRegex(PersistenceError, "secrets"):
                 AtomicSnapshotStore().write(Path(directory) / "state.json", snapshot)
 
+    def test_filesystem_snapshot_rejects_unknown_or_unsupported_shape(self):
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "state.json"
+            snapshot = self.service.export(owner_scope="forge-user:local")
+            snapshot["unexpected"] = True
+            with self.assertRaisesRegex(PersistenceError, "fields"):
+                AtomicSnapshotStore().write(path, snapshot)
+            snapshot = self.service.export(owner_scope="forge-user:local")
+            snapshot["schema_version"] = "2.0.0"
+            with self.assertRaisesRegex(PersistenceError, "schema version"):
+                AtomicSnapshotStore().write(path, snapshot)
+
     def test_service_snapshot_load_is_review_only_and_scope_bound(self):
         import tempfile
 

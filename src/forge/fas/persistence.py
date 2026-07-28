@@ -58,10 +58,7 @@ class AtomicSnapshotStore:
 
     def write(self, path: str | Path, snapshot: Mapping[str, Any]) -> dict[str, Any]:
         item = deepcopy(dict(snapshot))
-        if item.get("secrets_included") is True:
-            raise PersistenceError("filesystem snapshots cannot contain secrets")
-        if item.get("export_digest") != _digest(item.get("records")):
-            raise PersistenceError("snapshot digest does not match records")
+        self._validate(item)
         target = Path(path)
         target.parent.mkdir(parents=True, exist_ok=True)
         encoded = json.dumps(
@@ -91,14 +88,32 @@ class AtomicSnapshotStore:
             item = json.loads(Path(path).read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise PersistenceError("snapshot cannot be read") from exc
-        if not isinstance(item, dict) or item.get("secrets_included") is True:
-            raise PersistenceError("snapshot is invalid or contains secrets")
-        records = item.get("records")
-        if not isinstance(records, list) or item.get("export_digest") != _digest(
-            records
-        ):
-            raise PersistenceError("snapshot integrity verification failed")
+        if not isinstance(item, dict):
+            raise PersistenceError("snapshot is invalid")
+        self._validate(item)
         return deepcopy(item)
+
+    @staticmethod
+    def _validate(item: Mapping[str, Any]) -> None:
+        required = {
+            "schema_version",
+            "owner_scope",
+            "records",
+            "secrets_included",
+            "export_digest",
+        }
+        if set(item) != required:
+            raise PersistenceError("snapshot fields are invalid")
+        if item.get("schema_version") != "1.0.0":
+            raise PersistenceError("snapshot schema version is unsupported")
+        if not isinstance(item.get("owner_scope"), str) or not item["owner_scope"]:
+            raise PersistenceError("snapshot owner scope is invalid")
+        if not isinstance(item.get("records"), list):
+            raise PersistenceError("snapshot records are invalid")
+        if item.get("secrets_included") is not False:
+            raise PersistenceError("filesystem snapshots cannot contain secrets")
+        if item.get("export_digest") != _digest(item["records"]):
+            raise PersistenceError("snapshot integrity verification failed")
 
 
 class DataRecoveryService:
