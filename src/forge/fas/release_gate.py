@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from collections.abc import Mapping
 from copy import deepcopy
 from datetime import datetime
@@ -41,8 +42,8 @@ def _reviewer(value: str) -> str:
     if not isinstance(value, str) or not value.strip():
         raise ReleaseGateError("release review identity and timestamp are required")
     normalized = value.strip().lower()
-    label = normalized.rsplit(":", 1)[-1]
-    if label in NON_HUMAN_REVIEWER_LABELS:
+    labels = set(filter(None, re.split(r"[^a-z0-9]+", normalized)))
+    if labels & NON_HUMAN_REVIEWER_LABELS:
         raise ReleaseGateError("release review must identify a human reviewer")
     return value.strip()
 

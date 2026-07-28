@@ -20,6 +20,7 @@ digest. Its strict schema keeps both release and physical-execution authority
 false even when all evidence is ready for a final human decision.
 
 The evaluator also rejects obvious automation, CI, bot, and system reviewer
-labels. This is a fail-closed guard against self-approval, not proof that an
-identity is human; the final release decision still requires an accountable
-human reviewer and the complete external evidence package.
+labels, including composite identities. This is a fail-closed guard against
+self-approval, not proof that an identity is human; the final release decision
+still requires an accountable human reviewer and the complete external
+evidence package.

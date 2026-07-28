@@ -74,7 +74,13 @@ class Fas037ReleaseGateTests(unittest.TestCase):
             )
 
     def test_automation_reviewer_labels_are_rejected(self):
-        for reviewer in ("automation", "forge-review:ci", "system"):
+        for reviewer in (
+            "automation",
+            "forge-review:ci",
+            "system",
+            "forge-review:automation-bot",
+            "ci@forge.local",
+        ):
             with (
                 self.subTest(reviewer=reviewer),
                 self.assertRaisesRegex(ReleaseGateError, "human reviewer"),
