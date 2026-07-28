@@ -47,9 +47,20 @@ class ArtifactPreflight:
         if fmt not in FORMATS:
             raise PreflightError("unsupported artifact format")
         findings: list[str] = []
-        if item["size_bytes"] <= 0:
+        if (
+            not isinstance(item["size_bytes"], int)
+            or isinstance(item["size_bytes"], bool)
+            or item["size_bytes"] <= 0
+        ):
             findings.append("artifact size must be positive")
-        if not item["digest"].startswith("sha256:"):
+        if (
+            not isinstance(item["digest"], str)
+            or len(item["digest"]) != 71
+            or not item["digest"].startswith("sha256:")
+            or any(
+                character not in "0123456789abcdef" for character in item["digest"][7:]
+            )
+        ):
             findings.append("artifact digest must be sha256")
         if fmt == "f3d":
             findings.append("F3D architecture is deferred; use STEP or 3MF")

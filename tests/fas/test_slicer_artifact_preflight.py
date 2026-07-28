@@ -105,6 +105,22 @@ def test_rejects_empty_output(tmp_path: Path) -> None:
         )
 
 
+def test_malformed_artifact_metadata_becomes_review_findings() -> None:
+    result = ArtifactPreflight().inspect(
+        {
+            "artifact_id": "artifact:malformed",
+            "filename": "part.3mf",
+            "format": "3mf",
+            "digest": 123,
+            "size_bytes": "large",
+        }
+    )
+
+    assert result["status"] == "needs_review"
+    assert "artifact size must be positive" in result["findings"]
+    assert "artifact digest must be sha256" in result["findings"]
+
+
 def test_rejects_output_over_explicit_limit(tmp_path: Path) -> None:
     output = tmp_path / "oversized.gcode"
     content = b"G28\n"
