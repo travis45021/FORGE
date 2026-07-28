@@ -58,10 +58,25 @@ class VisionDesignReview:
                     f"{sensor.get('sensor_id', 'unknown')}: missing {', '.join(missing_sensor)}"
                 )
                 continue
+            if (
+                not isinstance(sensor["sensor_id"], str)
+                or not sensor["sensor_id"].strip()
+            ):
+                findings.append("sensor identity must be non-empty text")
+                continue
             if sensor["sensor_id"] in ids:
                 findings.append(f"duplicate sensor: {sensor['sensor_id']}")
             ids.add(sensor["sensor_id"])
-            if sensor["rate"] <= 0 or not sensor["resolution"]:
+            if not isinstance(sensor["rate"], (int, float)) or isinstance(
+                sensor["rate"], bool
+            ):
+                findings.append(f"{sensor['sensor_id']}: rate must be numeric")
+                continue
+            if (
+                sensor["rate"] <= 0
+                or not isinstance(sensor["resolution"], str)
+                or not sensor["resolution"].strip()
+            ):
                 findings.append(
                     f"{sensor['sensor_id']}: resolution and rate are required"
                 )
@@ -71,7 +86,10 @@ class VisionDesignReview:
                 "user_approved",
             }:
                 findings.append(f"{sensor['sensor_id']}: invalid privacy mode")
-            if not sensor["failure_behavior"]:
+            if (
+                not isinstance(sensor["failure_behavior"], str)
+                or not sensor["failure_behavior"].strip()
+            ):
                 findings.append(f"{sensor['sensor_id']}: failure behavior is required")
         if not isinstance(item["evidence"], list) or not item["evidence"]:
             findings.append("at least one evidence reference is required")
