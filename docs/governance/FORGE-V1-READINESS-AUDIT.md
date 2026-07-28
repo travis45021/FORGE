@@ -2,7 +2,7 @@
 
 Status: Current verified baseline
 Audit date: 2026-07-27
-Audited commit: `7b2dd3f`
+Audited commit: `7f57919`
 
 ## Verdict
 
@@ -43,8 +43,8 @@ canonical numbering, approved decisions, and Constitution remain authoritative.
 - Git working state was clean at audit start and matched `origin/main`.
 - `git fsck --full --strict` reported no object corruption.
 - No tracked file was missing and no tracked symbolic link was present.
-- The current full validation passed 587 tests, skipped 1 platform-dependent
-  test, and passed 131 subtests.
+- The current full validation passed 596 tests, skipped 1 platform-dependent
+  test, and passed 186 subtests.
 - Python source and tests compiled successfully.
 - Installed Python dependencies reported no broken requirements.
 - A clean isolated wheel build produced `forge-0.25.0-py3-none-any.whl`.
