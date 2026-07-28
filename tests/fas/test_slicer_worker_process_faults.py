@@ -1,10 +1,12 @@
 """Process-level slicer worker lifecycle evidence without an Orca engine."""
 
+import json
 import subprocess
 import sys
 from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
 
 from forge.fas.process_supervision import LocalProcessSupervisor
 from forge.fas.slicer_worker import REQUIRED_FORBIDDEN, SlicerWorkerSupervisor
@@ -148,6 +150,13 @@ def test_supervisor_evidence_is_validated_before_worker_acceptance(
     assert result["status"] == "succeeded"
     assert result["artifact_accepted"] is True
     assert result["can_upload"] is False
+    schema = json.loads(
+        (
+            Path(__file__).resolve().parents[2]
+            / "schemas/fas/process-evidence.schema.json"
+        ).read_text(encoding="utf-8")
+    )
+    Draft202012Validator(schema).validate(evidence)
 
 
 def test_supervisor_rejects_authoritative_process_evidence(tmp_path: Path) -> None:
