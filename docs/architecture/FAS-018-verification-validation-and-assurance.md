@@ -74,6 +74,8 @@ class-specific minimum gates, expiry, failures, governed waivers, authority
 separation, the A5 gate, and measured outcomes. Schemas/examples must validate;
 context drift and failed checks must block; A4 safety checks cannot be waived;
 outcomes require evidence; and the complete FAS suite must pass.
+Malformed check and measured-outcome evidence lists are rejected as structured
+assurance errors and must contain unique, non-empty text entries.
 
 ## Decisions needed
 

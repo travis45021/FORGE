@@ -178,7 +178,14 @@ class AssuranceService:
         if packet is None or packet["disposition"] != "verified":
             raise AssuranceError("outcome requires a verified packet")
         _utc(measured_at)
-        if not evidence_refs:
+        if (
+            not isinstance(success, bool)
+            or not isinstance(measurements, Mapping)
+            or not isinstance(evidence_refs, list)
+            or not evidence_refs
+            or any(not isinstance(ref, str) or not ref.strip() for ref in evidence_refs)
+            or len(evidence_refs) != len(set(evidence_refs))
+        ):
             raise AssuranceError("measured outcomes require evidence")
         outcome = {
             "verification_id": verification_id,
@@ -241,8 +248,13 @@ class AssuranceService:
             "evidence_refs",
             "revalidate_when",
         ):
-            if not isinstance(packet[field], list) or len(packet[field]) != len(
-                set(packet[field])
+            values = packet[field]
+            if (
+                not isinstance(values, list)
+                or any(
+                    not isinstance(value, str) or not value.strip() for value in values
+                )
+                or len(values) != len(set(values))
             ):
                 raise AssuranceError(f"{field} must be a unique list")
         declared = set(packet["required_checks"])

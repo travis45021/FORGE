@@ -122,6 +122,12 @@ class Fas018AssuranceTests(unittest.TestCase):
             context_fingerprint(self.context), context_fingerprint(reordered)
         )
 
+    def test_malformed_check_entries_fail_as_assurance_errors(self) -> None:
+        packet = deepcopy(self.packet)
+        packet["completed_checks"] = [{"check": "source"}]
+        with self.assertRaisesRegex(AssuranceError, "unique list"):
+            self.evaluate(packet)
+
     def test_schema_and_example_validate(self) -> None:
         from jsonschema import Draft202012Validator, FormatChecker
 
