@@ -10,7 +10,7 @@ homing requirements, limit behavior, and fault behavior. A review can accept a
 contract for integration review, but never asserts physical safety or grants
 execution authority. Malformed axis collections, provider identity, reviewer
 identity, and non-UTC review timestamps are rejected before findings are
-produced.
+produced; malformed axis values are retained as deterministic review findings.
 
 The review is capability-first and hardware-neutral. Provider-specific testing,
 calibration, collision clearance, and hardware-in-the-loop evidence remain

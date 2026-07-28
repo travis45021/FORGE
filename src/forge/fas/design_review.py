@@ -63,9 +63,34 @@ class MotionDesignReview:
                     f"{axis.get('axis_id', 'unknown')}: missing {', '.join(missing_axis)}"
                 )
                 continue
+            if not isinstance(axis["axis_id"], str) or not axis["axis_id"].strip():
+                findings.append("axis identity must be non-empty text")
+                continue
             if axis["axis_id"] in ids:
                 findings.append(f"duplicate axis: {axis['axis_id']}")
             ids.add(axis["axis_id"])
+            numeric_fields = (
+                "minimum",
+                "maximum",
+                "max_velocity",
+                "max_acceleration",
+            )
+            if any(
+                not isinstance(axis[field], (int, float))
+                or isinstance(axis[field], bool)
+                for field in numeric_fields
+            ):
+                findings.append(f"{axis['axis_id']}: motion limits must be numeric")
+                continue
+            if not isinstance(axis["homing_required"], bool):
+                findings.append(f"{axis['axis_id']}: homing_required must be boolean")
+            if any(
+                not isinstance(axis[field], str) or not axis[field].strip()
+                for field in ("limit_behavior", "fault_behavior")
+            ):
+                findings.append(
+                    f"{axis['axis_id']}: limit and fault behavior must be described"
+                )
             if axis["minimum"] >= axis["maximum"]:
                 findings.append(f"{axis['axis_id']}: minimum must be below maximum")
             if axis["max_velocity"] <= 0 or axis["max_acceleration"] <= 0:
@@ -73,7 +98,7 @@ class MotionDesignReview:
             if axis["unit"] not in {"mm", "degree"}:
                 findings.append(f"{axis['axis_id']}: unsupported unit")
             if (
-                not axis["homing_required"]
+                axis["homing_required"] is not True
                 or not axis["limit_behavior"]
                 or not axis["fault_behavior"]
             ):
