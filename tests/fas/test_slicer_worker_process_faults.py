@@ -4,6 +4,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
+from forge.fas.process_supervision import LocalProcessSupervisor
 from forge.fas.slicer_worker import REQUIRED_FORBIDDEN, SlicerWorkerSupervisor
 
 
@@ -121,3 +124,47 @@ def test_real_process_cancellation_fails_closed(tmp_path: Path) -> None:
     assert result["status"] == "failed_closed"
     assert result["reason"] == "worker_cancelled"
     assert result["worker_reuse_allowed"] is False
+
+
+def test_supervisor_evidence_is_validated_before_worker_acceptance(
+    tmp_path: Path,
+) -> None:
+    evidence = LocalProcessSupervisor().run(
+        isolated_python("raise SystemExit(0)"),
+        cwd=tmp_path,
+        timeout_seconds=1,
+    )
+
+    result = SlicerWorkerSupervisor().assess_process_evidence(
+        manifest(),
+        evidence,
+        context_id="context:process-fixture",
+        current_context_id="context:process-fixture",
+        peak_memory_bytes=0,
+        disk_written_bytes=0,
+        artifact_digest="a" * 64,
+    )
+
+    assert result["status"] == "succeeded"
+    assert result["artifact_accepted"] is True
+    assert result["can_upload"] is False
+
+
+def test_supervisor_rejects_authoritative_process_evidence(tmp_path: Path) -> None:
+    evidence = LocalProcessSupervisor().run(
+        isolated_python("raise SystemExit(0)"),
+        cwd=tmp_path,
+        timeout_seconds=1,
+    )
+    evidence["release_authority_granted"] = True
+
+    with pytest.raises(ValueError, match="unsafe authority"):
+        SlicerWorkerSupervisor().assess_process_evidence(
+            manifest(),
+            evidence,
+            context_id="context:process-fixture",
+            current_context_id="context:process-fixture",
+            peak_memory_bytes=0,
+            disk_written_bytes=0,
+            artifact_digest="a" * 64,
+        )

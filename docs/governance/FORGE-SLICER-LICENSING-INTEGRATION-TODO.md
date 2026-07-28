@@ -206,8 +206,9 @@ release is distributed until the applicable items in this gate are complete.
   stale context. Deterministic supervisor fault-injection contracts cover each
   failure and deny artifact/physical authority. Real process fixtures now cover
   clean exit, crash, timeout, and cancellation without a slicer engine;
-  production-launcher, enforced resource-exhaustion, and reviewed engine
-  process evidence remain open.
+  process evidence is now validated at the worker boundary; production-launcher,
+  enforced resource-exhaustion, and reviewed engine process evidence remain
+  open.
 - [ ] Prove repeated slicing reproducibility. A non-authoritative evaluator now
   requires identical engine source/build, input, profile, context, artifact
   digests, and warnings across repeated successful results. Real reviewed Orca

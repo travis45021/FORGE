@@ -381,6 +381,82 @@ class SlicerWorkerSupervisor:
         "cancelled",
     }
 
+    def assess_process_evidence(
+        self,
+        manifest: Mapping[str, Any],
+        evidence: Mapping[str, Any],
+        *,
+        context_id: str,
+        current_context_id: str,
+        peak_memory_bytes: int,
+        disk_written_bytes: int,
+        artifact_digest: str | None = None,
+    ) -> dict[str, Any]:
+        """Convert local supervisor evidence into a worker outcome.
+
+        This adapter validates the contract-only process evidence before it
+        reaches the worker fault policy. It does not claim that OS resource
+        limits were enforced or that a process produced a trusted artifact.
+        """
+        item = dict(evidence)
+        required = {
+            "schema_version",
+            "outcome",
+            "returncode",
+            "stdout_bytes",
+            "stderr_bytes",
+            "stdout_digest",
+            "stderr_digest",
+            "shell_used",
+            "physical_commands_allowed",
+            "release_authority_granted",
+            "worker_reuse_allowed",
+            "resource_limits_enforced",
+            "requires_reviewed_resource_supervisor",
+        }
+        if set(item) != required or item.get("schema_version") != "1.0.0":
+            raise SlicerWorkerError("process evidence fields are invalid")
+        outcome = item.get("outcome")
+        if outcome not in self.OUTCOMES:
+            raise SlicerWorkerError("process evidence outcome is invalid")
+        if (
+            not isinstance(item.get("returncode"), int)
+            or isinstance(item.get("returncode"), bool)
+            or not isinstance(item.get("stdout_bytes"), int)
+            or isinstance(item.get("stdout_bytes"), bool)
+            or item["stdout_bytes"] < 0
+            or not isinstance(item.get("stderr_bytes"), int)
+            or isinstance(item.get("stderr_bytes"), bool)
+            or item["stderr_bytes"] < 0
+            or not self._is_digest(item.get("stdout_digest"))
+            or not self._is_digest(item.get("stderr_digest"))
+        ):
+            raise SlicerWorkerError("process evidence values are invalid")
+        for field in (
+            "shell_used",
+            "physical_commands_allowed",
+            "release_authority_granted",
+            "worker_reuse_allowed",
+            "resource_limits_enforced",
+        ):
+            if item.get(field) is not False:
+                raise SlicerWorkerError("process evidence grants unsafe authority")
+        if item.get("requires_reviewed_resource_supervisor") is not True:
+            raise SlicerWorkerError("process evidence must require resource review")
+        if outcome == "completed" and item["returncode"] != 0:
+            raise SlicerWorkerError("completed process evidence has nonzero returncode")
+        if outcome != "completed" and item["returncode"] == 0:
+            raise SlicerWorkerError("failed process evidence has zero returncode")
+        return self.assess_outcome(
+            manifest,
+            outcome=outcome,
+            context_id=context_id,
+            current_context_id=current_context_id,
+            peak_memory_bytes=peak_memory_bytes,
+            disk_written_bytes=disk_written_bytes,
+            artifact_digest=artifact_digest,
+        )
+
     def assess_outcome(
         self,
         manifest: Mapping[str, Any],
@@ -551,3 +627,12 @@ class SlicerWorkerSupervisor:
             raise SlicerWorkerError(
                 "completed worker artifact must be lowercase SHA-256"
             )
+
+    @staticmethod
+    def _is_digest(value: Any) -> bool:
+        return (
+            isinstance(value, str)
+            and len(value) == 71
+            and value.startswith("sha256:")
+            and all(character in "0123456789abcdef" for character in value[7:])
+        )

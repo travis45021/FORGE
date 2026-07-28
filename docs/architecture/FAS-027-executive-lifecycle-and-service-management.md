@@ -26,6 +26,12 @@ no physical or release authority. It does not enforce OS memory/disk quotas and
 is not a production Orca launcher; those reviewed platform controls remain
 open.
 
+`SlicerWorkerSupervisor.assess_process_evidence` now validates that adapter's
+evidence shape before mapping completion, crash, timeout, or cancellation into
+the worker's fail-closed outcome policy. This remains contract-only: it does
+not claim OS resource enforcement, reviewed engine execution, or artifact
+trust.
+
 Automatic restart is not an authority source. Any recovery that could affect a
 physical device must remain paused until FAS-007 authorization, FAS-010 trust,
 FAS-023 health, FAS-022 runtime, and the user's final print confirmation are
