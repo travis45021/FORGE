@@ -30,7 +30,8 @@ open.
 evidence shape before mapping completion, crash, timeout, or cancellation into
 the worker's fail-closed outcome policy. This remains contract-only: it does
 not claim OS resource enforcement, reviewed engine execution, or artifact
-trust.
+trust. The evidence shape is published as
+`schemas/fas/process-evidence.schema.json` with a representative example.
 
 Automatic restart is not an authority source. Any recovery that could affect a
 physical device must remain paused until FAS-007 authorization, FAS-010 trust,

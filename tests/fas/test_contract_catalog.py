@@ -32,6 +32,7 @@ EXAMPLE_SCHEMAS = {
     "mission-print.example.json": "mission.schema.json",
     "onboarding-profile-custom-builder.example.json": "onboarding-profile.schema.json",
     "plugin-custom-filament-sensor.example.json": "plugin-manifest.schema.json",
+    "process-evidence-completed.example.json": "process-evidence.schema.json",
     "policy-bundle-production.example.json": "policy-bundle.schema.json",
     "policy-print-start.example.json": "policy.schema.json",
     "provider-dispatch-evidence.example.json": "provider-dispatch-evidence.schema.json",

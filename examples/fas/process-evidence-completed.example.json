@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0.0",
+  "outcome": "completed",
+  "returncode": 0,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "stdout_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "stderr_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "shell_used": false,
+  "physical_commands_allowed": false,
+  "release_authority_granted": false,
+  "worker_reuse_allowed": false,
+  "resource_limits_enforced": false,
+  "requires_reviewed_resource_supervisor": true
+}
