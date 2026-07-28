@@ -2,7 +2,7 @@
 
 Status: Current verified baseline
 Audit date: 2026-07-27
-Audited commit: `d80a751`
+Audited commit: `dcec6a7`
 
 ## Verdict
 
