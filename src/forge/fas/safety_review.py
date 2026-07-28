@@ -58,13 +58,25 @@ class SafetyDesignReview:
                     f"{sensor.get('sensor_id', 'unknown')}: missing {', '.join(missing_sensor)}"
                 )
                 continue
+            if (
+                not isinstance(sensor["sensor_id"], str)
+                or not sensor["sensor_id"].strip()
+            ):
+                findings.append("sensor identity must be non-empty text")
+                continue
             if sensor["sensor_id"] in ids:
                 findings.append(f"duplicate sensor: {sensor['sensor_id']}")
             ids.add(sensor["sensor_id"])
+            for field in ("normal_range", "trip_behavior", "loss_behavior"):
+                if not isinstance(sensor[field], str) or not sensor[field].strip():
+                    findings.append(f"{sensor['sensor_id']}: {field} is required")
             if (
-                not sensor["normal_range"]
-                or not sensor["trip_behavior"]
-                or not sensor["loss_behavior"]
+                not isinstance(sensor["normal_range"], str)
+                or not sensor["normal_range"].strip()
+                or not isinstance(sensor["trip_behavior"], str)
+                or not sensor["trip_behavior"].strip()
+                or not isinstance(sensor["loss_behavior"], str)
+                or not sensor["loss_behavior"].strip()
             ):
                 findings.append(
                     f"{sensor['sensor_id']}: range and fail-safe behavior are required"
