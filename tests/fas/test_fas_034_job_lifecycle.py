@@ -112,6 +112,18 @@ class Fas034JobLifecycleTests(unittest.TestCase):
         with self.assertRaisesRegex(JobLifecycleError, "actor"):
             self.service.click("job:001", action="review", actor=" ")
 
+    def test_malformed_gate_state_is_rejected_before_click_progression(self):
+        invalid = dict(self.job)
+        invalid["click_count"] = "0"
+        with self.assertRaisesRegex(JobLifecycleError, "zero clicks"):
+            PrintJobLifecycle().create(invalid)
+        invalid = dict(self.job)
+        invalid["preflight_passed"] = "yes"
+        with self.assertRaisesRegex(JobLifecycleError, "boolean"):
+            PrintJobLifecycle().create(invalid)
+        with self.assertRaisesRegex(JobLifecycleError, "reason"):
+            self.service.transition("job:001", "cancelled", reason=" ")
+
 
 if __name__ == "__main__":
     unittest.main()

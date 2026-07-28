@@ -116,7 +116,15 @@ class PrintJobLifecycle:
                 raise JobLifecycleError(f"job {field} must be a non-empty string")
         if item["job_id"] in self._jobs or item["state"] != "draft":
             raise JobLifecycleError("job identity or initial state is invalid")
-        if item["click_count"] != 0:
+        if not isinstance(item["preflight_passed"], bool) or not isinstance(
+            item["live_checks_passed"], bool
+        ):
+            raise JobLifecycleError("job gate flags must be boolean")
+        if (
+            not isinstance(item["click_count"], int)
+            or isinstance(item["click_count"], bool)
+            or item["click_count"] != 0
+        ):
             raise JobLifecycleError("new jobs must begin with zero clicks")
         self._jobs[item["job_id"]] = item
         self._record("job.created", item["job_id"])
@@ -297,6 +305,8 @@ class PrintJobLifecycle:
 
     def transition(self, job_id: str, state: str, *, reason: str) -> dict[str, Any]:
         job = self._require(job_id)
+        if not isinstance(reason, str) or not reason.strip():
+            raise JobLifecycleError("job transition requires a reason")
         if state not in STATES or state not in TRANSITIONS.get(job["state"], set()):
             raise JobLifecycleError(
                 f"invalid job transition: {job['state']} -> {state}"
