@@ -45,6 +45,7 @@ from .plugins import PluginError, PluginRegistry, custom_component_manifest
 from .policy_bundles import PolicyBundleError, PolicyBundleRegistry, content_digest
 from .preflight import ArtifactPreflight, PreflightError
 from .print_dispatch import PrintDispatchCoordinator
+from .process_supervision import LocalProcessSupervisor, ProcessSupervisionError
 from .release_gate import REQUIRED_GATES, ReleaseGate, ReleaseGateError
 from .runtime import ForgeRuntime, RuntimeError
 from .safety_review import SafetyDesignReview, SafetyReviewError
@@ -137,6 +138,7 @@ __all__ = [
     "LifecycleError",
     "LivePrinterCheckError",
     "LivePrinterCheckService",
+    "LocalProcessSupervisor",
     "ManufacturingIntentError",
     "ManufacturingIntentService",
     "MaterialDesignReview",
@@ -158,6 +160,7 @@ __all__ = [
     "PrintContextPresenter",
     "PrintDispatchCoordinator",
     "PrintJobLifecycle",
+    "ProcessSupervisionError",
     "ReleaseGate",
     "ReleaseGateError",
     "RuntimeError",

@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 from jsonschema import Draft202012Validator
 
+from forge.fas import LocalProcessSupervisor as ExportedProcessSupervisor
 from forge.fas.process_supervision import LocalProcessSupervisor
 from forge.fas.slicer_worker import REQUIRED_FORBIDDEN, SlicerWorkerSupervisor
 
@@ -157,6 +158,10 @@ def test_supervisor_evidence_is_validated_before_worker_acceptance(
         ).read_text(encoding="utf-8")
     )
     Draft202012Validator(schema).validate(evidence)
+
+
+def test_process_supervisor_is_publicly_exported() -> None:
+    assert ExportedProcessSupervisor is LocalProcessSupervisor
 
 
 def test_supervisor_rejects_authoritative_process_evidence(tmp_path: Path) -> None:
