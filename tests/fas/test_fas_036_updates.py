@@ -76,6 +76,21 @@ class Fas036UpdateTests(unittest.TestCase):
                 tests_passed=True,
             )
 
+    def test_update_identity_and_rollback_reason_are_strict(self):
+        self.manager.plan(
+            self.manifest,
+            current_version="1.0.0",
+            approval_reference="decision:update",
+        )
+        with self.assertRaisesRegex(UpdateError, "identity"):
+            self.manager.plan(
+                self.manifest,
+                current_version="1.0.0",
+                approval_reference="decision:update-again",
+            )
+        with self.assertRaisesRegex(UpdateError, "reason"):
+            self.manager.rollback("update:001", reason=42, user_approved=True)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,3 +10,5 @@ The reference manager never installs, restarts, or grants physical execution
 authority. Versions are validated as advancing numeric dotted values, digests
 are strict SHA-256 values, and rollback versions must precede the target.
 Production packaging may add installation effects only behind these gates.
+Update identities are immutable and rollback reasons must be non-empty text
+before they are recorded.

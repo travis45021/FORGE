@@ -49,6 +49,8 @@ class UpdateManager:
         for field in ("update_id", "component", "version", "rollback_version"):
             if not isinstance(item[field], str) or not item[field].strip():
                 raise UpdateError(f"update {field} must be a non-empty string")
+        if item["update_id"] in self._updates:
+            raise UpdateError("update identity is immutable")
         current = _version(current_version)
         target = _version(item["version"])
         rollback = _version(item["rollback_version"])
@@ -112,12 +114,16 @@ class UpdateManager:
         self, update_id: str, *, reason: str, user_approved: bool
     ) -> dict[str, Any]:
         plan = self._require(update_id)
-        if user_approved is not True or not reason:
+        if (
+            user_approved is not True
+            or not isinstance(reason, str)
+            or not reason.strip()
+        ):
             raise UpdateError("rollback requires user approval and a reason")
         plan.update(
             {
                 "status": "rollback_planned",
-                "rollback_reason": reason,
+                "rollback_reason": reason.strip(),
                 "install_authorized": False,
             }
         )
