@@ -264,6 +264,13 @@ class Fas010TrustTests(unittest.TestCase):
             self.verify()
         )
 
+    def test_malformed_key_metadata_fails_as_trust_error(self) -> None:
+        invalid = {**self.key, "purposes": [{"purpose": "forge.signature.release"}]}
+        with self.assertRaisesRegex(TrustError, "purpose"):
+            TrustService({"hmac-sha256-test": development_hmac_verifier}).register_key(
+                invalid
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -305,14 +305,29 @@ class TrustService:
         missing = sorted(required - key.keys())
         if missing:
             raise TrustError(f"key missing fields: {', '.join(missing)}")
+        for field in ("key_id", "subject_id", "algorithm", "verification_material"):
+            if not isinstance(key[field], str) or not key[field].strip():
+                raise TrustError(f"key {field} must be non-empty text")
         if key["status"] != "active":
             raise TrustError("new keys must be registered as active")
-        if not isinstance(key["purposes"], list) or not key["purposes"]:
+        if (
+            not isinstance(key["purposes"], list)
+            or not key["purposes"]
+            or any(
+                not isinstance(purpose, str) or not purpose.strip()
+                for purpose in key["purposes"]
+            )
+        ):
             raise TrustError("key must declare at least one purpose")
         if len(key["purposes"]) != len(set(key["purposes"])):
             raise TrustError("key purposes must be unique")
         if _utc(key["not_before"]) >= _utc(key["not_after"]):
             raise TrustError("key validity interval is empty")
+        predecessor = key["predecessor_key_id"]
+        if predecessor is not None and (
+            not isinstance(predecessor, str) or not predecessor.strip()
+        ):
+            raise TrustError("predecessor key identity is invalid")
 
     def _record(
         self,
